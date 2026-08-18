@@ -233,3 +233,58 @@ button.secondary:hover {
     pointer-events: none; 
     user-select: none; 
 }
+.comments-section {
+    margin-top: 15px;
+    padding-top: 10px;
+    border-top: 1px solid #27272a;
+}
+.comment {
+    display: flex;
+    gap: 12px;
+    margin-left: 25px; /* Сдвиг вправо как на Reddit */
+    padding-left: 12px;
+    border-left: 2px solid #3f3f46; /* Вертикальная линия ветки */
+    margin-top: 12px;
+}
+.comment-avatar {
+    width: 35px;
+    height: 35px;
+    border-radius: 6px;
+    object-fit: cover;
+    border: 1px solid #52525b;
+}
+.comment-body {
+    flex: 1;
+}
+.comment-header {
+    font-size: 0.9rem;
+    margin-bottom: 4px;
+}
+.comment-text {
+    color: #d4d4d8;
+    font-size: 0.95rem;
+    line-height: 1.4;
+}
+
+/* Форма быстрой отправки коммента */
+.comment-form {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+    margin-left: 25px;
+}
+.comment-input {
+    flex: 1;
+    padding: 8px 12px;
+    background: #1a1a1e;
+    border: 1px solid #27272a;
+    color: white;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    margin-bottom: 0;
+}
+.comment-btn {
+    padding: 8px 16px;
+    font-size: 0.8rem;
+    border-radius: 6px;
+}
