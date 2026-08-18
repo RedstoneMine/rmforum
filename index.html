@@ -8,6 +8,7 @@
 </head>
 <body>
 
+<!-- Экран банов вкладки -->
 <div id="block-modal" class="modal-overlay hidden">
     <div class="modal-content" style="border-color: #ef4444;">
         <h2 id="block-title" style="color: #ef4444;">🚫 ДОСТУП ОГРАНИЧЕН</h2>
@@ -15,9 +16,10 @@
     </div>
 </div>
 
+<!-- Дисклеймер -->
 <div id="notice-modal" class="modal-overlay">
     <div class="modal-content">
-        <h2>⚠️ ПОЛЬЗОВАТЕЛЬСКОЕ СОГЛАШЕНИЕ</h2>
+        <h2>⚠️ ПРАВИЛА ШАХТЫ ОБЩЕНИЯ</h2>
         <p style="color: #d4d4d8; line-height: 1.5; text-align: left;">
             • Каждая учетка уникальна. Никто твой ник не украдет.<br>
             • <b>Внимание:</b> куки не сохраняются. Закрыл вкладку — вводи пароль заново!<br>
@@ -31,17 +33,30 @@
 </div>
 
 <div class="container hidden" id="main-content">
-    <div id="login-box" class="box">
-        <h2>⛏️ АВТОРИЗАЦИЯ REDSTONE MINE</h2>
-        <p style="color: #a1a1aa">Зарегистрируй ник или войди под уже существующим:</p>
-        <input type="text" id="username-input" placeholder="Твой ник (например: Stepan)">
-        <input type="password" id="password-input" placeholder="Пароль от аккаунта...">
-        <div class="auth-buttons">
-            <button class="primary" onclick="handleAuth('login')">ВОЙТИ</button>
-            <button class="secondary" onclick="handleAuth('register')">РЕГИСТРАЦИЯ</button>
+    
+    <!-- КРАСИВОЕ МЕНЮ ВЫБОРА -->
+    <div id="menu-box" class="box">
+        <h2>⛏️ ДОБРО ПОЖАЛОВАТЬ НА REDSTONE MINE</h2>
+        <p style="color: #a1a1aa">Выберите действие для входа на форум сервера:</p>
+        <div class="menu-choice">
+            <button class="primary menu-btn" onclick="showAuthForm('login')">🔑 Войти в существующий аккаунт</button>
+            <button class="secondary menu-btn" onclick="showAuthForm('register')">📝 Зарегистрировать новый ник</button>
         </div>
     </div>
 
+    <!-- ФОРМА АВТОРИЗАЦИИ (ИЗНАЧАЛЬНО СКРЫТА) -->
+    <div id="login-box" class="box hidden">
+        <h2 id="auth-title">АВТОРИЗАЦИЯ</h2>
+        <p id="auth-desc" style="color: #a1a1aa"></p>
+        <input type="text" id="username-input" placeholder="Твой ник (например: Stepan)">
+        <input type="password" id="password-input" placeholder="Пароль от аккаунта...">
+        <div class="auth-buttons">
+            <button class="primary" id="auth-action-btn" onclick="submitAuth()">ПОДТВЕРДИТЬ</button>
+            <button class="back-btn" onclick="hideAuthForm()">НАЗАД</button>
+        </div>
+    </div>
+
+    <!-- ЛЕНТА ФОРУМА -->
     <div id="forum-box" class="hidden">
         <div id="admin-panel" class="box hidden" style="border-color: #f43f5e;">
             <h4 style="margin: 0 0 12px 0; color: #f43f5e;">🛡️ УПРАВЛЕНИЕ СЕРВЕРОМ СДЕЛАННОЕ @REDSTONEMINE</h4>
@@ -68,6 +83,7 @@
     </div>
 </div>
 <script>
+    // 🧠 СИСТЕМА ЗАЩИТЫ (Анти-F5 и Брутфорс)
     (function checkGlobalBlocks() {
         const now = Date.now();
         const passwordBanUntil = sessionStorage.getItem("password_ban_until");
@@ -103,11 +119,12 @@
         }
     })();
 
-    const WORKER_URL = 'https://restless-hill-dd2a.redstonemineforum.workers.dev'; 
+    const WORKER_URL = 'https://workers.dev'; 
     const ADMIN_WHITELIST = ["@redstonemine"];
 
     let currentUsername = "";
     let currentPassword = "";
+    let currentAuthType = "login"; 
     let isAdmin = false;
     let allPosts = []; 
     let currentFilterTag = "";
@@ -118,7 +135,30 @@
         document.getElementById('main-content').classList.remove('hidden');
     }
 
-    async function handleAuth(authType) {
+    // ЛОГИКА ИНТЕРАКТИВНОГО МЕНЮ ВЫБОРОВ
+    function showAuthForm(type) {
+        currentAuthType = type;
+        document.getElementById('menu-box').classList.add('hidden');
+        document.getElementById('login-box').classList.remove('hidden');
+        
+        if (type === 'login') {
+            document.getElementById('auth-title').innerText = "🔑 ВХОД НА ФОРУМ";
+            document.getElementById('auth-desc').innerText = "Введи свой ник и верный пароль от аккаунта:";
+            document.getElementById('auth-action-btn').innerText = "ВОЙТИ";
+        } else {
+            document.getElementById('auth-title').innerText = "📝 РЕГИСТРАЦИЯ НОВОГО ПРОФИЛЯ";
+            document.getElementById('auth-desc').innerText = "Придумай уникальный ник и пароль. Твой ник закрепится навсегда:";
+            document.getElementById('auth-action-btn').innerText = "ЗАРЕГИСТРИРОВАТЬСЯ";
+        }
+    }
+
+    function hideAuthForm() {
+        document.getElementById('login-box').classList.add('hidden');
+        document.getElementById('menu-box').classList.remove('hidden');
+        document.getElementById('username-input').value = "";
+        document.getElementById('password-input').value = "";
+    }
+    async function submitAuth() {
         let nick = document.getElementById('username-input').value.trim();
         let pass = document.getElementById('password-input').value.trim();
         if(!nick || !pass) return alert("Заполни ник и пароль!");
@@ -128,12 +168,12 @@
             const res = await fetch(WORKER_URL + '/api/auth', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ username: nick, password: pass, type: authType })
+                body: JSON.stringify({ username: nick, password: pass, type: currentAuthType })
             });
             const data = await res.json();
 
             if (data.error) {
-                if (authType === "login" && (res.status === 401 || data.error.includes("пароль"))) {
+                if (currentAuthType === "login" && (res.status === 401 || data.error.includes("пароль"))) {
                     let attempts = parseInt(sessionStorage.getItem("password_attempts") || "0");
                     attempts++;
                     sessionStorage.setItem("password_attempts", attempts.toString());
@@ -150,8 +190,9 @@
                 return alert(data.error);
             }
 
-            if (authType === "register") {
-                alert("Аккаунт успешно создан! Теперь нажмите кнопку 'ВОЙТИ'.");
+            if (currentAuthType === "register") {
+                alert("Аккаунт успешно создан! Теперь выберите режим 'ВОЙТИ'.");
+                hideAuthForm();
                 return;
             }
 
@@ -169,9 +210,10 @@
             document.getElementById('welcome-msg').innerText = "⛏️ Лента | Юзер: " + currentUsername;
 
             loadPosts(); 
-        } catch(e) { alert("Ошибка подключения к бэкенду. Проверь ссылку WORKER_URL!"); }
+        } catch(e) { alert("Ошибка подключения к бэкенду. Проверь статус Воркера!"); }
     }
-  async function loadPosts() {
+
+    async function loadPosts() {
         try {
             const res = await fetch(WORKER_URL + '/api/posts');
             allPosts = await res.json();
