@@ -66,24 +66,48 @@ button:disabled {
 }
 button.primary { 
     background: #2563eb; 
+    box-shadow: 0 0 10px rgba(37, 99, 235, 0.2);
 }
 button.primary:hover { 
     background: #3b82f6; 
     box-shadow: 0 0 15px rgba(59, 130, 246, 0.6); 
 }
 button.secondary { 
-    background: #27272a; 
-    border: 1px solid #3f3f46; 
-    color: #e4e4e7; 
+    background: #10b981; 
+    box-shadow: 0 0 10px rgba(16, 185, 129, 0.2);
 }
 button.secondary:hover { 
-    background: #3f3f46; 
+    background: #34d399; 
+    box-shadow: 0 0 15px rgba(52, 211, 153, 0.6);
+}
+
+.menu-choice {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-top: 20px;
+}
+.menu-btn {
+    font-size: 1.2rem;
+    padding: 20px;
+    text-align: center;
 }
 
 .auth-buttons { 
     display: flex; 
     gap: 10px; 
 }
+.back-btn {
+    background: #27272a;
+    color: #a1a1aa;
+    margin-top: 10px;
+}
+.back-btn:hover {
+    background: #3f3f46;
+    color: #fff;
+    box-shadow: none;
+}
+
 .post { 
     display: flex; 
     gap: 16px; 
