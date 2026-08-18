@@ -424,9 +424,17 @@
         loadPosts();
     }
 
+      let lastCommentTime = 0; 
+
     async function sendComment(postId) {
         const inputEl = document.getElementById('comm-input-' + postId);
         if (!inputEl || !inputEl.value.trim()) return;
+
+        const now = Date.now();
+        if (now - lastCommentTime < 15000) {
+            const timeLeft = Math.ceil((15000 - (now - lastCommentTime)) / 1000);
+            return alert("Не спамь в ветку! Подожди ещё " + timeLeft + " сек.");
+        }
 
         const text = inputEl.value.trim();
 
@@ -446,7 +454,8 @@
             if (data.error) return alert(data.error);
 
             inputEl.value = "";
-            loadPosts(); // Перезагружаем всю ленту с сервера, чтобы подтянуть новые ответы
+            lastCommentTime = Date.now(); // Засекаем время успешной отправки
+            loadPosts(); 
         } catch (e) { 
             alert("Ошибка отправки комментария."); 
         }
