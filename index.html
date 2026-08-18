@@ -424,6 +424,34 @@
         loadPosts();
     }
 
+    async function sendComment(postId) {
+        const inputEl = document.getElementById('comm-input-' + postId);
+        if (!inputEl || !inputEl.value.trim()) return;
+
+        const text = inputEl.value.trim();
+
+        try {
+            const res = await fetch(WORKER_URL + '/api/comments', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    username: currentUsername,
+                    password: currentPassword,
+                    postId: postId,
+                    text: text
+                })
+            });
+
+            const data = await res.json();
+            if (data.error) return alert(data.error);
+
+            inputEl.value = "";
+            loadPosts(); // Перезагружаем всю ленту с сервера, чтобы подтянуть новые ответы
+        } catch (e) { 
+            alert("Ошибка отправки комментария."); 
+        }
+    }
+
     function escapeHTML(str) {
         return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
     }
