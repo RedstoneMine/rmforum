@@ -41,6 +41,7 @@ input:focus, textarea:focus {
     box-shadow: 0 0 8px rgba(239, 68, 68, 0.5); 
 }
 
+/* КНОПКИ */
 button { 
     background: #dc2626; 
     color: white; 
@@ -81,6 +82,7 @@ button.secondary:hover {
     box-shadow: 0 0 15px rgba(52, 211, 153, 0.6);
 }
 
+/* КРАСИВЫЙ ВЫБОР ДЛЯ АВТОРИЗАЦИИ */
 .menu-choice {
     display: flex;
     flex-direction: column;
@@ -118,113 +120,57 @@ button.secondary:hover {
     margin-bottom: 15px; 
 }
 .avatar { 
-    width: 55px; 
-    height: 55px; 
-    border-radius: 8px; 
-    object-fit: cover; 
-    border: 2px solid #3f3f46; 
+    width: 55px; height: 55px; border-radius: 8px; object-fit: cover; border: 2px solid #3f3f46; 
 }
 .post-body { 
     flex: 1; 
 }
 .author { 
-    font-weight: bold; 
-    color: #a1a1aa; 
-    display: inline-flex; 
-    align-items: center; 
-    gap: 6px; 
-    font-size: 1.1rem; 
+    font-weight: bold; color: #a1a1aa; display: inline-flex; align-items: center; gap: 6px; font-size: 1.1rem; 
 }
+
+/* ⭐ ЖЁЛТЫЙ НИК АДМИНА С КРАСИВЫМ СВЕЧЕНИЕМ */
 .author.admin-style { 
-    color: #f43f5e; 
-    text-shadow: 0 0 8px rgba(244, 63, 94, 0.3); 
+    color: #facc15; 
+    text-shadow: 0 0 8px rgba(250, 204, 21, 0.4); 
 }
+
 .verified-badge { 
-    width: 18px; 
-    height: 18px; 
-    background: #1d9bf0; 
-    color: white; 
-    border-radius: 50%; 
-    display: inline-flex; 
-    align-items: center; 
-    justify-content: center; 
-    font-size: 11px; 
-    font-weight: bold; 
-    box-shadow: 0 0 8px rgba(29, 155, 240, 0.6); 
-    cursor: pointer; 
+    width: 18px; height: 18px; background: #1d9bf0; color: white; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 11px; font-weight: bold; box-shadow: 0 0 8px rgba(29, 155, 240, 0.6); cursor: pointer; 
 }
 .time { 
-    font-size: 0.8rem; 
-    color: #52525b; 
-    margin-left: 10px; 
+    font-size: 0.8rem; color: #52525b; margin-left: 10px; 
 }
 .text { 
-    color: #e4e4e7; 
-    line-height: 1.5; 
-    margin-bottom: 10px; 
+    color: #e4e4e7; line-height: 1.5; margin-bottom: 10px; 
 }
 
 .tags-container { 
-    display: flex; 
-    flex-wrap: wrap; 
-    gap: 6px; 
+    display: flex; flex-wrap: wrap; gap: 6px; 
 }
 .tag { 
-    background: #27272a; 
-    color: #38bdf8; 
-    padding: 3px 8px; 
-    font-size: 0.85rem; 
-    border-radius: 4px; 
-    cursor: pointer; 
-    border: 1px solid #38bdf833; 
+    background: #27272a; color: #38bdf8; padding: 3px 8px; font-size: 0.85rem; border-radius: 4px; cursor: pointer; border: 1px solid #38bdf833; 
 }
 .tag:hover { 
     background: #38bdf822; 
 }
 .search-box { 
-    display: flex; 
-    gap: 10px; 
-    margin-bottom: 20px; 
+    display: flex; gap: 10px; margin-bottom: 20px; 
 }
 .admin-btn { 
-    background: #27272a; 
-    color: #f87171; 
-    padding: 6px 12px; 
-    font-size: 0.8rem; 
-    border-radius: 4px; 
-    border: 1px solid #451a1a; 
-    cursor: pointer; 
-    margin-top: 10px; 
+    background: #27272a; color: #f87171; padding: 6px 12px; font-size: 0.8rem; border-radius: 4px; border: 1px solid #451a1a; cursor: pointer; margin-top: 10px; 
 }
 
 .modal-overlay { 
-    position: fixed; 
-    top: 0; 
-    left: 0; 
-    width: 100%; 
-    height: 100%; 
-    background: rgba(0,0,0,0.85); 
-    backdrop-filter: blur(5px); 
-    display: flex; 
-    justify-content: center; 
-    align-items: center; 
-    z-index: 1000; 
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); backdrop-filter: blur(5px); display: flex; justify-content: center; align-items: center; z-index: 1000; 
 }
 .modal-content { 
-    background: #121214; 
-    padding: 30px; 
-    border-radius: 12px; 
-    max-width: 450px; 
-    text-align: center; 
-    border: 2px solid #ef4444; 
-    box-shadow: 0 0 25px rgba(239, 68, 68, 0.3); 
+    background: #121214; padding: 30px; border-radius: 12px; max-width: 450px; text-align: center; border: 2px solid #ef4444; box-shadow: 0 0 25px rgba(239, 68, 68, 0.3); 
 }
 .hidden { 
     display: none !important; 
 }
 
 .banned-screen { 
-    filter: blur(8px); 
-    pointer-events: none; 
-    user-select: none; 
+    filter: blur(8px); pointer-events: none; user-select: none; 
 }
