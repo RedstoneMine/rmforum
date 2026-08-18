@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Redstone Mine - Форум</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div id="block-modal" class="modal-overlay hidden">
+    <div class="modal-content" style="border-color: #ef4444;">
+        <h2 id="block-title" style="color: #ef4444;">🚫 ДОСТУП ОГРАНИЧЕН</h2>
+        <p id="block-text" style="color: #d4d4d8; line-height: 1.5;"></p>
+    </div>
+</div>
+
+<div id="notice-modal" class="modal-overlay">
+    <div class="modal-content">
+        <h2>⚠️ ПОЛЬЗОВАТЕЛЬСКОЕ СОГЛАШЕНИЕ</h2>
+        <p style="color: #d4d4d8; line-height: 1.5; text-align: left;">
+            • Каждая учетка уникальна. Никто твой ник не украдет.<br>
+            • <b>Внимание:</b> куки не сохраняются. Закрыл вкладку — вводи пароль заново!<br>
+            • Лимит на отправку сообщений: <b>1 раз в минуту</b>.<br>
+            • Защита от подбора паролей: <b>3 ошибки = бан входа на 1,5 часа</b>.<br>
+            • Автообновление отключено. Обновляйте поиском по тегам.<br>
+            • Создатель @redstonemine карает баном за вредительство.
+        </p>
+        <button style="margin-top: 15px;" onclick="acceptTerms()">Я ВСЁ ПОНЯЛ</button>
+    </div>
+</div>
+
+<div class="container hidden" id="main-content">
+    <div id="login-box" class="box">
+        <h2>⛏️ АВТОРИЗАЦИЯ REDSTONE MINE</h2>
+        <p style="color: #a1a1aa">Зарегистрируй ник или войди под уже существующим:</p>
+        <input type="text" id="username-input" placeholder="Твой ник (например: Stepan)">
+        <input type="password" id="password-input" placeholder="Пароль от аккаунта...">
+        <div class="auth-buttons">
+            <button class="primary" onclick="handleAuth('login')">ВОЙТИ</button>
+            <button class="secondary" onclick="handleAuth('register')">РЕГИСТРАЦИЯ</button>
+        </div>
+    </div>
+
+    <div id="forum-box" class="hidden">
+        <div id="admin-panel" class="box hidden" style="border-color: #f43f5e;">
+            <h4 style="margin: 0 0 12px 0; color: #f43f5e;">🛡️ УПРАВЛЕНИЕ СЕРВЕРОМ СДЕЛАННОЕ @REDSTONEMINE</h4>
+            <div style="display: flex; gap: 10px;">
+                <input type="text" id="ban-username" placeholder="@ник для бана" style="margin:0;">
+                <button onclick="banUser()">БАН</button>
+            </div>
+        </div>
+
+        <div class="search-box">
+            <input type="text" id="search-input" placeholder="Поиск по хэштегу (например: #дом)..." style="margin:0;">
+            <button class="primary" onclick="filterByTag()">Искать / Обновить</button>
+            <button onclick="resetFilter()" style="background: #27272a;">Сброс</button>
+        </div>
+
+        <div class="box">
+            <h3 id="welcome-msg">💬 НОВЫЙ ПОСТ</h3>
+            <textarea id="post-text" placeholder="Текст сообщения..." rows="3"></textarea>
+            <input type="text" id="post-tags" placeholder="Хэштеги через пробел (например: дом торговля спавн)">
+            <button class="primary" id="send-btn" onclick="sendPost()">Опубликовать</button>
+        </div>
+
+        <div id="posts-container">Загрузка архивов...</div>
+    </div>
+</div>
+<script>
+    (function checkGlobalBlocks() {
+        const now = Date.now();
+        const passwordBanUntil = sessionStorage.getItem("password_ban_until");
+        if (passwordBanUntil && now < parseInt(passwordBanUntil)) {
+            window.addEventListener("DOMContentLoaded", () => {
+                document.getElementById('block-title').innerText = "🚫 ПОДОЗРИТЕЛЬНАЯ АКТИВНОСТЬ";
+                document.getElementById('block-text').innerHTML = "Ваш аккаунт ограничен на <b>1 час и 30 минут</b> из-за подозрений в подборе пароля! <br><br>Доступ заблокирован.";
+                document.getElementById('block-modal').classList.remove('hidden');
+                document.body.classList.add('banned-screen');
+            });
+            return;
+        }
+
+        const spamBanUntil = sessionStorage.getItem("spam_ban_until");
+        if (spamBanUntil && now < parseInt(spamBanUntil)) {
+            window.addEventListener("DOMContentLoaded", () => {
+                document.getElementById('block-title').innerText = "🚫 ДОСТУП ОГРАНИЧЕН";
+                document.getElementById('block-text').innerHTML = "Ваш аккаунт временно ограничен на <b>1 час</b> за спам обновлениями страницы! <br><br>Хватит терзать редстоун-схемы форума.";
+                document.getElementById('block-modal').classList.remove('hidden');
+                document.body.classList.add('banned-screen');
+            });
+            return;
+        }
+
+        let history = JSON.parse(sessionStorage.getItem("reload_history") || "[]");
+        history = history.filter(time => now - time < 60000); 
+        history.push(now);
+        sessionStorage.setItem("reload_history", JSON.stringify(history));
+
+        if (history.length > 5) { 
+            sessionStorage.setItem("spam_ban_until", (now + 3600000).toString());
+            window.location.reload();
+        }
+    })();
+
+    const WORKER_URL = 'https://restless-hill-dd2a.redstonemineforum.workers.dev'; 
+    const ADMIN_WHITELIST = ["@redstonemine"];
+
+    let currentUsername = "";
+    let currentPassword = "";
+    let isAdmin = false;
+    let allPosts = []; 
+    let currentFilterTag = "";
+    let lastPostTime = 0; 
+
+    function acceptTerms() {
+        document.getElementById('notice-modal').classList.add('hidden');
+        document.getElementById('main-content').classList.remove('hidden');
+    }
+
+    async function handleAuth(authType) {
+        let nick = document.getElementById('username-input').value.trim();
+        let pass = document.getElementById('password-input').value.trim();
+        if(!nick || !pass) return alert("Заполни ник и пароль!");
+        if(!nick.startsWith('@')) nick = '@' + nick;
+
+        try {
+            const res = await fetch(WORKER_URL + '/api/auth', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username: nick, password: pass, type: authType })
+            });
+            const data = await res.json();
+
+            if (data.error) {
+                if (authType === "login" && (res.status === 401 || data.error.includes("пароль"))) {
+                    let attempts = parseInt(sessionStorage.getItem("password_attempts") || "0");
+                    attempts++;
+                    sessionStorage.setItem("password_attempts", attempts.toString());
+
+                    if (attempts >= 3) {
+                        const ninetyMinutes = Date.now() + 5400000; 
+                        sessionStorage.setItem("password_ban_until", ninetyMinutes.toString());
+                        alert("Слишком много неверных попыток! Доступ ограничен на 1,5 часа.");
+                        window.location.reload(); 
+                        return;
+                    }
+                    return alert(data.error + " (Осталось попыток: " + (3 - attempts) + ")");
+                }
+                return alert(data.error);
+            }
+
+            if (authType === "register") {
+                alert("Аккаунт успешно создан! Теперь нажмите кнопку 'ВОЙТИ'.");
+                return;
+            }
+
+            sessionStorage.removeItem("password_attempts");
+            currentUsername = nick;
+            currentPassword = pass;
+            
+            if (ADMIN_WHITELIST.map(v => v.toLowerCase()).includes(nick.toLowerCase())) {
+                isAdmin = true;
+                document.getElementById('admin-panel').classList.remove('hidden');
+            }
+
+            document.getElementById('login-box').classList.add('hidden');
+            document.getElementById('forum-box').classList.remove('hidden');
+            document.getElementById('welcome-msg').innerText = "⛏️ Лента | Юзер: " + currentUsername;
+
+            loadPosts(); 
+        } catch(e) { alert("Ошибка подключения к бэкенду. Проверь ссылку WORKER_URL!"); }
+    }
+  async function loadPosts() {
+        try {
+            const res = await fetch(WORKER_URL + '/api/posts');
+            allPosts = await res.json();
+            renderPosts();
+        } catch (e) { console.error(e); }
+    }
+
+    function renderPosts() {
+        const container = document.getElementById('posts-container');
+        container.innerHTML = "";
+
+        const filtered = currentFilterTag 
+            ? allPosts.filter(p => p.tags && p.tags.map(t => t.toLowerCase()).includes(currentFilterTag.toLowerCase()))
+            : allPosts;
+
+        if(filtered.length === 0) {
+            container.innerHTML = "<p style='color:#71717a; text-align:center;'>Записей по такому тегу не найдено.</p>";
+            return;
+        }
+
+        filtered.forEach(post => {
+            const isPostAdmin = ADMIN_WHITELIST.map(v => v.toLowerCase()).includes(post.username.toLowerCase());
+            const avaSrc = isPostAdmin ? './admin_cube.png' : './robot.png'; 
+            const badge = isPostAdmin ? '<span class="verified-badge" title="Верифицированный аккаунт Создателя!">✓</span>' : '';
+            const styleClass = isPostAdmin ? 'admin-style' : '';
+            const deleteBtn = isAdmin ? '<br><button class="admin-btn" onclick="deletePost(' + post.id + ')">❌ Стереть пост</button>' : '';
+
+            let tagsHTML = "";
+            if(post.tags && post.tags.length > 0) {
+                tagsHTML = '<div class="tags-container">';
+                post.tags.forEach(t => {
+                    tagsHTML += '<span class="tag" onclick="setSearchTag(\'' + t + '\')">' + t + '</span>';
+                });
+                tagsHTML += '</div>';
+            }
+
+            container.innerHTML += '<div class="post">' +
+                '<img class="avatar" src="' + avaSrc + '" alt="ava">' +
+                '<div class="post-body">' +
+                    '<div class="post-header">' +
+                        '<span class="author ' + styleClass + '">' + post.username + ' ' + badge + '</span>' +
+                        '<span class="time">' + post.time + '</span>' +
+                    '</div>' +
+                    '<div class="text">' + escapeHTML(post.text) + '</div>' +
+                    tagsHTML +
+                    deleteBtn +
+                '</div>' +
+            '</div>';
+        });
+    }
+
+    async function sendPost() {
+        const textInput = document.getElementById('post-text');
+        const tagsInput = document.getElementById('post-tags');
+        if(!textInput.value.trim()) return;
+
+        const now = Date.now();
+        if (now - lastPostTime < 60000) {
+            return alert("А ну стоять! Сообщения можно отправлять раз в минуту!");
+        }
+
+        try {
+            await fetch(WORKER_URL + '/api/posts', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ 
+                    username: currentUsername, 
+                    password: currentPassword, 
+                    text: textInput.value.trim(), 
+                    tags: tagsInput.value.trim() 
+                })
+            });
+
+            textInput.value = "";
+            tagsInput.value = "";
+            lastPostTime = Date.now();
+            startCooldownTimer(60); 
+            loadPosts(); 
+        } catch (e) { alert("Ошибка отправки."); }
+    }
+
+    function startCooldownTimer(seconds) {
+        const sendBtn = document.getElementById('send-btn');
+        sendBtn.disabled = true;
+        let timeLeft = seconds;
+        sendBtn.innerText = 'Подождите ' + timeLeft + 'с';
+
+        const interval = setInterval(() => {
+            timeLeft--;
+            sendBtn.innerText = 'Подождите ' + timeLeft + 'с';
+            if (timeLeft <= 0) {
+                clearInterval(interval);
+                sendBtn.disabled = false;
+                sendBtn.innerText = "Опубликовать";
+            }
+        }, 1000);
+    }
+
+    function setSearchTag(tag) {
+        document.getElementById('search-input').value = tag;
+        currentFilterTag = tag;
+        renderPosts();
+    }
+
+    function filterByTag() {
+        const val = document.getElementById('search-input').value.trim();
+        currentFilterTag = val.startsWith('#') ? val : (val ? '#' + val : "");
+        loadPosts(); 
+    }
+
+    function resetFilter() {
+        document.getElementById('search-input').value = "";
+        currentFilterTag = "";
+        loadPosts(); 
+    }
+
+    async function deletePost(postId) {
+        if(!confirm("Удалить пост?")) return;
+        await fetch(WORKER_URL + '/api/admin/delete', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ password: currentPassword, postId: postId })
+        });
+        loadPosts();
+    }
+
+    async function banUser() {
+        const userToBan = document.getElementById('ban-username').value.trim();
+        if(!userToBan || !confirm("Забанить " + userToBan + "?")) return;
+
+        await fetch(WORKER_URL + '/api/admin/ban', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ password: currentPassword, userToBan: userToBan })
+        });
+        document.getElementById('ban-username').value = "";
+        alert("Игрок аннигилирован!");
+        loadPosts();
+    }
+
+    function escapeHTML(str) {
+        return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    }
+</script>
+</body>
+</html>
