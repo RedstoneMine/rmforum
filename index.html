@@ -8,15 +8,6 @@
 </head>
 <body>
 
-<!-- Экран банов вкладки -->
-<div id="block-modal" class="modal-overlay hidden">
-    <div class="modal-content" style="border-color: #ef4444;">
-        <h2 id="block-title" style="color: #ef4444;">🚫 ДОСТУП ОГРАНИЧЕН</h2>
-        <p id="block-text" style="color: #d4d4d8; line-height: 1.5;"></p>
-    </div>
-</div>
-
-<!-- Дисклеймер -->
 <div id="notice-modal" class="modal-overlay">
     <div class="modal-content">
         <h2>⚠️ ПРАВИЛА ШАХТЫ ОБЩЕНИЯ</h2>
@@ -24,23 +15,20 @@
             • Каждая учетка уникальна. Никто твой ник не украдет.<br>
             • <b>Внимание:</b> куки не сохраняются. Закрыл вкладку — вводи пароль заново!<br>
             • Лимит на отправку сообщений: <b>1 раз в минуту</b>.<br>
-            • Защита от подбора паролей: <b>3 ошибки = бан входа на 1,5 часа</b>.<br>
-            • Ультра-оптимизация: поиск по тегам работает без затрат лимитов сервера.<br>
-            • Создатель @redstonemine карает баном за вредительство.
+            • Создатель @redstonemine карает баном без предупреждения.
         </p>
         <button style="margin-top: 15px;" onclick="acceptTerms()">Я ВСЁ ПОНЯЛ</button>
     </div>
 </div>
 
 <div class="container hidden" id="main-content">
-    
     <!-- КРАСИВОЕ МЕНЮ ВЫБОРА -->
     <div id="menu-box" class="box">
         <h2>⛏️ ДОБРО ПОЖАЛОВАТЬ НА REDSTONE MINE</h2>
-        <p style="color: #a1a1aa">Выберите действие для входа на форум сервера:</p>
+        <p style="color: #a1a1aa">Выберите действие для входа на forum сервера:</p>
         <div class="menu-choice">
-            <button class="primary menu-btn" onclick="showAuthForm('login')">🔑 Войти в существующий аккаунт</button>
-            <button class="secondary menu-btn" onclick="showAuthForm('register')">📝 Зарегистрировать новый ник</button>
+            <button class="primary menu-btn" onclick="showAuthForm('login')">🔑 Войти в аккаунт</button>
+            <button class="secondary menu-btn" onclick="showAuthForm('register')">📝 Зарегистрировать ник</button>
         </div>
     </div>
 
@@ -56,9 +44,8 @@
         </div>
     </div>
 
-    <!-- ЛЕНТА ФОРУМА -->
     <div id="forum-box" class="hidden">
-        <!-- АДМИНКА С РАЗБАНОМ -->
+        <!-- АДМИНКА С КНОПКОЙ РАЗБАНА -->
         <div id="admin-panel" class="box hidden" style="border-color: #f43f5e;">
             <h4 style="margin: 0 0 12px 0; color: #f43f5e;">🛡️ УПРАВЛЕНИЕ СЕРВЕРОМ СДЕЛАННОЕ @REDSTONEMINE</h4>
             <div style="display: flex; gap: 10px; margin-bottom: 10px;">
@@ -84,54 +71,18 @@
             <button class="primary" id="send-btn" onclick="sendPost()">Опубликовать</button>
         </div>
 
-        <div id="posts-container">Загрузка архивов...</div>
+        <div id="posts-container">Загрузка архивов шахты...</div>
     </div>
 </div>
 <script>
-    // 🧠 СИСТЕМА ЗАЩИТЫ (Анти-F5 и Брутфорс)
-    (function checkGlobalBlocks() {
-        const now = Date.now();
-        const passwordBanUntil = sessionStorage.getItem("password_ban_until");
-        if (passwordBanUntil && now < parseInt(passwordBanUntil)) {
-            window.addEventListener("DOMContentLoaded", () => {
-                document.getElementById('block-title').innerText = "🚫 ПОДОЗРИТЕЛЬНАЯ АКТИВНОСТЬ";
-                document.getElementById('block-text').innerHTML = "Ваш аккаунт ограничен на <b>1 час и 30 минут</b> из-за подозрений в подборе пароля! <br><br>Доступ заблокирован.";
-                document.getElementById('block-modal').classList.remove('hidden');
-                document.body.classList.add('banned-screen');
-            });
-            return;
-        }
-
-        const spamBanUntil = sessionStorage.getItem("spam_ban_until");
-        if (spamBanUntil && now < parseInt(spamBanUntil)) {
-            window.addEventListener("DOMContentLoaded", () => {
-                document.getElementById('block-title').innerText = "🚫 ДОСТУП ОГРАНИЧЕН";
-                document.getElementById('block-text').innerHTML = "Ваш аккаунт временно ограничен на <b>1 час</b> за спам обновлениями страницы! <br><br>Хватит терзать редстоун-схемы форума.";
-                document.getElementById('block-modal').classList.remove('hidden');
-                document.body.classList.add('banned-screen');
-            });
-            return;
-        }
-
-        let history = JSON.parse(sessionStorage.getItem("reload_history") || "[]");
-        history = history.filter(time => now - time < 60000); 
-        history.push(now);
-        sessionStorage.setItem("reload_history", JSON.stringify(history));
-
-        if (history.length > 5) { 
-            sessionStorage.setItem("spam_ban_until", (now + 3600000).toString());
-            window.location.reload();
-        }
-    })();
-
-    // ⚙️ ССЫЛКА НА ТВОЙ СЕРВЕР И ВАЙТ-ЛИСТ АДМИНОВ
+    // ТВОЯ РАБОЧАЯ ССЫЛКА И ВАЙТ-ЛИСТ АДМИНОВ
     const WORKER_URL = 'https://restless-hill-dd2a.redstonemineforum.workers.dev'; 
     const ADMIN_WHITELIST = ["@redstonemine", "@твой_второй_ник"];
 
-    // 🖼️ СПИСОК АВАТАРОК ДЛЯ АДМИНОВ (Вручную прописывай ники и файлы картинок)
+    // РУЧНОЙ СПИСОК АВАТАРОК ДЛЯ АДМИНОВ
     const ADMIN_AVATARS = {
         "@redstonemine": "./admin_cube.png",
-        "@твой_второй_ник": "./avatar_alt.png" // Сюда можешь дописывать других админов
+        "@твой_второй_ник": "./avatar_alt.png"
     };
 
     let currentUsername = "";
@@ -147,7 +98,6 @@
         document.getElementById('main-content').classList.remove('hidden');
     }
 
-    // ЛОГИКА МЕНЮ ВЫБОРОВ
     function showAuthForm(type) {
         currentAuthType = type;
         document.getElementById('menu-box').classList.add('hidden');
@@ -170,7 +120,8 @@
         document.getElementById('username-input').value = "";
         document.getElementById('password-input').value = "";
     }
-     async function submitAuth() {
+
+    async function handleAuth(authType) {
         let nick = document.getElementById('username-input').value.trim();
         let pass = document.getElementById('password-input').value.trim();
         if(!nick || !pass) return alert("Заполни ник и пароль!");
@@ -180,35 +131,18 @@
             const res = await fetch(WORKER_URL + '/api/auth', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ username: nick, password: pass, type: currentAuthType })
+                body: JSON.stringify({ username: nick, password: pass, type: authType })
             });
             const data = await res.json();
 
-            if (data.error) {
-                if (currentAuthType === "login" && (res.status === 401 || data.error.includes("пароль"))) {
-                    let attempts = parseInt(sessionStorage.getItem("password_attempts") || "0");
-                    attempts++;
-                    sessionStorage.setItem("password_attempts", attempts.toString());
+            if (data.error) return alert(data.error);
 
-                    if (attempts >= 3) {
-                        const ninetyMinutes = Date.now() + 5400000; 
-                        sessionStorage.setItem("password_ban_until", ninetyMinutes.toString());
-                        alert("Слишком много неверных попыток! Доступ ограничен на 1,5 часа.");
-                        window.location.reload(); 
-                        return;
-                    }
-                    return alert(data.error + " (Осталось попыток: " + (3 - attempts) + ")");
-                }
-                return alert(data.error);
-            }
-
-            if (currentAuthType === "register") {
-                alert("Аккаунт успешно создан! Теперь выберите режим 'ВОЙТИ'.");
+            if (authType === "register") {
+                alert("Аккаунт успешно создан! Теперь нажмите кнопку 'ВОЙТИ'.");
                 hideAuthForm();
                 return;
             }
 
-            sessionStorage.removeItem("password_attempts");
             currentUsername = nick;
             currentPassword = pass;
             
@@ -221,126 +155,15 @@
             document.getElementById('forum-box').classList.remove('hidden');
             document.getElementById('welcome-msg').innerText = "⛏️ Лента | Юзер: " + currentUsername;
 
-            loadPostsFromServer(); 
+            loadPosts(); 
         } catch(e) { alert("Ошибка подключения к бэкенду. Проверь статус Воркера!"); }
     }
 
-    async function loadPostsFromServer() {
-        try {
-            const res = await fetch(WORKER_URL + '/api/posts');
-            allPosts = await res.json();
-            renderPosts();
-        } catch (e) { console.error(e); }
+    function submitAuth() {
+        handleAuth(currentAuthType);
     }
 
-    function renderPosts() {
-        const container = document.getElementById('posts-container');
-        container.innerHTML = "";
-
-        const filtered = currentFilterTag 
-            ? allPosts.filter(p => p.tags && p.tags.map(t => t.toLowerCase()).includes(currentFilterTag.toLowerCase()))
-            : allPosts;
-
-        if(filtered.length === 0) {
-            container.innerHTML = "<p style='color:#71717a; text-align:center;'>Записей по такому тегу не найдено.</p>";
-            return;
-        }
-
-        filtered.forEach(post => {
-            const lowerUser = post.username.toLowerCase();
-            const isPostAdmin = ADMIN_WHITELIST.map(v => v.toLowerCase()).includes(lowerUser);
-            
-            // 🖼️ ОПРЕДЕЛЯЕМ АВАТАРКУ: ищем в списке, если нет — ставим робота
-            let avaSrc = './robot.png';
-            if (isPostAdmin) {
-                // Ищем точное совпадение в твоем ручном списке ADMIN_AVATARS
-                const customAva = Object.keys(ADMIN_AVATARS).find(key => key.toLowerCase() === lowerUser);
-                avaSrc = customAva ? ADMIN_AVATARS[customAva] : './robot.png';
-            }
-
-            const badge = isPostAdmin ? '<span class="verified-badge" title="Верифицированный аккаунт Создателя!">✓</span>' : '';
-            const styleClass = isPostAdmin ? 'admin-style' : '';
-            const deleteBtn = isAdmin ? '<br><button class="admin-btn" onclick="deletePost(' + post.id + ')">❌ Стереть пост</button>' : '';
-
-            let tagsHTML = "";
-            if(post.tags && post.tags.length > 0) {
-                tagsHTML = '<div class="tags-container">';
-                post.tags.forEach(t => {
-                    tagsHTML += '<span class="tag" onclick="setSearchTag(\'' + t + '\')">' + t + '</span>';
-                });
-                tagsHTML += '</div>';
-            }
-
-            container.innerHTML += '<div class="post">' +
-                '<img class="avatar" src="' + avaSrc + '" alt="ava">' +
-                '<div class="post-body">' +
-                    '<div class="post-header">' +
-                        '<span class="author ' + styleClass + '">' + post.username + ' ' + badge + '</span>' +
-                        '<span class="time">' + post.time + '</span>' +
-                    '</div>' +
-                    '<div class="text">' + escapeHTML(post.text) + '</div>' +
-                    tagsHTML +
-                    deleteBtn +
-                '</div>' +
-            '</div>';
-        });
-    }
-     async function submitAuth() {
-        let nick = document.getElementById('username-input').value.trim();
-        let pass = document.getElementById('password-input').value.trim();
-        if(!nick || !pass) return alert("Заполни ник и пароль!");
-        if(!nick.startsWith('@')) nick = '@' + nick;
-
-        try {
-            const res = await fetch(WORKER_URL + '/api/auth', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ username: nick, password: pass, type: currentAuthType })
-            });
-            const data = await res.json();
-
-            if (data.error) {
-                if (currentAuthType === "login" && (res.status === 401 || data.error.includes("пароль"))) {
-                    let attempts = parseInt(sessionStorage.getItem("password_attempts") || "0");
-                    attempts++;
-                    sessionStorage.setItem("password_attempts", attempts.toString());
-
-                    if (attempts >= 3) {
-                        const ninetyMinutes = Date.now() + 5400000; 
-                        sessionStorage.setItem("password_ban_until", ninetyMinutes.toString());
-                        alert("Слишком много неверных попыток! Доступ ограничен на 1,5 часа.");
-                        window.location.reload(); 
-                        return;
-                    }
-                    return alert(data.error + " (Осталось попыток: " + (3 - attempts) + ")");
-                }
-                return alert(data.error);
-            }
-
-            if (currentAuthType === "register") {
-                alert("Аккаунт успешно создан! Теперь выберите режим 'ВОЙТИ'.");
-                hideAuthForm();
-                return;
-            }
-
-            sessionStorage.removeItem("password_attempts");
-            currentUsername = nick;
-            currentPassword = pass;
-            
-            if (ADMIN_WHITELIST.map(v => v.toLowerCase()).includes(nick.toLowerCase())) {
-                isAdmin = true;
-                document.getElementById('admin-panel').classList.remove('hidden');
-            }
-
-            document.getElementById('login-box').classList.add('hidden');
-            document.getElementById('forum-box').classList.remove('hidden');
-            document.getElementById('welcome-msg').innerText = "⛏️ Лента | Юзер: " + currentUsername;
-
-            loadPostsFromServer(); // ТУТ ВСЁ ИСПРАВЛЕНО НА ПРАВИЛЬНОЕ НАЗВАНИЕ ФУНКЦИИ!
-        } catch(e) { alert("Ошибка подключения к бэкенду. Проверь статус Воркера!"); }
-    }
-
-    async function loadPostsFromServer() {
+    async function loadPosts() {
         try {
             const res = await fetch(WORKER_URL + '/api/posts');
             allPosts = await res.json();
@@ -374,122 +197,6 @@
             const badge = isPostAdmin ? '<span class="verified-badge" title="Верифицированный аккаунт Создателя!">✓</span>' : '';
             const styleClass = isPostAdmin ? 'admin-style' : '';
             const deleteBtn = isAdmin ? '<br><button class="admin-btn" onclick="deletePost(' + post.id + ')">❌ Стереть пост</button>' : '';
-
-            let tagsHTML = "";
-            if(post.tags && post.tags.length > 0) {
-                tagsHTML = '<div class="tags-container">';
-                post.tags.forEach(t => {
-                    tagsHTML += '<span class="tag" onclick="setSearchTag(\'' + t + '\')">' + t + '</span>';
-                });
-                tagsHTML += '</div>';
-            }
-
-            container.innerHTML += '<div class="post">' +
-                '<img class="avatar" src="' + avaSrc + '" alt="ava">' +
-                '<div class="post-body">' +
-                    '<div class="post-header">' +
-                        '<span class="author ' + styleClass + '">' + post.username + ' ' + badge + '</span>' +
-                        '<span class="time">' + post.time + '</span>' +
-                    '</div>' +
-                    '<div class="text">' + escapeHTML(post.text) + '</div>' +
-                    tagsHTML +
-                    deleteBtn +
-                '</div>' +
-            '</div>';
-        });
-    }
-async function submitAuth() {
-        let nick = document.getElementById('username-input').value.trim();
-        let pass = document.getElementById('password-input').value.trim();
-        if(!nick  !pass) return alert("Заполни ник и пароль!");
-        if(!nick.startsWith('@')) nick = '@' + nick;
-
-        try {
-            const res = await fetch(WORKER_URL + '/api/auth', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ username: nick, password: pass, type: currentAuthType })
-            });
-            const data = await res.json();
-
-            if (data.error) {
-                if (currentAuthType === "login" && (res.status === 401  data.error.includes("пароль"))) {
-                    let attempts = parseInt(sessionStorage.getItem("password_attempts")  "0");
-                    attempts++;
-                    sessionStorage.setItem("password_attempts", attempts.toString());
-
-                    if (attempts >= 3) {
-                        const ninetyMinutes = Date.now() + 5400000; 
-                        sessionStorage.setItem("password_ban_until", ninetyMinutes.toString());
-                        alert("Слишком много неверных попыток! Доступ ограничен на 1,5 часа.");
-                        window.location.reload(); 
-                        return;
-                    }
-                    return alert(data.error + " (Осталось попыток: " + (3 - attempts) + ")");
-                }
-                return alert(data.error);
-            }
-
-            if (currentAuthType === "register") {
-                alert("Аккаунт успешно создан! Теперь выберите режим 'ВОЙТИ'.");
-                hideAuthForm();
-                return;
-            }
-
-            sessionStorage.removeItem("password_attempts");
-            currentUsername = nick;
-            currentPassword = pass;
-            
-            if (ADMIN_WHITELIST.map(v => v.toLowerCase()).includes(nick.toLowerCase())) {
-                isAdmin = true;
-                document.getElementById('admin-panel').classList.remove('hidden');
-            }
-
-            document.getElementById('login-box').classList.add('hidden');
-            document.getElementById('forum-box').classList.remove('hidden');
-            document.getElementById('welcome-msg').innerText = "⛏️ Лента | Юзер: " + currentUsername;
-
-            loadPostsFromServer(); 
-        } catch(e) { alert("Ошибка подключения к бэкенду. Проверь статус Воркера!"); }
-    }
-
-    async function loadPostsFromServer() {
-        try {
-            const res = await fetch(WORKER_URL + '/api/posts');
-            allPosts = await res.json();
-            renderPosts();
-        } catch (e) { console.error(e); }
-    }
-
-    function renderPosts() {
-        const container = document.getElementById('posts-container');
-        container.innerHTML = "";
-
-        const filtered = currentFilterTag 
-            ? allPosts.filter(p => p.tags && p.tags.map(t => t.toLowerCase()).includes(currentFilterTag.toLowerCase()))
-            : allPosts;
-
-        if(filtered.length === 0) {
-            container.innerHTML = "<p style='color:#71717a; text-align:center;'>Записей по такому тегу не найдено.</p>";
-            return;
-        }
-
-        filtered.forEach(post => {
-            const lowerUser = post.username.toLowerCase();
-            const isPostAdmin = ADMIN_WHITELIST.map(v => v.toLowerCase()).includes(lowerUser);
-            
-            // 🖼 ОПРЕДЕЛЯЕМ АВАТАРКУ: ищем в списке, если нет — ставим робота
-            let avaSrc = './robot.png';
-            if (isPostAdmin) {
-                // Ищем точное совпадение в твоем ручном списке ADMIN_AVATARS
-                const customAva = Object.keys(ADMIN_AVATARS).find(key => key.toLowerCase() === lowerUser);
-                avaSrc = customAva ? ADMIN_AVATARS[customAva] : './robot.png';
-            }
-
-            const badge = isPostAdmin ? '<span class="verified-badge" title="Верифицированный аккаунт Создателя!">✓</span>' : '';
-            const styleClass = isPostAdmin ? 'admin-style' : '';
-            const
-              deleteBtn = isAdmin ? '<br><button class="admin-btn" onclick="deletePost(' + post.id + ')">❌ Стереть пост</button>' : '';
 
             let tagsHTML = "";
             if(post.tags && post.tags.length > 0) {
@@ -525,9 +232,6 @@ async function submitAuth() {
             return alert("А ну стоять! Сообщения можно отправлять раз в минуту!");
         }
 
-        const rawText = textInput.value.trim();
-        const rawTags = tagsInput.value.trim();
-
         try {
             await fetch(WORKER_URL + '/api/posts', {
                 method: 'POST',
@@ -535,8 +239,8 @@ async function submitAuth() {
                 body: JSON.stringify({ 
                     username: currentUsername, 
                     password: currentPassword, 
-                    text: rawText, 
-                    tags: rawTags 
+                    text: textInput.value.trim(), 
+                    tags: tagsInput.value.trim() 
                 })
             });
 
@@ -544,18 +248,7 @@ async function submitAuth() {
             tagsInput.value = "";
             lastPostTime = Date.now();
             startCooldownTimer(60); 
-
-            const processedTags = rawTags.split(/[\s,]+/).filter(t => t.trim() !== "").map(t => t.startsWith('#') ? t : '#' + t);
-            const mockNewPost = {
-                id: Date.now(),
-                username: currentUsername,
-                text: rawText,
-                tags: processedTags,
-                time: new Date().toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' })
-            };
-            allPosts.unshift(mockNewPost); 
-            renderPosts(); 
-
+            loadPosts(); 
         } catch (e) { alert("Ошибка отправки."); }
     }
 
@@ -585,14 +278,15 @@ async function submitAuth() {
     function filterByTag() {
         const val = document.getElementById('search-input').value.trim();
         currentFilterTag = val.startsWith('#') ? val : (val ? '#' + val : "");
-        renderPosts(); 
+        loadPosts(); 
     }
 
     function resetFilter() {
         document.getElementById('search-input').value = "";
         currentFilterTag = "";
-        renderPosts(); 
+        loadPosts(); 
     }
+
     async function deletePost(postId) {
         if(!confirm("Удалить пост?")) return;
         await fetch(WORKER_URL + '/api/admin/delete', {
@@ -600,13 +294,12 @@ async function submitAuth() {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ password: currentPassword, postId: postId })
         });
-        allPosts = allPosts.filter(p => p.id !== postId);
-        renderPosts();
+        loadPosts();
     }
 
     async function banUser() {
         const userToBan = document.getElementById('ban-username').value.trim();
-        if(!userToBan  !confirm("Забанить " + userToBan + "?")) return;
+        if(!userToBan || !confirm("Забанить " + userToBan + "?")) return;
 
         await fetch(WORKER_URL + '/api/admin/ban', {
             method: 'POST',
@@ -628,6 +321,7 @@ async function submitAuth() {
         });
         document.getElementById('unban-username').value = "";
         alert("Игрок амнистирован!");
+        loadPosts();
     }
 
     function escapeHTML(str) {
