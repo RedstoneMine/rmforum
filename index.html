@@ -251,14 +251,12 @@
             const lowerUser = post.username.toLowerCase();
             const isPostAdmin = ADMIN_WHITELIST.map(v => v.toLowerCase()).includes(lowerUser);
             
-            // 🖼️ ОПРЕДЕЛЯЕМ АВАТАРКУ ИЗ РУЧНОГО СПИСКА ADMIN_AVATARS
             let avaSrc = './robot.png';
             if (isPostAdmin) {
                 const customAva = Object.keys(ADMIN_AVATARS).find(key => key.toLowerCase() === lowerUser);
                 avaSrc = customAva ? ADMIN_AVATARS[customAva] : './robot.png';
             }
 
-            // 💬 НАСТРОЙКА ГАЛОЧКИ С СИСТЕМНОЙ ПОДСКАЗКОЙ ТЕГОМ title
             const badge = isPostAdmin ? '<span class="verified-badge" title="Верифицированный аккаунт Создателя форума!">✓</span>' : '';
             const styleClass = isPostAdmin ? 'admin-style' : '';
             const deleteBtn = isAdmin ? '<br><button class="admin-btn" onclick="deletePost(' + post.id + ')">❌ Стереть пост</button>' : '';
@@ -272,6 +270,41 @@
                 tagsHTML += '</div>';
             }
 
+            // ГЕНЕРАЦИЯ ВЕТОК КОММЕНТАРИЕВ ДЛЯ КАЖДОГО ПОСТА
+            let commentsHTML = '<div class="comments-section">';
+            if (post.comments && post.comments.length > 0) {
+                post.comments.forEach(comm => {
+                    const lowerCommUser = comm.username.toLowerCase();
+                    const isCommAdmin = ADMIN_WHITELIST.map(v => v.toLowerCase()).includes(lowerCommUser);
+                    
+                    let commAva = './robot.png';
+                    if (isCommAdmin) {
+                        const customCommAva = Object.keys(ADMIN_AVATARS).find(key => key.toLowerCase() === lowerCommUser);
+                        commAva = customCommAva ? ADMIN_AVATARS[customCommAva] : './robot.png';
+                    }
+                    
+                    const commStyle = isCommAdmin ? 'admin-style' : '';
+                    const commBadge = isCommAdmin ? '<span class="verified-badge" title="Администратор">✓</span>' : '';
+
+                    commentsHTML += '<div class="comment">' +
+                        '<img class="comment-avatar" src="' + commAva + '" alt="ava">' +
+                        '<div class="comment-body">' +
+                            '<div class="comment-header">' +
+                                '<span class="author ' + commStyle + '" style="font-size:0.95rem;">' + comm.username + ' ' + commBadge + '</span>' +
+                                '<span class="time" style="font-size:0.75rem;">' + comm.time + '</span>' +
+                            '</div>' +
+                            '<div class="comment-text">' + escapeHTML(comm.text) + '</div>' +
+                        '</div>' +
+                    '</div>';
+                });
+            }
+            
+            // Форма отправки коммента под постом
+            commentsHTML += '<div class="comment-form">' +
+                '<input type="text" id="comm-input-' + post.id + '" class="comment-input" placeholder="Написать ответ в ветку...">' +
+                '<button class="primary comment-btn" onclick="sendComment(' + post.id + ')">Ответить</button>' +
+            '</div></div>';
+
             container.innerHTML += '<div class="post">' +
                 '<img class="avatar" src="' + avaSrc + '" alt="ava">' +
                 '<div class="post-body">' +
@@ -282,6 +315,7 @@
                     '<div class="text">' + escapeHTML(post.text) + '</div>' +
                     tagsHTML +
                     deleteBtn +
+                    commentsHTML + // Вставляем ветку реддита внутрь поста
                 '</div>' +
             '</div>';
         });
