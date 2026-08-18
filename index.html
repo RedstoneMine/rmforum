@@ -398,6 +398,122 @@
             '</div>';
         });
     }
+async function submitAuth() {
+        let nick = document.getElementById('username-input').value.trim();
+        let pass = document.getElementById('password-input').value.trim();
+        if(!nick  !pass) return alert("Заполни ник и пароль!");
+        if(!nick.startsWith('@')) nick = '@' + nick;
+
+        try {
+            const res = await fetch(WORKER_URL + '/api/auth', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username: nick, password: pass, type: currentAuthType })
+            });
+            const data = await res.json();
+
+            if (data.error) {
+                if (currentAuthType === "login" && (res.status === 401  data.error.includes("пароль"))) {
+                    let attempts = parseInt(sessionStorage.getItem("password_attempts")  "0");
+                    attempts++;
+                    sessionStorage.setItem("password_attempts", attempts.toString());
+
+                    if (attempts >= 3) {
+                        const ninetyMinutes = Date.now() + 5400000; 
+                        sessionStorage.setItem("password_ban_until", ninetyMinutes.toString());
+                        alert("Слишком много неверных попыток! Доступ ограничен на 1,5 часа.");
+                        window.location.reload(); 
+                        return;
+                    }
+                    return alert(data.error + " (Осталось попыток: " + (3 - attempts) + ")");
+                }
+                return alert(data.error);
+            }
+
+            if (currentAuthType === "register") {
+                alert("Аккаунт успешно создан! Теперь выберите режим 'ВОЙТИ'.");
+                hideAuthForm();
+                return;
+            }
+
+            sessionStorage.removeItem("password_attempts");
+            currentUsername = nick;
+            currentPassword = pass;
+            
+            if (ADMIN_WHITELIST.map(v => v.toLowerCase()).includes(nick.toLowerCase())) {
+                isAdmin = true;
+                document.getElementById('admin-panel').classList.remove('hidden');
+            }
+
+            document.getElementById('login-box').classList.add('hidden');
+            document.getElementById('forum-box').classList.remove('hidden');
+            document.getElementById('welcome-msg').innerText = "⛏️ Лента | Юзер: " + currentUsername;
+
+            loadPostsFromServer(); 
+        } catch(e) { alert("Ошибка подключения к бэкенду. Проверь статус Воркера!"); }
+    }
+
+    async function loadPostsFromServer() {
+        try {
+            const res = await fetch(WORKER_URL + '/api/posts');
+            allPosts = await res.json();
+            renderPosts();
+        } catch (e) { console.error(e); }
+    }
+
+    function renderPosts() {
+        const container = document.getElementById('posts-container');
+        container.innerHTML = "";
+
+        const filtered = currentFilterTag 
+            ? allPosts.filter(p => p.tags && p.tags.map(t => t.toLowerCase()).includes(currentFilterTag.toLowerCase()))
+            : allPosts;
+
+        if(filtered.length === 0) {
+            container.innerHTML = "<p style='color:#71717a; text-align:center;'>Записей по такому тегу не найдено.</p>";
+            return;
+        }
+
+        filtered.forEach(post => {
+            const lowerUser = post.username.toLowerCase();
+            const isPostAdmin = ADMIN_WHITELIST.map(v => v.toLowerCase()).includes(lowerUser);
+            
+            // 🖼 ОПРЕДЕЛЯЕМ АВАТАРКУ: ищем в списке, если нет — ставим робота
+            let avaSrc = './robot.png';
+            if (isPostAdmin) {
+                // Ищем точное совпадение в твоем ручном списке ADMIN_AVATARS
+                const customAva = Object.keys(ADMIN_AVATARS).find(key => key.toLowerCase() === lowerUser);
+                avaSrc = customAva ? ADMIN_AVATARS[customAva] : './robot.png';
+            }
+
+            const badge = isPostAdmin ? '<span class="verified-badge" title="Верифицированный аккаунт Создателя!">✓</span>' : '';
+            const styleClass = isPostAdmin ? 'admin-style' : '';
+            const
+              deleteBtn = isAdmin ? '<br><button class="admin-btn" onclick="deletePost(' + post.id + ')">❌ Стереть пост</button>' : '';
+
+            let tagsHTML = "";
+            if(post.tags && post.tags.length > 0) {
+                tagsHTML = '<div class="tags-container">';
+                post.tags.forEach(t => {
+                    tagsHTML += '<span class="tag" onclick="setSearchTag(\'' + t + '\')">' + t + '</span>';
+                });
+                tagsHTML += '</div>';
+            }
+
+            container.innerHTML += '<div class="post">' +
+                '<img class="avatar" src="' + avaSrc + '" alt="ava">' +
+                '<div class="post-body">' +
+                    '<div class="post-header">' +
+                        '<span class="author ' + styleClass + '">' + post.username + ' ' + badge + '</span>' +
+                        '<span class="time">' + post.time + '</span>' +
+                    '</div>' +
+                    '<div class="text">' + escapeHTML(post.text) + '</div>' +
+                    tagsHTML +
+                    deleteBtn +
+                '</div>' +
+            '</div>';
+        });
+    }
 
     async function sendPost() {
         const textInput = document.getElementById('post-text');
@@ -469,15 +585,14 @@
     function filterByTag() {
         const val = document.getElementById('search-input').value.trim();
         currentFilterTag = val.startsWith('#') ? val : (val ? '#' + val : "");
-        renderPosts(); // ТУТ ТОЖЕ ИСПРАВЛЕНО НА ЛОКАЛЬНЫЙ ОФФЛАЙН-ПОИСК
+        renderPosts(); 
     }
 
     function resetFilter() {
         document.getElementById('search-input').value = "";
         currentFilterTag = "";
-        renderPosts(); // ТУТ ТОЖЕ ИСПРАВЛЕНО
+        renderPosts(); 
     }
-
     async function deletePost(postId) {
         if(!confirm("Удалить пост?")) return;
         await fetch(WORKER_URL + '/api/admin/delete', {
@@ -491,7 +606,7 @@
 
     async function banUser() {
         const userToBan = document.getElementById('ban-username').value.trim();
-        if(!userToBan || !confirm("Забанить " + userToBan + "?")) return;
+        if(!userToBan  !confirm("Забанить " + userToBan + "?")) return;
 
         await fetch(WORKER_URL + '/api/admin/ban', {
             method: 'POST',
