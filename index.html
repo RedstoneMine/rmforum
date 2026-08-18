@@ -8,6 +8,15 @@
 </head>
 <body>
 
+<!-- Экран банов вкладки -->
+<div id="block-modal" class="modal-overlay hidden">
+    <div class="modal-content" style="border-color: #ef4444;">
+        <h2 id="block-title" style="color: #ef4444;">🚫 ДОСТУП ОГРАНИЧЕН</h2>
+        <p id="block-text" style="color: #d4d4d8; line-height: 1.5;"></p>
+    </div>
+</div>
+
+<!-- Дисклеймер -->
 <div id="notice-modal" class="modal-overlay">
     <div class="modal-content">
         <h2>⚠️ ПРАВИЛА ШАХТЫ ОБЩЕНИЯ</h2>
@@ -15,24 +24,27 @@
             • Каждая учетка уникальна. Никто твой ник не украдет.<br>
             • <b>Внимание:</b> куки не сохраняются. Закрыл вкладку — вводи пароль заново!<br>
             • Лимит на отправку сообщений: <b>1 раз в минуту</b>.<br>
-            • Создатель @redstonemine карает баном без предупреждения.
+            • Защита от подбора паролей: <b>3 ошибки = бан входа на 1,5 часа</b>.<br>
+            • Автообновление отключено. Обновляйте поиском по тегам.<br>
+            • Создатель @redstonemine карает баном за вредительство.
         </p>
         <button style="margin-top: 15px;" onclick="acceptTerms()">Я ВСЁ ПОНЯЛ</button>
     </div>
 </div>
 
 <div class="container hidden" id="main-content">
+    
     <!-- КРАСИВОЕ МЕНЮ ВЫБОРА -->
     <div id="menu-box" class="box">
         <h2>⛏️ ДОБРО ПОЖАЛОВАТЬ НА REDSTONE MINE</h2>
-        <p style="color: #a1a1aa">Выберите действие для входа на forum сервера:</p>
+        <p style="color: #a1a1aa">Выберите действие для входа на форум сервера:</p>
         <div class="menu-choice">
-            <button class="primary menu-btn" onclick="showAuthForm('login')">🔑 Войти в аккаунт</button>
-            <button class="secondary menu-btn" onclick="showAuthForm('register')">📝 Зарегистрировать ник</button>
+            <button class="primary menu-btn" onclick="showAuthForm('login')">🔑 Войти в существующий аккаунт</button>
+            <button class="secondary menu-btn" onclick="showAuthForm('register')">📝 Зарегистрировать новый ник</button>
         </div>
     </div>
 
-    <!-- ФОРМА АВТОРИЗАЦИИ -->
+    <!-- ФОРМА АВТОРИЗАЦИИ (ИЗНАЧАЛЬНО СКРЫТА) -->
     <div id="login-box" class="box hidden">
         <h2 id="auth-title">АВТОРИЗАЦИЯ</h2>
         <p id="auth-desc" style="color: #a1a1aa"></p>
@@ -44,8 +56,9 @@
         </div>
     </div>
 
+    <!-- ЛЕНТА ФОРУМА -->
     <div id="forum-box" class="hidden">
-        <!-- АДМИНКА С КНОПКОЙ РАЗБАНА -->
+        <!-- АДМИНКА С ПОЛЕМ ДЛЯ РАЗБАНА -->
         <div id="admin-panel" class="box hidden" style="border-color: #f43f5e;">
             <h4 style="margin: 0 0 12px 0; color: #f43f5e;">🛡️ УПРАВЛЕНИЕ СЕРВЕРОМ СДЕЛАННОЕ @REDSTONEMINE</h4>
             <div style="display: flex; gap: 10px; margin-bottom: 10px;">
@@ -60,7 +73,7 @@
 
         <div class="search-box">
             <input type="text" id="search-input" placeholder="Поиск по хэштегу (например: #дом)..." style="margin:0;">
-            <button class="primary" onclick="filterByTag()">Искать</button>
+            <button class="primary" onclick="filterByTag()">Искать / Обновить</button>
             <button onclick="resetFilter()" style="background: #27272a;">Сброс</button>
         </div>
 
@@ -74,15 +87,51 @@
         <div id="posts-container">Загрузка архивов...</div>
     </div>
 </div>
-<script>
-    // ТВОЯ РАБОЧАЯ ССЫЛКА И ВАЙТ-ЛИСТ АДМИНОВ
-    const WORKER_URL = 'https://restless-hill-dd2a.redstonemineforum.workers.dev'; 
-    const ADMIN_WHITELIST = ["@redstonemine", "@твой_второй_ник"];
 
-    // РУЧНОЙ СПИСОК АВАТАРОК ДЛЯ АДМИНОВ
+<script>
+    // 🧠 СИСТЕМА ЗАЩИТЫ (Анти-F5 и Брутфорс)
+    (function checkGlobalBlocks() {
+        const now = Date.now();
+        const passwordBanUntil = sessionStorage.getItem("password_ban_until");
+        if (passwordBanUntil && now < parseInt(passwordBanUntil)) {
+            window.addEventListener("DOMContentLoaded", () => {
+                document.getElementById('block-title').innerText = "🚫 ПОДОЗРИТЕЛЬНАЯ АКТИВНОСТЬ";
+                document.getElementById('block-text').innerHTML = "Ваш аккаунт ограничен на <b>1 час и 30 минут</b> из-за подозрений в подборе пароля! <br><br>Доступ заблокирован.";
+                document.getElementById('block-modal').classList.remove('hidden');
+                document.body.classList.add('banned-screen');
+            });
+            return;
+        }
+
+        const spamBanUntil = sessionStorage.getItem("spam_ban_until");
+        if (spamBanUntil && now < parseInt(spamBanUntil)) {
+            window.addEventListener("DOMContentLoaded", () => {
+                document.getElementById('block-title').innerText = "🚫 ДОСТУП ОГРАНИЧЕН";
+                document.getElementById('block-text').innerHTML = "Ваш аккаунт временно ограничен на <b>1 час</b> за спам обновлениями страницы! <br><br>Хватит терзать редстоун-схемы форума.";
+                document.getElementById('block-modal').classList.remove('hidden');
+                document.body.classList.add('banned-screen');
+            });
+            return;
+        }
+
+        let history = JSON.parse(sessionStorage.getItem("reload_history") || "[]");
+        history = history.filter(time => now - time < 60000); 
+        history.push(now);
+        sessionStorage.setItem("reload_history", JSON.stringify(history));
+
+        if (history.length > 5) { 
+            sessionStorage.setItem("spam_ban_until", (now + 3600000).toString());
+            window.location.reload();
+        }
+    })();
+
+    // ⚙️ ССЫЛКА НА ВОРКЕР И ВАЙТ-ЛИСТ АДМИНОВ (ССЫЛКА ОФИЦИАЛЬНО ВШИТА)
+    const WORKER_URL = 'https://restless-hill-dd2a.redstonemineforum.workers.dev'; 
+    const ADMIN_WHITELIST = ["@redstonemine"];
+
+    // 🖼️ РУЧНОЙ СПИСОК АВАТАРОК ДЛЯ АДМИНОВ
     const ADMIN_AVATARS = {
-        "@redstonemine": "./admin_cube.png",
-        "@твой_второй_ник": "./avatar_alt.png"
+        "@redstonemine": "./admin_cube.png"
     };
 
     let currentUsername = "";
@@ -98,6 +147,7 @@
         document.getElementById('main-content').classList.remove('hidden');
     }
 
+    // ЛОГИКА ИНТЕРАКТИВНОГО МЕНЮ ВЫБОРОВ
     function showAuthForm(type) {
         currentAuthType = type;
         document.getElementById('menu-box').classList.add('hidden');
@@ -113,7 +163,6 @@
             document.getElementById('auth-action-btn').innerText = "ЗАРЕГИСТРИРОВАТЬСЯ";
         }
     }
-
     function hideAuthForm() {
         document.getElementById('login-box').classList.add('hidden');
         document.getElementById('menu-box').classList.remove('hidden');
@@ -121,7 +170,7 @@
         document.getElementById('password-input').value = "";
     }
 
-    async function handleAuth(authType) {
+    async function submitAuth() {
         let nick = document.getElementById('username-input').value.trim();
         let pass = document.getElementById('password-input').value.trim();
         if(!nick || !pass) return alert("Заполни ник и пароль!");
@@ -131,18 +180,35 @@
             const res = await fetch(WORKER_URL + '/api/auth', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ username: nick, password: pass, type: authType })
+                body: JSON.stringify({ username: nick, password: pass, type: currentAuthType })
             });
             const data = await res.json();
 
-            if (data.error) return alert(data.error);
+            if (data.error) {
+                if (currentAuthType === "login" && (res.status === 401 || data.error.includes("пароль"))) {
+                    let attempts = parseInt(sessionStorage.getItem("password_attempts") || "0");
+                    attempts++;
+                    sessionStorage.setItem("password_attempts", attempts.toString());
 
-            if (authType === "register") {
-                alert("Аккаунт успешно создан! Теперь нажмите кнопку 'ВОЙТИ'.");
+                    if (attempts >= 3) {
+                        const ninetyMinutes = Date.now() + 5400000; 
+                        sessionStorage.setItem("password_ban_until", ninetyMinutes.toString());
+                        alert("Слишком много неверных попыток! Доступ ограничен на 1,5 часа.");
+                        window.location.reload(); 
+                        return;
+                    }
+                    return alert(data.error + " (Осталось попыток: " + (3 - attempts) + ")");
+                }
+                return alert(data.error);
+            }
+
+            if (currentAuthType === "register") {
+                alert("Аккаунт успешно создан! Теперь выберите режим 'ВОЙТИ'.");
                 hideAuthForm();
                 return;
             }
 
+            sessionStorage.removeItem("password_attempts");
             currentUsername = nick;
             currentPassword = pass;
             
@@ -157,10 +223,6 @@
 
             loadPosts(); 
         } catch(e) { alert("Ошибка подключения к бэкенду. Проверь статус Воркера!"); }
-    }
-
-    function submitAuth() {
-        handleAuth(currentAuthType);
     }
 
     async function loadPosts() {
@@ -188,13 +250,15 @@
             const lowerUser = post.username.toLowerCase();
             const isPostAdmin = ADMIN_WHITELIST.map(v => v.toLowerCase()).includes(lowerUser);
             
+            // 🖼️ ОПРЕДЕЛЯЕМ АВАТАРКУ ИЗ РУЧНОГО СПИСКА ADMIN_AVATARS
             let avaSrc = './robot.png';
             if (isPostAdmin) {
                 const customAva = Object.keys(ADMIN_AVATARS).find(key => key.toLowerCase() === lowerUser);
                 avaSrc = customAva ? ADMIN_AVATARS[customAva] : './robot.png';
             }
 
-            const badge = isPostAdmin ? '<span class="verified-badge" title="Верифицированный аккаунт Создателя!">✓</span>' : '';
+            // 💬 НАСТРОЙКА ГАЛОЧКИ С СИСТЕМНОЙ ПОДСКАЗКОЙ ТЕГОМ title
+            const badge = isPostAdmin ? '<span class="verified-badge" title="Верифицированный аккаунт Создателя форума!">✓</span>' : '';
             const styleClass = isPostAdmin ? 'admin-style' : '';
             const deleteBtn = isAdmin ? '<br><button class="admin-btn" onclick="deletePost(' + post.id + ')">❌ Стереть пост</button>' : '';
 
@@ -308,16 +372,18 @@
         });
         document.getElementById('ban-username').value = "";
         alert("Игрок аннигилирован!");
+        loadPosts();
     }
 
+    // 🔓 ЛОГИКА РАЗБАНА НА КЛИЕНТЕ
     async function unbanUser() {
-        const userToUnban = document.getElementById('unban-username').value.trim();
-        if(!userToUnban || !confirm("Разбанить " + userToUnban + "?")) return;
+        const userToUnUnban = document.getElementById('unban-username').value.trim();
+        if(!userToUnUnban || !confirm("Разбанить " + userToUnUnban + "?")) return;
 
         await fetch(WORKER_URL + '/api/admin/unban', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ password: currentPassword, userToUnban: userToUnban })
+            body: JSON.stringify({ password: currentPassword, userToUnban: userToUnUnban })
         });
         document.getElementById('unban-username').value = "";
         alert("Игрок амнистирован!");
