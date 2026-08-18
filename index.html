@@ -352,12 +352,12 @@
         loadPosts(); 
     }
 
-    async function deletePost(postId) {
+  async function deletePost(postId) {
         if(!confirm("Удалить пост?")) return;
         await fetch(WORKER_URL + '/api/admin/delete', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ password: currentPassword, postId: postId })
+            body: JSON.stringify({ username: currentUsername, password: currentPassword, postId: postId })
         });
         loadPosts();
     }
@@ -369,14 +369,13 @@
         await fetch(WORKER_URL + '/api/admin/ban', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ password: currentPassword, userToBan: userToBan })
+            body: JSON.stringify({ username: currentUsername, password: currentPassword, userToBan: userToBan })
         });
         document.getElementById('ban-username').value = "";
         alert("Игрок аннигилирован!");
         loadPosts();
     }
 
-    // 🔓 ЛОГИКА РАЗБАНА НА КЛИЕНТЕ
     async function unbanUser() {
         const userToUnUnban = document.getElementById('unban-username').value.trim();
         if(!userToUnUnban || !confirm("Разбанить " + userToUnUnban + "?")) return;
@@ -384,7 +383,7 @@
         await fetch(WORKER_URL + '/api/admin/unban', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ password: currentPassword, userToUnban: userToUnUnban })
+            body: JSON.stringify({ username: currentUsername, password: currentPassword, userToUnban: userToUnUnban })
         });
         document.getElementById('unban-username').value = "";
         alert("Игрок амнистирован!");
