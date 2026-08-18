@@ -25,7 +25,7 @@
             • <b>Внимание:</b> куки не сохраняются. Закрыл вкладку — вводи пароль заново!<br>
             • Лимит на отправку сообщений: <b>1 раз в минуту</b>.<br>
             • Защита от подбора паролей: <b>3 ошибки = бан входа на 1,5 часа</b>.<br>
-            • Автообновление отключено. Обновляйте поиском по тегам.<br>
+            • Ультра-оптимизация: поиск по тегам работает без затрат лимитов сервера.<br>
             • Создатель @redstonemine карает баном за вредительство.
         </p>
         <button style="margin-top: 15px;" onclick="acceptTerms()">Я ВСЁ ПОНЯЛ</button>
@@ -44,7 +44,7 @@
         </div>
     </div>
 
-    <!-- ФОРМА АВТОРИЗАЦИИ (ИЗНАЧАЛЬНО СКРЫТА) -->
+    <!-- ФОРМА АВТОРИЗАЦИИ -->
     <div id="login-box" class="box hidden">
         <h2 id="auth-title">АВТОРИЗАЦИЯ</h2>
         <p id="auth-desc" style="color: #a1a1aa"></p>
@@ -58,17 +58,22 @@
 
     <!-- ЛЕНТА ФОРУМА -->
     <div id="forum-box" class="hidden">
+        <!-- АДМИНКА С РАЗБАНОМ -->
         <div id="admin-panel" class="box hidden" style="border-color: #f43f5e;">
             <h4 style="margin: 0 0 12px 0; color: #f43f5e;">🛡️ УПРАВЛЕНИЕ СЕРВЕРОМ СДЕЛАННОЕ @REDSTONEMINE</h4>
-            <div style="display: flex; gap: 10px;">
+            <div style="display: flex; gap: 10px; margin-bottom: 10px;">
                 <input type="text" id="ban-username" placeholder="@ник для бана" style="margin:0;">
                 <button onclick="banUser()">БАН</button>
+            </div>
+            <div style="display: flex; gap: 10px;">
+                <input type="text" id="unban-username" placeholder="@ник для разбана" style="margin:0;">
+                <button onclick="unbanUser()" style="background: #10b981;">РАЗБАН</button>
             </div>
         </div>
 
         <div class="search-box">
             <input type="text" id="search-input" placeholder="Поиск по хэштегу (например: #дом)..." style="margin:0;">
-            <button class="primary" onclick="filterByTag()">Искать / Обновить</button>
+            <button class="primary" onclick="filterByTag()">Искать</button>
             <button onclick="resetFilter()" style="background: #27272a;">Сброс</button>
         </div>
 
@@ -119,8 +124,15 @@
         }
     })();
 
+    // ⚙️ ССЫЛКА НА ТВОЙ СЕРВЕР И ВАЙТ-ЛИСТ АДМИНОВ
     const WORKER_URL = 'https://workers.dev'; 
-    const ADMIN_WHITELIST = ["@redstonemine"];
+    const ADMIN_WHITELIST = ["@redstonemine", "@твой_второй_ник"];
+
+    // 🖼️ СПИСОК АВАТАРОК ДЛЯ АДМИНОВ (Вручную прописывай ники и файлы картинок)
+    const ADMIN_AVATARS = {
+        "@redstonemine": "./admin_cube.png",
+        "@твой_второй_ник": "./avatar_alt.png" // Сюда можешь дописывать других админов
+    };
 
     let currentUsername = "";
     let currentPassword = "";
@@ -135,7 +147,7 @@
         document.getElementById('main-content').classList.remove('hidden');
     }
 
-    // ЛОГИКА ИНТЕРАКТИВНОГО МЕНЮ ВЫБОРОВ
+    // ЛОГИКА МЕНЮ ВЫБОРОВ
     function showAuthForm(type) {
         currentAuthType = type;
         document.getElementById('menu-box').classList.add('hidden');
@@ -158,7 +170,7 @@
         document.getElementById('username-input').value = "";
         document.getElementById('password-input').value = "";
     }
-    async function submitAuth() {
+     async function submitAuth() {
         let nick = document.getElementById('username-input').value.trim();
         let pass = document.getElementById('password-input').value.trim();
         if(!nick || !pass) return alert("Заполни ник и пароль!");
@@ -209,11 +221,11 @@
             document.getElementById('forum-box').classList.remove('hidden');
             document.getElementById('welcome-msg').innerText = "⛏️ Лента | Юзер: " + currentUsername;
 
-            loadPosts(); 
+            loadPostsFromServer(); 
         } catch(e) { alert("Ошибка подключения к бэкенду. Проверь статус Воркера!"); }
     }
 
-    async function loadPosts() {
+    async function loadPostsFromServer() {
         try {
             const res = await fetch(WORKER_URL + '/api/posts');
             allPosts = await res.json();
@@ -235,8 +247,17 @@
         }
 
         filtered.forEach(post => {
-            const isPostAdmin = ADMIN_WHITELIST.map(v => v.toLowerCase()).includes(post.username.toLowerCase());
-            const avaSrc = isPostAdmin ? './admin_cube.png' : './robot.png'; 
+            const lowerUser = post.username.toLowerCase();
+            const isPostAdmin = ADMIN_WHITELIST.map(v => v.toLowerCase()).includes(lowerUser);
+            
+            // 🖼️ ОПРЕДЕЛЯЕМ АВАТАРКУ: ищем в списке, если нет — ставим робота
+            let avaSrc = './robot.png';
+            if (isPostAdmin) {
+                // Ищем точное совпадение в твоем ручном списке ADMIN_AVATARS
+                const customAva = Object.keys(ADMIN_AVATARS).find(key => key.toLowerCase() === lowerUser);
+                avaSrc = customAva ? ADMIN_AVATARS[customAva] : './robot.png';
+            }
+
             const badge = isPostAdmin ? '<span class="verified-badge" title="Верифицированный аккаунт Создателя!">✓</span>' : '';
             const styleClass = isPostAdmin ? 'admin-style' : '';
             const deleteBtn = isAdmin ? '<br><button class="admin-btn" onclick="deletePost(' + post.id + ')">❌ Стереть пост</button>' : '';
@@ -275,6 +296,9 @@
             return alert("А ну стоять! Сообщения можно отправлять раз в минуту!");
         }
 
+        const rawText = textInput.value.trim();
+        const rawTags = tagsInput.value.trim();
+
         try {
             await fetch(WORKER_URL + '/api/posts', {
                 method: 'POST',
@@ -282,8 +306,8 @@
                 body: JSON.stringify({ 
                     username: currentUsername, 
                     password: currentPassword, 
-                    text: textInput.value.trim(), 
-                    tags: tagsInput.value.trim() 
+                    text: rawText, 
+                    tags: rawTags 
                 })
             });
 
@@ -291,7 +315,18 @@
             tagsInput.value = "";
             lastPostTime = Date.now();
             startCooldownTimer(60); 
-            loadPosts(); 
+
+            const processedTags = rawTags.split(/[\s,]+/).filter(t => t.trim() !== "").map(t => t.startsWith('#') ? t : '#' + t);
+            const mockNewPost = {
+                id: Date.now(),
+                username: currentUsername,
+                text: rawText,
+                tags: processedTags,
+                time: new Date().toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' })
+            };
+            allPosts.unshift(mockNewPost); 
+            renderPosts(); 
+
         } catch (e) { alert("Ошибка отправки."); }
     }
 
@@ -321,13 +356,13 @@
     function filterByTag() {
         const val = document.getElementById('search-input').value.trim();
         currentFilterTag = val.startsWith('#') ? val : (val ? '#' + val : "");
-        loadPosts(); 
+        renderPosts(); 
     }
 
     function resetFilter() {
         document.getElementById('search-input').value = "";
         currentFilterTag = "";
-        loadPosts(); 
+        renderPosts(); 
     }
 
     async function deletePost(postId) {
@@ -337,7 +372,8 @@
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ password: currentPassword, postId: postId })
         });
-        loadPosts();
+        allPosts = allPosts.filter(p => p.id !== postId);
+        renderPosts();
     }
 
     async function banUser() {
@@ -351,7 +387,19 @@
         });
         document.getElementById('ban-username').value = "";
         alert("Игрок аннигилирован!");
-        loadPosts();
+    }
+
+    async function unbanUser() {
+        const userToUnban = document.getElementById('unban-username').value.trim();
+        if(!userToUnban || !confirm("Разбанить " + userToUnban + "?")) return;
+
+        await fetch(WORKER_URL + '/api/admin/unban', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ password: currentPassword, userToUnban: userToUnban })
+        });
+        document.getElementById('unban-username').value = "";
+        alert("Игрок амнистирован!");
     }
 
     function escapeHTML(str) {
