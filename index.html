@@ -284,7 +284,7 @@
             }
 
             // ГЕНЕРАЦИЯ ВЕТОК КОММЕНТАРИЕВ ДЛЯ КАЖДОГО ПОСТА
-            let commentsHTML = '<div class="comments-section">';
+           let commentsHTML = '<div class="comments-section">';
             if (post.comments && post.comments.length > 0) {
                 post.comments.forEach(comm => {
                     const lowerCommUser = comm.username.toLowerCase();
@@ -297,7 +297,10 @@
                     }
                     
                     const commStyle = isCommAdmin ? 'admin-style' : '';
-                    const commBadge = isCommAdmin ? '<span class="verified-badge" title="Администратор">✓</span>' : '';
+                    const commBadge = isCommAdmin ? '<span class="verified-badge" title="Верифицированный аккаунт">✓</span>' : '';
+                    
+                    // Кнопка удаления коммента (показывается только если ты админ)
+                    const commDeleteBtn = isAdmin ? '<button class="admin-btn" style="margin: 5px 0 0 0; padding: 3px 8px; font-size: 0.75rem;" onclick="deleteComment(' + post.id + ', ' + comm.id + ')">❌ Стереть ответ</button>' : '';
 
                     commentsHTML += '<div class="comment">' +
                         '<img class="comment-avatar" src="' + commAva + '" alt="ava">' +
@@ -307,6 +310,7 @@
                                 '<span class="time" style="font-size:0.75rem;">' + comm.time + '</span>' +
                             '</div>' +
                             '<div class="comment-text">' + escapeHTML(comm.text) + '</div>' +
+                            commDeleteBtn + // Вставляем админ-кнопку удаления
                         '</div>' +
                     '</div>';
                 });
@@ -472,6 +476,23 @@
         } catch (e) { 
             alert("Ошибка отправки комментария."); 
         }
+    }
+
+    async function deleteComment(postId, commentId) {
+        if(!confirm("Удалить этот ответ из ветки?")) return;
+        try {
+            await fetch(WORKER_URL + '/api/admin/delete-comment', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ 
+                    username: currentUsername, 
+                    password: currentPassword, 
+                    postId: postId, 
+                    commentId: commentId 
+                })
+            });
+            loadPosts(); // Мгновенно перерисовываем ленту
+        } catch (e) { alert("Ошибка удаления ответа."); }
     }
 
     function escapeHTML(str) {
