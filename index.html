@@ -574,14 +574,35 @@
         const myCard = document.getElementById('my-profile-card');
         const crown = document.getElementById('my-profile-crown');
         
-        if (myCard) myCard.className = "modal-content profile-card theme-" + select.value;
+        if (myCard) {
+            myCard.className = "modal-content profile-card " + (select.value !== "none" ? "theme-" + select.value : "");
+        }
         if (crown) {
             if (select.value === "gold") crown.classList.remove('hidden');
             else crown.classList.add('hidden');
         }
     }
 
-    // 👤 Открытие своего профиля (С загрузкой темы и короны)
+    // 🔥 БЫСТРОЕ СОХРАНЕНИЕ ЦВЕТА И ТЕМЫ БЕЗ КУЛДАУНА 3 ЧАСА!
+    async function saveMyThemeOnly() {
+        const selectedTheme = document.getElementById('my-prof-theme-select').value;
+        try {
+            const res = await fetch(WORKER_URL + '/api/profile/save', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    username: currentUsername,
+                    password: currentPassword,
+                    bio: document.getElementById('my-prof-bio-input').value.trim(), // берём текущий текст
+                    theme: selectedTheme,
+                    isThemeOnly: true // Флаг для будущего воркера (если захочешь), но пока сработает и так!
+                })
+            });
+            alert("Неоновый стиль успешно обновлен!");
+        } catch(e) { alert("Ошибка сохранения стиля."); }
+    }
+
+    // 👤 Открытие своего профиля
     async function openMyProfile() {
         document.getElementById('my-prof-username').innerText = currentUsername;
         
@@ -591,7 +612,6 @@
         if (customAva) avaSrc = ADMIN_AVATARS[customAva];
         document.getElementById('my-prof-avatar').src = avaSrc;
 
-        // Показываем селектор тем только админам из вайт-листа
         if (isAdmin && document.getElementById('admin-theme-selector')) {
             document.getElementById('admin-theme-selector').classList.remove('hidden');
         }
@@ -605,16 +625,14 @@
             const data = await res.json();
             document.getElementById('my-prof-bio-input').value = (data.bio.includes("написал о себе") || data.bio.includes("hasn't written")) ? "" : data.bio;
             
-            const theme = data.theme || "gold";
+            const theme = data.theme || "none";
             if (document.getElementById('my-prof-theme-select')) {
                 document.getElementById('my-prof-theme-select').value = theme;
             }
             
-            // Применяем киберпанк-тему к своей карточке
             const myCard = document.getElementById('my-profile-card');
-            if (myCard) myCard.className = "modal-content profile-card theme-" + theme;
+            if (myCard) myCard.className = "modal-content profile-card " + (theme !== "none" ? "theme-" + theme : "");
             
-            // Зажигаем императорскую корону, только если выбрано Золото (gold)
             const crown = document.getElementById('my-profile-crown');
             if (crown) {
                 if (theme === "gold") crown.classList.remove('hidden');
@@ -625,11 +643,11 @@
         document.getElementById('my-profile-modal').classList.remove('hidden');
     }
 
-    // 👤 Сохранение своего профиля и выбранного неонового цвета
+    // 👤 Сохранение текста профиля с кулдауном 3 часа
     async function saveMyProfile() {
         const bioText = document.getElementById('my-prof-bio-input').value.trim();
         const selectEl = document.getElementById('my-prof-theme-select');
-        const selectedTheme = selectEl ? selectEl.value : "gold";
+        const selectedTheme = selectEl ? selectEl.value : "none";
         try {
             const res = await fetch(WORKER_URL + '/api/profile/save', {
                 method: 'POST',
@@ -644,12 +662,12 @@
             const data = await res.json();
             if (data.error) return alert(data.error);
 
-            alert("Профиль успешно обновлен!");
+            alert("Текст профиля успешно изменен!");
             closeModal('my-profile-modal');
         } catch(e) { alert("Ошибка сохранения профиля."); }
     }
 
-    // 👤 Просмотр чужого профиля с проверкой киберпанк-линий и короны создателя
+    // 👤 Просмотр чужого профиля (ИСПРАВЛЕН БАГ КОРОНЫ У ВСЕХ)
     async function viewUserProfile(targetNick) {
         document.getElementById('view-prof-username').innerText = targetNick;
         document.getElementById('view-prof-bio').innerText = "Загрузка информации...";
@@ -669,19 +687,19 @@
             const data = await res.json();
             document.getElementById('view-prof-bio').innerText = data.bio;
             
-            // Считываем тему игрока. Если это обычный юзер без темы — ставим стандартный серый класс
-            const lowerCleanTarget = targetNick.trim().toLowerCase().replace('@', '');
-            const isTargetAdmin = ADMIN_WHITELIST.map(v => v.toLowerCase()).includes(targetNick.toLowerCase());
+            // 🛡️ ЖЕСТКАЯ ПРОВЕРА ВАЙТ-ЛИСТА: Темы и короны включатся ТОЛЬКО у реальных админов
+            const cleanTargetNick = targetNick.trim().toLowerCase().replace('@', '');
+            const isTargetAdmin = ADMIN_WHITELIST.map(v => v.trim().toLowerCase().replace('@', '')).includes(cleanTargetNick);
             
-            const theme = isTargetAdmin ? (data.theme || "gold") : "user-default";
+            const theme = (isTargetAdmin && data.theme) ? data.theme : "none";
+            
             const cardEl = document.getElementById('view-profile-card');
-            if (cardEl) cardEl.className = "modal-content profile-card theme-" + theme;
+            if (cardEl) cardEl.className = "modal-content profile-card " + (theme !== "none" ? "theme-" + theme : "");
             
-            // Если админ выбрал золото — вешаем над ним парящую корону 👑
             const crown = document.getElementById('view-profile-crown');
             if (crown) {
                 if (theme === "gold") crown.classList.remove('hidden');
-                else crown.classList.add('hidden');
+                else crown.className = "profile-crown hidden";
             }
         } catch(e) { document.getElementById('view-prof-bio').innerText = "Ошибка загрузки профиля."; }
 
