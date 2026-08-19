@@ -78,25 +78,41 @@
     .agreement-link:hover { color: #f43f5e; text-shadow: 0 0 12px rgba(244, 63, 94, 0.8); }
 </style>
 
-<!-- 👤 ФОРМА №1: МОЙ СОБСТВЕННЫЙ ПРОФИЛЬ (Окно редактирования) -->
+<!-- 👤 ФОРМА №1: МОЙ СОБСТВЕННЫЙ ПРОФИЛЬ (ОБНОВЛЁННЫЙ СЕЛЕКТОР) -->
 <div id="my-profile-modal" class="modal-overlay hidden">
-    <div class="modal-content profile-card" style="border-color: #facc15; box-shadow: 0 0 25px rgba(250, 204, 21, 0.25);">
+    <div class="modal-content profile-card" id="my-profile-card">
         <h2>📝 МОЙ ПРОФИЛЬ</h2>
         <img id="my-prof-avatar" class="profile-big-avatar" src="./robot.png" alt="Аватар">
-        <div id="my-prof-username" class="profile-username" style="color: #fff;">@User</div>
-        <textarea id="my-prof-bio-input" placeholder="Расскажи о себе (например: Продаю алмазы, строю город...)" rows="4" maxlength="200" style="border-color: #27272a; background: #141417;"></textarea>
-        <p style="color:#71717a; font-size:0.8rem; margin-top:-10px; margin-bottom:20px; text-align:left;">Лимит: 200 символов. Менять можно раз в 3 часа.</p>
+        <div id="my-prof-username" class="profile-username">@User</div>
+        
+        <!-- Выбор неонового стиля -->
+        <div id="admin-theme-selector" class="hidden" style="margin-bottom: 20px; text-align: left; background: #141417; padding: 12px; border-radius: 8px; border: 1px solid #27272a;">
+            <label style="color: #a1a1aa; font-size: 0.85rem; display: block; margin-bottom: 6px;">🔥 Твой неоновый стиль форума:</label>
+            <div style="display: flex; gap: 8px;">
+                <select id="my-prof-theme-select" onchange="previewMyTheme()" style="flex: 1; padding: 8px; background: #0b0b0c; border: 1px solid #27272a; color: white; border-radius: 6px; cursor: pointer;">
+                    <option value="none" style="color: #a1a1aa;">Обычный (Без темы)</option>
+                    <option value="gold" style="color: #eab308;">Жёлтый (Золото)</option>
+                    <option value="purple" style="color: #a855f7;">Фиолетовый (Аметист)</option>
+                    <option value="green" style="color: #22c55e;">Зелёный (Изумруд)</option>
+                </select>
+                <!-- Отдельная кнопка смены стиля БЕЗ КУЛДАУНА -->
+                <button class="primary" style="padding: 8px 12px; font-size: 0.75rem;" onclick="saveMyThemeOnly()">Применить стиль</button>
+            </div>
+        </div>
+
+        <textarea id="my-prof-bio-input" placeholder="Расскажи о себе..." rows="4" maxlength="200" style="border-color: #27272a; background: #141417; margin-bottom:10px;"></textarea>
+        <p style="color:#71717a; font-size:0.8rem; margin-top:0; margin-bottom:20px; text-align:left;">Лимит: 200 символов. Текст менять можно раз в 3 часа.</p>
         <div style="display: flex; gap: 10px;">
-            <button class="secondary" style="flex:1;" onclick="saveMyProfile()">Сохранить</button>
+            <button class="secondary" style="flex:1;" onclick="saveMyProfile()">Сохранить текст</button>
             <button class="back-btn" style="margin:0; flex:1;" onclick="closeModal('my-profile-modal')">Закрыть</button>
         </div>
     </div>
 </div>
 
-<!-- 👤 ФОРМА №2: ПРОСМОТР ЧУЖОГО ПРОФИЛЯ (Окно только для чтения) -->
+<!-- 👤 ФОРМА №2: ПРОСМОТР ЧУЖОГО ПРОФИЛЯ -->
 <div id="view-profile-modal" class="modal-overlay hidden">
     <div class="modal-content profile-card" id="view-profile-card">
-        <h2>👤 КАРТОЧКА ИГРОКА</h2>
+        <h2>КАРТОЧКА ИГРОКА</h2>
         <img id="view-prof-avatar" class="profile-big-avatar" src="./robot.png" alt="Аватар">
         <div id="view-prof-username" class="profile-username">@User</div>
         <div id="view-prof-bio" class="profile-bio-text">Загрузка информации...</div>
@@ -568,18 +584,12 @@
         document.getElementById(modalId).classList.add('hidden');
     }
 
-// 👤 Функция мгновенного превью темы при выборе в меню
+ // Мгновенное превью темы при выборе в меню (Без корон)
     function previewMyTheme() {
         const select = document.getElementById('my-prof-theme-select');
         const myCard = document.getElementById('my-profile-card');
-        const crown = document.getElementById('my-profile-crown');
-        
         if (myCard) {
             myCard.className = "modal-content profile-card " + (select.value !== "none" ? "theme-" + select.value : "");
-        }
-        if (crown) {
-            if (select.value === "gold") crown.classList.remove('hidden');
-            else crown.classList.add('hidden');
         }
     }
 
@@ -587,15 +597,15 @@
     async function saveMyThemeOnly() {
         const selectedTheme = document.getElementById('my-prof-theme-select').value;
         try {
-            const res = await fetch(WORKER_URL + '/api/profile/save', {
+            await fetch(WORKER_URL + '/api/profile/save', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     username: currentUsername,
                     password: currentPassword,
-                    bio: document.getElementById('my-prof-bio-input').value.trim(), // берём текущий текст
+                    bio: document.getElementById('my-prof-bio-input').value.trim(),
                     theme: selectedTheme,
-                    isThemeOnly: true // Флаг для будущего воркера (если захочешь), но пока сработает и так!
+                    isThemeOnly: true
                 })
             });
             alert("Неоновый стиль успешно обновлен!");
@@ -632,12 +642,6 @@
             
             const myCard = document.getElementById('my-profile-card');
             if (myCard) myCard.className = "modal-content profile-card " + (theme !== "none" ? "theme-" + theme : "");
-            
-            const crown = document.getElementById('my-profile-crown');
-            if (crown) {
-                if (theme === "gold") crown.classList.remove('hidden');
-                else crown.classList.add('hidden');
-            }
         } catch(e) { console.error(e); }
 
         document.getElementById('my-profile-modal').classList.remove('hidden');
@@ -667,7 +671,7 @@
         } catch(e) { alert("Ошибка сохранения профиля."); }
     }
 
-    // 👤 Просмотр чужого профиля (ИСПРАВЛЕН БАГ КОРОНЫ У ВСЕХ)
+    // 👤 Просмотр чужого профиля (ФИКС ОШИБОК)
     async function viewUserProfile(targetNick) {
         document.getElementById('view-prof-username').innerText = targetNick;
         document.getElementById('view-prof-bio').innerText = "Загрузка информации...";
@@ -687,7 +691,7 @@
             const data = await res.json();
             document.getElementById('view-prof-bio').innerText = data.bio;
             
-            // 🛡️ ЖЕСТКАЯ ПРОВЕРА ВАЙТ-ЛИСТА: Темы и короны включатся ТОЛЬКО у реальных админов
+            // Защищённая проверка вайт-листа
             const cleanTargetNick = targetNick.trim().toLowerCase().replace('@', '');
             const isTargetAdmin = ADMIN_WHITELIST.map(v => v.trim().toLowerCase().replace('@', '')).includes(cleanTargetNick);
             
@@ -695,17 +699,11 @@
             
             const cardEl = document.getElementById('view-profile-card');
             if (cardEl) cardEl.className = "modal-content profile-card " + (theme !== "none" ? "theme-" + theme : "");
-            
-            const crown = document.getElementById('view-profile-crown');
-            if (crown) {
-                if (theme === "gold") crown.classList.remove('hidden');
-                else crown.className = "profile-crown hidden";
-            }
         } catch(e) { document.getElementById('view-prof-bio').innerText = "Ошибка загрузки профиля."; }
 
         document.getElementById('view-profile-modal').classList.remove('hidden');
     }
-
+    
     function escapeHTML(str) {
         return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
     }
