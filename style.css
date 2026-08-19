@@ -161,13 +161,88 @@ button.secondary:hover { background: #34d399; box-shadow: 0 0 15px rgba(52, 211,
 }
 
 /* 📝 1. АНИМИРОВАННЫЙ ЦВЕТ БУКВ ТЕКСТА (ADMIN_DESCRIPTION) */
-.desc-text-purple { background: linear-gradient(90deg, #9b7cff, #c4a7ff, #7d9cff, #b58cff, #8b7cff, #c9b6ff); background-size: 300% 100%; -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent !important; animation: descGradient 4s ease-in-out infinite !important; filter: drop-shadow(0 0 4px rgba(150, 120, 255, 0.25)); }
-.desc-text-green { background: linear-gradient(90deg, #a7f3d0, #4ade80, #34d399, #059669, #a7f3d0); background-size: 300% 100%; -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent !important; animation: descGradient 4s ease-in-out infinite !important; filter: drop-shadow(0 0 4px rgba(52, 211, 153, 0.25)); }
-.desc-text-gold { background: linear-gradient(90deg, #fef08a, #facc15, #fbbf24, #d97706, #fef08a); background-size: 300% 100%; -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent !important; animation: descGradient 4s ease-in-out infinite !important; filter: drop-shadow(0 0 4px rgba(250, 204, 21, 0.25)); }
-.desc-text-red { background: linear-gradient(90deg, #fca5a5, #f87171, #ef4444, #b91c1c, #fca5a5); background-size: 300% 100%; -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent !important; animation: descGradient 4s ease-in-out infinite !important; filter: drop-shadow(0 0 4px rgba(239, 68, 68, 0.25)); }
-.desc-text-blue { background: linear-gradient(90deg, #93c5fd, #60a5fa, #3b82f6, #1d4ed8, #93c5fd); background-size: 300% 100%; -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent !important; animation: descGradient 4s ease-in-out infinite !important; filter: drop-shadow(0 0 4px rgba(59, 130, 246, 0.25)); }
-.desc-text-cyan { background: linear-gradient(90deg, #67e8f9, #22d3ee, #06b6d4, #0e7490, #67e8f9); background-size: 300% 100%; -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent !important; animation: descGradient 4s ease-in-out infinite !important; filter: drop-shadow(0 0 4px rgba(6, 182, 212, 0.25)); }
-.desc-text-pink { background: linear-gradient(90deg, #f9a8d4, #f472b6, #ec4899, #be185d, #f9a8d4); background-size: 300% 100%; -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent !important; animation: descGradient 4s ease-in-out infinite !important; filter: drop-shadow(0 0 4px rgba(236, 72, 153, 0.25)); }
+.desc-text-purple { 
+    font-weight: 600 !important; 
+    letter-spacing: 0.15px !important; 
+    background: linear-gradient(90deg, #9b7cff, #d0b8ff, #829cff, #b58cff, #927dff, #d4c2ff) !important; 
+    background-size: 300% 100% !important; 
+    -webkit-background-clip: text !important; 
+    background-clip: text !important; 
+    -webkit-text-fill-color: transparent !important; 
+    animation: descGradient 4s ease-in-out infinite !important; 
+    filter: drop-shadow(0 0 5px rgba(150, 120, 255, 0.3)) !important; 
+}
+
+.desc-text-green { 
+    font-weight: 600 !important; 
+    letter-spacing: 0.15px !important; 
+    background: linear-gradient(90deg, #6ee7b7, #a7f3d0, #34d399, #059669, #34d399, #a7f3d0) !important; 
+    background-size: 300% 100% !important; 
+    -webkit-background-clip: text !important; 
+    background-clip: text !important; 
+    -webkit-text-fill-color: transparent !important; 
+    animation: descGradient 4s ease-in-out infinite !important; 
+    filter: drop-shadow(0 0 5px rgba(52, 211, 153, 0.3)) !important; 
+}
+
+.desc-text-gold { 
+    font-weight: 600 !important; 
+    letter-spacing: 0.15px !important; 
+    background: linear-gradient(90deg, #fde047, #fef08a, #facc15, #ca8a04, #facc15, #fef08a) !important; 
+    background-size: 300% 100% !important; 
+    -webkit-background-clip: text !important; 
+    background-clip: text !important; 
+    -webkit-text-fill-color: transparent !important; 
+    animation: descGradient 4s ease-in-out infinite !important; 
+    filter: drop-shadow(0 0 5px rgba(250, 204, 21, 0.3)) !important; 
+}
+
+.desc-text-red { 
+    font-weight: 600 !important; 
+    letter-spacing: 0.15px !important; 
+    background: linear-gradient(90deg, #f87171, #fca5a5, #ef4444, #991b1b, #ef4444, #fca5a5) !important; 
+    background-size: 300% 100% !important; 
+    -webkit-background-clip: text !important; 
+    background-clip: text !important; 
+    -webkit-text-fill-color: transparent !important; 
+    animation: descGradient 4s ease-in-out infinite !important; 
+    filter: drop-shadow(0 0 5px rgba(239, 68, 68, 0.3)) !important; 
+}
+.desc-text-blue { 
+    font-weight: 600 !important; 
+    letter-spacing: 0.15px !important; 
+    background: linear-gradient(90deg, #60a5fa, #93c5fd, #3b82f6, #1e40af, #3b82f6, #93c5fd) !important; 
+    background-size: 300% 100% !important; 
+    -webkit-background-clip: text !important; 
+    background-clip: text !important; 
+    -webkit-text-fill-color: transparent !important; 
+    animation: descGradient 4s ease-in-out infinite !important; 
+    filter: drop-shadow(0 0 5px rgba(59, 130, 246, 0.3)) !important; 
+}
+
+.desc-text-cyan { 
+    font-weight: 600 !important; 
+    letter-spacing: 0.15px !important; 
+    background: linear-gradient(90deg, #22d3ee, #67e8f9, #06b6d4, #155e75, #06b6d4, #67e8f9) !important; 
+    background-size: 300% 100% !important; 
+    -webkit-background-clip: text !important; 
+    background-clip: text !important; 
+    -webkit-text-fill-color: transparent !important; 
+    animation: descGradient 4s ease-in-out infinite !important; 
+    filter: drop-shadow(0 0 5px rgba(6, 182, 212, 0.3)) !important; 
+}
+
+.desc-text-pink { 
+    font-weight: 600 !important; 
+    letter-spacing: 0.15px !important; 
+    background: linear-gradient(90deg, #f472b6, #f9a8d4, #ec4899, #9d174d, #ec4899, #f9a8d4) !important; 
+    background-size: 300% 100% !important; 
+    -webkit-background-clip: text !important; 
+    background-clip: text !important; 
+    -webkit-text-fill-color: transparent !important; 
+    animation: descGradient 4s ease-in-out infinite !important; 
+    filter: drop-shadow(0 0 5px rgba(236, 72, 153, 0.3)) !important; 
+}
 
 /* 🖼️ 2. АНИМИРОВАННЫЙ ЗАДНИЙ ФОН ПОДЛОЖКИ (ADMIN_DESCBACK) */
 .desc-back-purple { background: linear-gradient(135deg, #130026, #2a085c, #130026) !important; background-size: 200% 200% !important; animation: descGradient 5s ease infinite !important; border: 1px solid #7c3aed !important; box-shadow: inset 0 0 12px rgba(124, 58, 237, 0.3) !important; color: #fff; }
