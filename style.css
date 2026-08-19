@@ -154,3 +154,35 @@ button.secondary:hover { background: #34d399; box-shadow: 0 0 15px rgba(52, 211,
 .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); backdrop-filter: blur(5px); display: flex; justify-content: center; align-items: center; z-index: 1000; }
 .modal-content { background: #121214; padding: 30px; border-radius: 12px; width: 100%; max-width: 450px; text-align: center; border: 2px solid #ef4444; box-shadow: 0 0 25px rgba(239, 68, 68, 0.3); box-sizing: border-box; overflow: hidden; }
 .banned-screen { filter: blur(8px); pointer-events: none; user-select: none; }
+@keyframes descGradient {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+/* 📝 1. АНИМИРОВАННЫЙ ЦВЕТ БУКВ ТЕКСТА (ADMIN_DESCRIPTION) */
+.desc-text-purple { background: linear-gradient(90deg, #9b7cff, #c4a7ff, #7d9cff, #b58cff, #8b7cff, #c9b6ff); background-size: 300% 100%; -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent !important; animation: descGradient 4s ease-in-out infinite !important; filter: drop-shadow(0 0 4px rgba(150, 120, 255, 0.25)); }
+.desc-text-green { background: linear-gradient(90deg, #a7f3d0, #4ade80, #34d399, #059669, #a7f3d0); background-size: 300% 100%; -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent !important; animation: descGradient 4s ease-in-out infinite !important; filter: drop-shadow(0 0 4px rgba(52, 211, 153, 0.25)); }
+.desc-text-gold { background: linear-gradient(90deg, #fef08a, #facc15, #fbbf24, #d97706, #fef08a); background-size: 300% 100%; -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent !important; animation: descGradient 4s ease-in-out infinite !important; filter: drop-shadow(0 0 4px rgba(250, 204, 21, 0.25)); }
+.desc-text-red { background: linear-gradient(90deg, #fca5a5, #f87171, #ef4444, #b91c1c, #fca5a5); background-size: 300% 100%; -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent !important; animation: descGradient 4s ease-in-out infinite !important; filter: drop-shadow(0 0 4px rgba(239, 68, 68, 0.25)); }
+.desc-text-blue { background: linear-gradient(90deg, #93c5fd, #60a5fa, #3b82f6, #1d4ed8, #93c5fd); background-size: 300% 100%; -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent !important; animation: descGradient 4s ease-in-out infinite !important; filter: drop-shadow(0 0 4px rgba(59, 130, 246, 0.25)); }
+.desc-text-cyan { background: linear-gradient(90deg, #67e8f9, #22d3ee, #06b6d4, #0e7490, #67e8f9); background-size: 300% 100%; -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent !important; animation: descGradient 4s ease-in-out infinite !important; filter: drop-shadow(0 0 4px rgba(6, 182, 212, 0.25)); }
+.desc-text-pink { background: linear-gradient(90deg, #f9a8d4, #f472b6, #ec4899, #be185d, #f9a8d4); background-size: 300% 100%; -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent !important; animation: descGradient 4s ease-in-out infinite !important; filter: drop-shadow(0 0 4px rgba(236, 72, 153, 0.25)); }
+
+/* 🖼️ 2. АНИМИРОВАННЫЙ ЗАДНИЙ ФОН ПОДЛОЖКИ (ADMIN_DESCBACK) */
+.desc-back-purple { background: linear-gradient(135deg, #130026, #2a085c, #130026) !important; background-size: 200% 200% !important; animation: descGradient 5s ease infinite !important; border: 1px solid #7c3aed !important; box-shadow: inset 0 0 12px rgba(124, 58, 237, 0.3) !important; color: #fff; }
+.desc-back-green { background: linear-gradient(135deg, #022c16, #064e3b, #022c16) !important; background-size: 200% 200% !important; animation: descGradient 5s ease infinite !important; border: 1px solid #059669 !important; box-shadow: inset 0 0 12px rgba(5, 150, 105, 0.3) !important; color: #fff; }
+.desc-back-gold { background: linear-gradient(135deg, #2e1a05, #78350f, #2e1a05) !important; background-size: 200% 200% !important; animation: descGradient 5s ease infinite !important; border: 1px solid #d97706 !important; box-shadow: inset 0 0 12px rgba(217, 119, 70, 0.3) !important; color: #fff; }
+.desc-back-red { background: linear-gradient(135deg, #2d0000, #7f1d1d, #2d0000) !important; background-size: 200% 200% !important; animation: descGradient 5s ease infinite !important; border: 1px solid #dc2626 !important; box-shadow: inset 0 0 12px rgba(220, 38, 38, 0.3) !important; color: #fff; }
+.desc-back-blue { background: linear-gradient(135deg, #031b4e, #1e3a8a, #031b4e) !important; background-size: 200% 200% !important; animation: descGradient 5s ease infinite !important; border: 1px solid #2563eb !important; box-shadow: inset 0 0 12px rgba(37, 99, 235, 0.3) !important; color: #fff; }
+.desc-back-cyan { background: linear-gradient(135deg, #042f44, #164e63, #042f44) !important; background-size: 200% 200% !important; animation: descGradient 5s ease infinite !important; border: 1px solid #0891b2 !important; box-shadow: inset 0 0 12px rgba(8, 145, 178, 0.3) !important; color: #fff; }
+.desc-back-pink { background: linear-gradient(135deg, #35021e, #831843, #35021e) !important; background-size: 200% 200% !important; animation: descGradient 5s ease infinite !important; border: 1px solid #db2777 !important; box-shadow: inset 0 0 12px rgba(219, 39, 119, 0.3) !important; color: #fff; }
+
+/* Фиксы для кнопок закрытия, если на них вешается градиентный фон */
+.back-btn.desc-back-purple:hover { box-shadow: 0 0 15px rgba(124, 58, 237, 0.6) !important; }
+.back-btn.desc-back-green:hover { box-shadow: 0 0 15px rgba(5, 150, 105, 0.6) !important; }
+.back-btn.desc-back-gold:hover { box-shadow: 0 0 15px rgba(217, 119, 70, 0.6) !important; }
+.back-btn.desc-back-red:hover { box-shadow: 0 0 15px rgba(220, 38, 26, 0.6) !important; }
+.back-btn.desc-back-blue:hover { box-shadow: 0 0 15px rgba(37, 99, 235, 0.6) !important; }
+.back-btn.desc-back-cyan:hover { box-shadow: 0 0 15px rgba(8, 145, 178, 0.6) !important; }
+.back-btn.desc-back-pink:hover { box-shadow: 0 0 15px rgba(219, 39, 119, 0.6) !important; }
