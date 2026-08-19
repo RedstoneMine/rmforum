@@ -483,7 +483,7 @@
         return foundKey ? list[foundKey] : "none";
     }
 
-    // 👤 Открытие своего профиля (Полная поштучная кастомизация текста и подложек)
+    // 👤 Открытие своего профиля (Полный фикс невидимого текста и багов цвета)
     async function openMyProfile() {
         const lowerUser = currentUsername.toLowerCase();
         document.getElementById('my-prof-username').innerText = currentUsername;
@@ -503,20 +503,27 @@
         const myName = document.getElementById('my-prof-username');
         if (myName) myName.className = "profile-username " + (nameTheme !== "none" ? "name-theme-" + nameTheme : "");
 
-        // 3. 📝 Применяем цвет букв для текста ввода (ADMIN_DESCRIPTION)
+        // 3. Применяем цвет букв для текста ввода (ADMIN_DESCRIPTION)
         const descTextTheme = getAdminStyle(currentUsername, ADMIN_DESCRIPTION);
         const myBioInput = document.getElementById('my-prof-bio-input');
         if (myBioInput) {
             myBioInput.className = (descTextTheme !== "none" ? "desc-text-" + descTextTheme : "");
         }
 
-        // 4. 🖼️ Применяем задний фон для поля ввода и кнопки закрытия (ADMIN_DESCBACK)
+        // 4. 🔥 ФИКС ЦВЕТА ПОДЛОЖКИ: Убираем старый класс и вешаем новый, пробивая !important
         const descBackTheme = getAdminStyle(currentUsername, ADMIN_DESCBACK);
-        if (myBioInput && descBackTheme !== "none") {
-            myBioInput.classList.add("desc-back-" + descBackTheme);
+        if (myBioInput) {
+            // Очищаем прошлые классы подложек, чтобы они не накладывались
+            myBioInput.className = (descTextTheme !== "none" ? "desc-text-" + descTextTheme : "");
+            if (descBackTheme !== "none") {
+                myBioInput.classList.add("desc-back-" + descBackTheme);
+            } else {
+                myBioInput.style.background = "#1a1a1e"; // Дефолт
+                myBioInput.style.border = "1px solid #27272a";
+            }
         }
         
-        // Находим кнопку Закрыть внутри своего профиля
+        // Красим кнопку Закрыть внутри своего профиля
         const myCloseBtn = document.querySelector('#my-profile-modal button.back-btn');
         if (myCloseBtn) {
             myCloseBtn.className = "back-btn " + (descBackTheme !== "none" ? "desc-back-" + descBackTheme : "");
@@ -529,6 +536,8 @@
                 body: JSON.stringify({ targetUser: currentUsername })
             });
             const data = await res.json();
+            
+            // Фикс для инпута: в инпутах текст всегда виден, просто вставляем значение
             document.getElementById('my-prof-bio-input').value = (data.bio.includes("написал о себе") || data.bio.includes("hasn't written")) ? "" : data.bio;
         } catch(e) { console.error(e); }
 
@@ -550,7 +559,7 @@
         } catch(e) { alert("Ошибка сохранения профиля."); }
     }
 
-    // 👤 Просмотр чужого профиля (0 запросов графики на сервер!)
+    // 👤 Просмотр чужого профиля (Полный фикс багов отображения и цвета!)
     async function viewUserProfile(targetNick) {
         document.getElementById('view-prof-username').innerText = targetNick;
         document.getElementById('view-prof-bio').innerText = "Загрузка информации...";
@@ -561,30 +570,34 @@
         if (customAva) avaSrc = ADMIN_AVATARS[customAva];
         document.getElementById('view-prof-avatar').src = avaSrc;
 
-        // 1. Подгружаем фон карточки чужого админа
+        // 1. Фон карточки чужого админа
         const cardTheme = getAdminStyle(targetNick, ADMIN_CARDS);
         const cardEl = document.getElementById('view-profile-card');
         if (cardEl) cardEl.className = "modal-content profile-card " + (cardTheme !== "none" ? "theme-" + cardTheme : "");
 
-        // 2. Подгружаем цвет имени чужого админа
+        // 2. Цвет имени чужого админа
         const nameTheme = getAdminStyle(targetNick, ADMIN_NAMES);
         const nameEl = document.getElementById('view-prof-username');
         if (nameEl) nameEl.className = "profile-username " + (nameTheme !== "none" ? "name-theme-" + nameTheme : "");
 
-        // 3. 📝 Применяем цвет текста для блока "О себе" чужого админа (ADMIN_DESCRIPTION)
+        // 3. Цвет текста (ADMIN_DESCRIPTION) и подложки (ADMIN_DESCBACK)
         const descTextTheme = getAdminStyle(targetNick, ADMIN_DESCRIPTION);
-        const viewBioBlock = document.getElementById('view-prof-bio');
-        if (viewBioBlock) {
-            viewBioBlock.className = "profile-bio-text " + (descTextTheme !== "none" ? "desc-text-" + descTextTheme : "");
-        }
-
-        // 4. 🖼️ Применяем задний фон для блока "О себе" и кнопки (ADMIN_DESCBACK)
         const descBackTheme = getAdminStyle(targetNick, ADMIN_DESCBACK);
-        if (viewBioBlock && descBackTheme !== "none") {
-            viewBioBlock.classList.add("desc-back-" + descBackTheme);
+        const viewBioBlock = document.getElementById('view-prof-bio');
+        
+        if (viewBioBlock) {
+            // Сбрасываем старые классы под ноль
+            viewBioBlock.className = "profile-bio-text";
+            if (descTextTheme !== "none") viewBioBlock.classList.add("desc-text-" + descTextTheme);
+            if (descBackTheme !== "none") {
+                viewBioBlock.classList.add("desc-back-" + descBackTheme);
+            } else {
+                viewBioBlock.style.background = "#1a1a1e"; // Дефолт
+                viewBioBlock.style.border = "1px solid #27272a";
+            }
         }
 
-        // Находим кнопку Закрыть внутри чужого профиля
+        // 4. Красим кнопку Закрыть внутри чужого профиля
         const viewCloseBtn = document.querySelector('#view-profile-modal button.back-btn');
         if (viewCloseBtn) {
             viewCloseBtn.className = "back-btn " + (descBackTheme !== "none" ? "desc-back-" + descBackTheme : "");
@@ -597,8 +610,14 @@
                 body: JSON.stringify({ targetUser: targetNick })
             });
             const data = await res.json();
-            document.getElementById('view-prof-bio').innerText = data.bio;
-        } catch(e) { document.getElementById('view-prof-bio').innerText = "Ошибка загрузки профиля."; }
+            
+            // 🚀 ЖЕСТКИЙ ФИКС БАГА: Текст оборачивается в span, чтобы градиент букв не взрывал саму плашку!
+            if (descTextTheme !== "none") {
+                viewBioBlock.innerHTML = '<span class="desc-text-' + descTextTheme + '">' + escapeHTML(data.bio) + '</span>';
+            } else {
+                viewBioBlock.innerText = data.bio;
+            }
+        } catch(e) { viewBioBlock.innerText = "Ошибка загрузки профиля."; }
 
         document.getElementById('view-profile-modal').classList.remove('hidden');
     }
