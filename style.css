@@ -173,9 +173,15 @@ button.secondary:hover { background: #34d399; box-shadow: 0 0 15px rgba(52, 211,
 }
 
 .desc-text-green {
-    font-weight: 900 !important; color: transparent !important; -webkit-text-fill-color: transparent !important; -webkit-background-clip: text !important; background-clip: text !important;
-    background: linear-gradient(90deg, #107c10 0%, #39b54a 15%, #adff2f 30%, #22c55e 45%, #86efac 60%, #15803d 75%, #ccff00 90%, #107c10 100%) !important;
-    background-size: 250% 100% !important; background-position: 0% 50% !important; animation: descriptionFlow 2s linear infinite !important;
+    font-weight: 800 !important;
+    color: #a7f3d0 !important;
+    background: linear-gradient(90deg, #059669 0%, #34d399 20%, #a7f3d0 40%, #10b981 60%, #6ee7b7 80%, #047857 100%) !important;
+    background-size: 400% 100% !important;
+    background-position: 0% 50% !important;
+    -webkit-background-clip: text !important;
+    background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+    animation: descGradient 2.5s linear infinite !important;
 }
 
 .desc-text-gold {
