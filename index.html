@@ -13,31 +13,19 @@
         <h2>📝 МОЙ ПРОФИЛЬ</h2>
         <img id="my-prof-avatar" class="profile-big-avatar" src="./robot.png" alt="Аватар">
         <div id="my-prof-username" class="profile-username" style="color: #fff;">@User</div>
-        
-        <!-- Выбор неонового стиля (Только для админов) -->
-        <div id="admin-theme-selector" class="hidden" style="margin-bottom: 15px; text-align: left;">
-            <label style="color: #a1a1aa; font-size: 0.85rem; display: block; margin-bottom: 5px;">🔥 Твой неоновый стиль:</label>
-            <select id="my-prof-theme-select" onchange="previewMyTheme()" style="width: 100%; padding: 10px; background: #141417; border: 1px solid #27272a; color: white; border-radius: 8px;">
-                <option value="gold" style="color: #eab308;">Жёлтый (Золото + Корона 👑)</option>
-                <option value="purple" style="color: #a855f7;">Фиолетовый (Аметист)</option>
-                <option value="green" style="color: #22c55e;">Зелёный (Изумруд)</option>
-            </select>
-        </div>
-
         <textarea id="my-prof-bio-input" placeholder="Расскажи о себе..." rows="4" maxlength="200" style="border-color: #27272a; background: #141417; margin-bottom:10px;"></textarea>
-        <p style="color:#71717a; font-size:0.8rem; margin-top:0; margin-bottom:20px; text-align:left;">Лимит: 200 символов. Изменять можно раз в 3 часа.</p>
+        <p style="color:#71717a; font-size:0.8rem; margin-top:0; margin-bottom:20px; text-align:left;">Лимит: 200 символов. Изменять текст можно раз в 3 часа.</p>
         <div style="display: flex; gap: 10px;">
-            <button class="secondary" style="flex:1;" onclick="saveMyProfile()">Сохранить</button>
+            <button class="secondary" style="flex:1;" onclick="saveMyProfile()">Сохранить текст</button>
             <button class="back-btn" style="margin:0; flex:1;" onclick="closeModal('my-profile-modal')">Закрыть</button>
         </div>
     </div>
 </div>
 
-<!-- 👤 ФОРМА №2: ПРОСМОТР ЧУЖОГО ПРОФИЛЯ (КОРОНА И КИБЕРПАНК) -->
+<!-- 👤 ФОРМА №2: ПРОСМОТР ЧУЖОГО ПРОФИЛЯ -->
 <div id="view-profile-modal" class="modal-overlay hidden">
     <div class="modal-content profile-card" id="view-profile-card">
-        
-        <h2>КАРТОЧКА ИГРОКА</h2>
+        <h2>👤 КАРТОЧКА ИГРОКА</h2>
         <img id="view-prof-avatar" class="profile-big-avatar" src="./robot.png" alt="Аватар">
         <div id="view-prof-username" class="profile-username">@User</div>
         <div id="view-prof-bio" class="profile-bio-text">Загрузка информации...</div>
@@ -220,25 +208,32 @@
     const WORKER_URL = 'https://restless-hill-dd2a.redstonemineforum.workers.dev'; 
     const ADMIN_WHITELIST = ["@redstonemine", "@krutoi", "@RM_Emperor"];
 
-    // 🖼️ 1. РУЧНОЙ СПИСОК АВАТАРОК
+    // 🖼️ 1. РУЧНОЙ СПИСОК АВАТАРОК ДЛЯ АДМИНОВ
     const ADMIN_AVATARS = {
         "@redstonemine": "./admin_cube.png",
         "@krutoi": "./popcat.jpg",
         "@RM_Emperor": "./RM_Emperor.png"
     };
 
-    // 🔮 2. РУЧНОЙ СПИСОК ФОНОВ ДЛЯ КАРТОЧЕК ПРОФИЛЕЙ (none / gold / purple / green)
+    // 🔮 2. РУЧНОЙ СПИСОК КОСМИЧЕСКИХ ТЕМ ДЛЯ КАРТОЧЕК ПРОФИЛЕЙ (none / gold / purple / green)
     const ADMIN_CARDS = {
         "@redstonemine": "gold",
-        "@krutoi": "none",
+        "@krutoi": "purple",
+        "@RM_Emperor": "green"
+    };
+
+    // 🌈 3. РУЧНОЙ СПИСОК ПЕРЕЛИВАЮЩИХСЯ ЦВЕТОВ НИКНЕЙМОВ (none / gold / purple / green)
+    const ADMIN_NAMES = {
+        "@redstonemine": "gold",
+        "@krutoi": "purple",
         "@RM_Emperor": "purple"
     };
 
-    // 🌈 3. РУЧНОЙ СПИСОК ЦВЕТОВ ДЛЯ ИМЕНИ (none / gold / purple / green)
-    const ADMIN_NAMES = {
+    // ⚡ 4. РУЧНОЙ СПИСОК ЖИВЫХ ПЕРЕЛИВАЮЩИХСЯ РАМОК ВОКРУГ АВАТАРОК (none / gold / purple / green)
+    const ADMIN_BORDERS = {
         "@redstonemine": "gold",
-        "@krutoi": "gold",
-        "@RM_Emperor": "purple" // Ему можно сделать фиолетовый ник на зелёной карточке!
+        "@krutoi": "purple",
+        "@RM_Emperor": "green"
     };
     
     let currentUsername = "";
@@ -632,6 +627,14 @@
         } catch(e) { alert("Ошибка сохранения стиля."); }
     }
 
+     // Вспомогательная оффлайн-функция определения стиля по нику
+    function getAdminStyle(username, list) {
+        const lowerUser = username.trim().toLowerCase();
+        const foundKey = Object.keys(list).find(key => key.toLowerCase() === lowerUser);
+        return foundKey ? list[foundKey] : "none";
+    }
+
+    // 👤 Открытие своего профиля (Полностью независимая поштучная кастомизация)
     async function openMyProfile() {
         const lowerUser = currentUsername.toLowerCase();
         document.getElementById('my-prof-username').innerText = currentUsername;
@@ -641,22 +644,22 @@
         if (customAva) avaSrc = ADMIN_AVATARS[customAva];
         document.getElementById('my-prof-avatar').src = avaSrc;
 
-        const getStyle = (user, list) => {
-            const foundKey = Object.keys(list).find(k => k.toLowerCase() === user.trim().toLowerCase());
-            return foundKey ? list[foundKey] : "none";
-        };
-
-        // Применяем кастомный фон карточки из нашего списка
-        const cardTheme = getStyle(currentUsername, ADMIN_CARDS);
+        // 1. Применяем фон карточки из твоего списка ADMIN_CARDS
+        const cardTheme = getAdminStyle(currentUsername, ADMIN_CARDS);
         const myCard = document.getElementById('my-profile-card');
         if (myCard) myCard.className = "modal-content profile-card " + (cardTheme !== "none" ? "theme-" + cardTheme : "");
 
-        // Применяем кастомный цвет имени из нашего списка
-        const nameTheme = getStyle(currentUsername, ADMIN_NAMES);
+        // 2. Применяем цвет имени из твоего списка ADMIN_NAMES
+        const nameTheme = getAdminStyle(currentUsername, ADMIN_NAMES);
         const myName = document.getElementById('my-prof-username');
         if (myName) myName.className = "profile-username " + (nameTheme !== "none" ? "name-theme-" + nameTheme : "");
 
-        // Из бэкенда качаем ТОЛЬКО текст описания
+        // 3. 🚀 Применяем НЕЗАВИСИМУЮ живую переливающуюся рамку из списка ADMIN_BORDERS!
+        const borderTheme = getAdminStyle(currentUsername, ADMIN_BORDERS);
+        const myAvatar = document.getElementById('my-prof-avatar');
+        if (myAvatar) myAvatar.className = "profile-big-avatar " + (borderTheme !== "none" ? "avatar-theme-" + borderTheme : "");
+
+        // Из бэкенда Cloudflare тянем ТОЛЬКО текст описания
         try {
             const res = await fetch(WORKER_URL + '/api/profile/get', {
                 method: 'POST',
@@ -670,7 +673,7 @@
         document.getElementById('my-profile-modal').classList.remove('hidden');
     }
 
-    // 👤 Сохранение текста профиля (Остаётся кулдаун раз в 3 часа для защиты базы)
+    // 👤 Сохранение описания профиля (С кулдауном 3 часа для защиты базы текста)
     async function saveMyProfile() {
         const bioText = document.getElementById('my-prof-bio-input').value.trim();
         try {
@@ -685,7 +688,7 @@
         } catch(e) { alert("Ошибка сохранения профиля."); }
     }
 
-    // 👤 Просмотр чужого профиля (0 запросов темы на сервер!)
+    // 👤 Просмотр чужого профиля (Абсолютно 0 запросов темы на сервер!)
     async function viewUserProfile(targetNick) {
         document.getElementById('view-prof-username').innerText = targetNick;
         document.getElementById('view-prof-bio').innerText = "Загрузка информации...";
@@ -696,20 +699,20 @@
         if (customAva) avaSrc = ADMIN_AVATARS[customAva];
         document.getElementById('view-prof-avatar').src = avaSrc;
 
-        const getStyle = (user, list) => {
-            const foundKey = Object.keys(list).find(k => k.toLowerCase() === user.trim().toLowerCase());
-            return foundKey ? list[foundKey] : "none";
-        };
-
-        // Подгружаем фон карточки чужого админа мгновенно из конфига Гитхаба
-        const cardTheme = getStyle(targetNick, ADMIN_CARDS);
+        // 1. Подгружаем фон карточки чужого админа мгновенно из конфига
+        const cardTheme = getAdminStyle(targetNick, ADMIN_CARDS);
         const cardEl = document.getElementById('view-profile-card');
         if (cardEl) cardEl.className = "modal-content profile-card " + (cardTheme !== "none" ? "theme-" + cardTheme : "");
 
-        // Подгружаем цвет имени чужого админа мгновенно из конфига Гитхаба
-        const nameTheme = getStyle(targetNick, ADMIN_NAMES);
+        // 2. Подгружаем цвет имени чужого админа мгновенно из конфига
+        const nameTheme = getAdminStyle(targetNick, ADMIN_NAMES);
         const nameEl = document.getElementById('view-prof-username');
         if (nameEl) nameEl.className = "profile-username " + (nameTheme !== "none" ? "name-theme-" + nameTheme : "");
+
+        // 3. 🚀 Подгружаем НЕЗАВИСИМУЮ живую рамку чужого админа из списка ADMIN_BORDERS!
+        const borderTheme = getAdminStyle(targetNick, ADMIN_BORDERS);
+        const viewAvatar = document.getElementById('view-prof-avatar');
+        if (viewAvatar) viewAvatar.className = "profile-big-avatar " + (borderTheme !== "none" ? "avatar-theme-" + borderTheme : "");
 
         try {
             const res = await fetch(WORKER_URL + '/api/profile/get', {
