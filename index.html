@@ -521,6 +521,91 @@
         } catch (e) { alert("Ошибка удаления ответа."); }
     }
 
+    // 👤 Вспомогательные функции для модальных окон профилей
+    function closeModal(modalId) {
+        document.getElementById(modalId).classList.add('hidden');
+    }
+
+    // 👤 Открытие своего профиля
+    async function openMyProfile() {
+        document.getElementById('my-prof-username').innerText = currentUsername;
+        
+        // Автоматически ставим нужную большую аватарку в твой профиль
+        let avaSrc = './robot.png';
+        const lowerUser = currentUsername.toLowerCase();
+        const customAva = Object.keys(ADMIN_AVATARS).find(key => key.toLowerCase() === lowerUser);
+        if (customAva) avaSrc = ADMIN_AVATARS[customAva];
+        document.getElementById('my-prof-avatar').src = avaSrc;
+
+        // Загружаем текущий статус "О себе" с сервера
+        try {
+            const res = await fetch(WORKER_URL + '/api/profile/get', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ targetUser: currentUsername })
+            });
+            const data = await res.json();
+            document.getElementById('my-prof-bio-input').value = data.bio.includes("hasn't written") ? "" : data.bio;
+        } catch(e) { console.error(e); }
+
+        document.getElementById('my-profile-modal').classList.remove('hidden');
+    }
+
+    // 👤 Сохранение своего профиля с кулдауном 3 часа
+    async function saveMyProfile() {
+        const bioText = document.getElementById('my-prof-bio-input').value.trim();
+        try {
+            const res = await fetch(WORKER_URL + '/api/profile/save', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    username: currentUsername,
+                    password: currentPassword,
+                    bio: bioText
+                })
+            });
+            const data = await res.json();
+            if (data.error) return alert(data.error);
+
+            alert("Профиль успешно обновлен!");
+            closeModal('my-profile-modal');
+        } catch(e) { alert("Ошибка сохранения профиля."); }
+    }
+
+    // 👤 Просмотр чужого профиля при клике на ник или аватарку
+    async function viewUserProfile(targetNick) {
+        document.getElementById('view-prof-username').innerText = targetNick;
+        document.getElementById('view-prof-bio').innerText = "Загрузка информации...";
+        
+        // Меняем цвет рамки карточки в зависимости от группы (Админ, Модер, Игрок)
+        const cardEl = document.getElementById('view-profile-card');
+        cardEl.className = "modal-content profile-card user-border"; // Сброс
+        
+        const lowerTarget = targetNick.toLowerCase();
+        const isTargetAdmin = ADMIN_WHITELIST.map(v => v.toLowerCase()).includes(lowerTarget);
+        
+        if (isTargetAdmin) cardEl.classList.add('admin-border'); // Из CSS стилей
+
+        // Ставим правильную большую аватарку игрока
+        let avaSrc = './robot.png';
+        const customAva = Object.keys(ADMIN_AVATARS).find(key => key.toLowerCase() === lowerTarget);
+        if (customAva) avaSrc = ADMIN_AVATARS[customAva];
+        document.getElementById('view-prof-avatar').src = avaSrc;
+
+        // Запрашиваем описание "О себе" с сервера
+        try {
+            const res = await fetch(WORKER_URL + '/api/profile/get', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ targetUser: targetNick })
+            });
+            const data = await res.json();
+            document.getElementById('view-prof-bio').innerText = data.bio;
+        } catch(e) { document.getElementById('view-prof-bio').innerText = "Ошибка загрузки профиля."; }
+
+        document.getElementById('view-profile-modal').classList.remove('hidden');
+    }
+
     function escapeHTML(str) {
         return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
     }
