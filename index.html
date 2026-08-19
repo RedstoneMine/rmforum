@@ -748,6 +748,14 @@
 
         document.getElementById('view-profile-modal').classList.remove('hidden');
     }
+    function acceptTerms() {
+        const modal = document.getElementById('notice-modal');
+        if (modal) modal.classList.add('hidden');
+        
+        const mainContent = document.getElementById('main-content');
+        if (mainContent) mainContent.classList.remove('hidden');
+    }
+
     
     function escapeHTML(str) {
         return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
