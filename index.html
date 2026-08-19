@@ -197,6 +197,17 @@
         "@on404": "green",
         "@egor4ik": "gold"
     };
+     // 📝 5. РУЧНОЙ СПИСОК ЦВЕТОВ ДЛЯ ТЕКСТА ОПИСАНИЯ (none / gold / purple / green / red / blue / cyan / pink)
+    const ADMIN_DESCRIPTION = {
+        "@redstonemine": "gold",
+        "@krutoi": "green"
+    };
+
+    // 🖼️ 6. РУЧНОЙ СПИСОК ДЛЯ ЗАДНЕГО ФОНА ПЛАШКИ ОПИСАНИЯ И КНОПКИ ЗАКРЫТЬ (none / gold / purple / green / red / blue / cyan / pink)
+    const ADMIN_DESCBACK = {
+        "@redstonemine": "red",
+        "@krutoi": "gold"
+    };
 
     let allPosts = [];
     let currentFilterTag = "";
@@ -465,6 +476,14 @@
         } catch (e) { alert("Ошибка удаления ответа."); }
     }
 
+    function getAdminStyle(username, list) {
+        if (!list) return "none";
+        const lowerUser = username.trim().toLowerCase();
+        const foundKey = Object.keys(list).find(key => key.toLowerCase() === lowerUser);
+        return foundKey ? list[foundKey] : "none";
+    }
+
+    // 👤 Открытие своего профиля (Полная поштучная кастомизация текста и подложек)
     async function openMyProfile() {
         const lowerUser = currentUsername.toLowerCase();
         document.getElementById('my-prof-username').innerText = currentUsername;
@@ -474,13 +493,34 @@
         if (customAva) avaSrc = ADMIN_AVATARS[customAva];
         document.getElementById('my-prof-avatar').src = avaSrc;
 
+        // 1. Применяем фон карточки профиля
         const cardTheme = getAdminStyle(currentUsername, ADMIN_CARDS);
         const myCard = document.getElementById('my-profile-card');
         if (myCard) myCard.className = "modal-content profile-card " + (cardTheme !== "none" ? "theme-" + cardTheme : "");
 
+        // 2. Применяем цвет имени
         const nameTheme = getAdminStyle(currentUsername, ADMIN_NAMES);
         const myName = document.getElementById('my-prof-username');
         if (myName) myName.className = "profile-username " + (nameTheme !== "none" ? "name-theme-" + nameTheme : "");
+
+        // 3. 📝 Применяем цвет букв для текста ввода (ADMIN_DESCRIPTION)
+        const descTextTheme = getAdminStyle(currentUsername, ADMIN_DESCRIPTION);
+        const myBioInput = document.getElementById('my-prof-bio-input');
+        if (myBioInput) {
+            myBioInput.className = (descTextTheme !== "none" ? "desc-text-" + descTextTheme : "");
+        }
+
+        // 4. 🖼️ Применяем задний фон для поля ввода и кнопки закрытия (ADMIN_DESCBACK)
+        const descBackTheme = getAdminStyle(currentUsername, ADMIN_DESCBACK);
+        if (myBioInput && descBackTheme !== "none") {
+            myBioInput.classList.add("desc-back-" + descBackTheme);
+        }
+        
+        // Находим кнопку Закрыть внутри своего профиля
+        const myCloseBtn = document.querySelector('#my-profile-modal button.back-btn');
+        if (myCloseBtn) {
+            myCloseBtn.className = "back-btn " + (descBackTheme !== "none" ? "desc-back-" + descBackTheme : "");
+        }
 
         try {
             const res = await fetch(WORKER_URL + '/api/profile/get', {
@@ -495,6 +535,7 @@
         document.getElementById('my-profile-modal').classList.remove('hidden');
     }
 
+    // 👤 Сохранение описания профиля
     async function saveMyProfile() {
         const bioText = document.getElementById('my-prof-bio-input').value.trim();
         try {
@@ -509,6 +550,7 @@
         } catch(e) { alert("Ошибка сохранения профиля."); }
     }
 
+    // 👤 Просмотр чужого профиля (0 запросов графики на сервер!)
     async function viewUserProfile(targetNick) {
         document.getElementById('view-prof-username').innerText = targetNick;
         document.getElementById('view-prof-bio').innerText = "Загрузка информации...";
@@ -519,13 +561,34 @@
         if (customAva) avaSrc = ADMIN_AVATARS[customAva];
         document.getElementById('view-prof-avatar').src = avaSrc;
 
+        // 1. Подгружаем фон карточки чужого админа
         const cardTheme = getAdminStyle(targetNick, ADMIN_CARDS);
         const cardEl = document.getElementById('view-profile-card');
         if (cardEl) cardEl.className = "modal-content profile-card " + (cardTheme !== "none" ? "theme-" + cardTheme : "");
 
+        // 2. Подгружаем цвет имени чужого админа
         const nameTheme = getAdminStyle(targetNick, ADMIN_NAMES);
         const nameEl = document.getElementById('view-prof-username');
         if (nameEl) nameEl.className = "profile-username " + (nameTheme !== "none" ? "name-theme-" + nameTheme : "");
+
+        // 3. 📝 Применяем цвет текста для блока "О себе" чужого админа (ADMIN_DESCRIPTION)
+        const descTextTheme = getAdminStyle(targetNick, ADMIN_DESCRIPTION);
+        const viewBioBlock = document.getElementById('view-prof-bio');
+        if (viewBioBlock) {
+            viewBioBlock.className = "profile-bio-text " + (descTextTheme !== "none" ? "desc-text-" + descTextTheme : "");
+        }
+
+        // 4. 🖼️ Применяем задний фон для блока "О себе" и кнопки (ADMIN_DESCBACK)
+        const descBackTheme = getAdminStyle(targetNick, ADMIN_DESCBACK);
+        if (viewBioBlock && descBackTheme !== "none") {
+            viewBioBlock.classList.add("desc-back-" + descBackTheme);
+        }
+
+        // Находим кнопку Закрыть внутри чужого профиля
+        const viewCloseBtn = document.querySelector('#view-profile-modal button.back-btn');
+        if (viewCloseBtn) {
+            viewCloseBtn.className = "back-btn " + (descBackTheme !== "none" ? "desc-back-" + descBackTheme : "");
+        }
 
         try {
             const res = await fetch(WORKER_URL + '/api/profile/get', {
