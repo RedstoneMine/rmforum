@@ -8,6 +8,48 @@
 </head>
 <body>
 
+<div id="my-profile-modal" class="modal-overlay hidden">
+    <div class="modal-content profile-card" id="my-profile-card">
+        <!-- 👑 Парящая корона (будет видна только на жёлтой теме!) -->
+        <div id="my-profile-crown" class="profile-crown hidden">👑</div>
+        
+        <h2>📝 МОЙ ПРОФИЛЬ</h2>
+        <img id="my-prof-avatar" class="profile-big-avatar" src="./robot.png" alt="Аватар">
+        <div id="my-prof-username" class="profile-username" style="color: #fff;">@User</div>
+        
+        <!-- Выбор неонового стиля (Только для админов) -->
+        <div id="admin-theme-selector" class="hidden" style="margin-bottom: 15px; text-align: left;">
+            <label style="color: #a1a1aa; font-size: 0.85rem; display: block; margin-bottom: 5px;">🔥 Твой неоновый стиль:</label>
+            <select id="my-prof-theme-select" onchange="previewMyTheme()" style="width: 100%; padding: 10px; background: #141417; border: 1px solid #27272a; color: white; border-radius: 8px;">
+                <option value="gold" style="color: #eab308;">Жёлтый (Золото + Корона 👑)</option>
+                <option value="purple" style="color: #a855f7;">Фиолетовый (Аметист)</option>
+                <option value="green" style="color: #22c55e;">Зелёный (Изумруд)</option>
+            </select>
+        </div>
+
+        <textarea id="my-prof-bio-input" placeholder="Расскажи о себе..." rows="4" maxlength="200" style="border-color: #27272a; background: #141417; margin-bottom:10px;"></textarea>
+        <p style="color:#71717a; font-size:0.8rem; margin-top:0; margin-bottom:20px; text-align:left;">Лимит: 200 символов. Изменять можно раз в 3 часа.</p>
+        <div style="display: flex; gap: 10px;">
+            <button class="secondary" style="flex:1;" onclick="saveMyProfile()">Сохранить</button>
+            <button class="back-btn" style="margin:0; flex:1;" onclick="closeModal('my-profile-modal')">Закрыть</button>
+        </div>
+    </div>
+</div>
+
+<!-- 👤 ФОРМА №2: ПРОСМОТР ЧУЖОГО ПРОФИЛЯ (КОРОНА И КИБЕРПАНК) -->
+<div id="view-profile-modal" class="modal-overlay hidden">
+    <div class="modal-content profile-card" id="view-profile-card">
+        <!-- 👑 Корона над чужой карточкой (включится, если у админа золото) -->
+        <div id="view-profile-crown" class="profile-crown hidden">👑</div>
+        
+        <h2>👤 КАРТОЧКА ИГРОКА</h2>
+        <img id="view-prof-avatar" class="profile-big-avatar" src="./robot.png" alt="Аватар">
+        <div id="view-prof-username" class="profile-username">@User</div>
+        <div id="view-prof-bio" class="profile-bio-text">Загрузка информации...</div>
+        <button class="back-btn" style="width:100%; margin:0;" onclick="closeModal('view-profile-modal')">ЗАКРЫТЬ</button>
+    </div>
+</div>
+    
 <!-- Экран банов вкладки -->
 <div id="block-modal" class="modal-overlay hidden">
     <div class="modal-content" style="border-color: #ef4444;">
@@ -526,18 +568,34 @@
         document.getElementById(modalId).classList.add('hidden');
     }
 
-    // 👤 Открытие своего профиля
+// 👤 Функция мгновенного превью темы при выборе в меню
+    function previewMyTheme() {
+        const select = document.getElementById('my-prof-theme-select');
+        const myCard = document.getElementById('my-profile-card');
+        const crown = document.getElementById('my-profile-crown');
+        
+        if (myCard) myCard.className = "modal-content profile-card theme-" + select.value;
+        if (crown) {
+            if (select.value === "gold") crown.classList.remove('hidden');
+            else crown.classList.add('hidden');
+        }
+    }
+
+    // 👤 Открытие своего профиля (С загрузкой темы и короны)
     async function openMyProfile() {
         document.getElementById('my-prof-username').innerText = currentUsername;
         
-        // Автоматически ставим нужную большую аватарку в твой профиль
         let avaSrc = './robot.png';
         const lowerUser = currentUsername.toLowerCase();
         const customAva = Object.keys(ADMIN_AVATARS).find(key => key.toLowerCase() === lowerUser);
         if (customAva) avaSrc = ADMIN_AVATARS[customAva];
         document.getElementById('my-prof-avatar').src = avaSrc;
 
-        // Загружаем текущий статус "О себе" с сервера
+        // Показываем селектор тем только админам из вайт-листа
+        if (isAdmin && document.getElementById('admin-theme-selector')) {
+            document.getElementById('admin-theme-selector').classList.remove('hidden');
+        }
+
         try {
             const res = await fetch(WORKER_URL + '/api/profile/get', {
                 method: 'POST',
@@ -545,15 +603,33 @@
                 body: JSON.stringify({ targetUser: currentUsername })
             });
             const data = await res.json();
-            document.getElementById('my-prof-bio-input').value = data.bio.includes("hasn't written") ? "" : data.bio;
+            document.getElementById('my-prof-bio-input').value = (data.bio.includes("написал о себе") || data.bio.includes("hasn't written")) ? "" : data.bio;
+            
+            const theme = data.theme || "gold";
+            if (document.getElementById('my-prof-theme-select')) {
+                document.getElementById('my-prof-theme-select').value = theme;
+            }
+            
+            // Применяем киберпанк-тему к своей карточке
+            const myCard = document.getElementById('my-profile-card');
+            if (myCard) myCard.className = "modal-content profile-card theme-" + theme;
+            
+            // Зажигаем императорскую корону, только если выбрано Золото (gold)
+            const crown = document.getElementById('my-profile-crown');
+            if (crown) {
+                if (theme === "gold") crown.classList.remove('hidden');
+                else crown.classList.add('hidden');
+            }
         } catch(e) { console.error(e); }
 
         document.getElementById('my-profile-modal').classList.remove('hidden');
     }
 
-    // 👤 Сохранение своего профиля с кулдауном 3 часа
+    // 👤 Сохранение своего профиля и выбранного неонового цвета
     async function saveMyProfile() {
         const bioText = document.getElementById('my-prof-bio-input').value.trim();
+        const selectEl = document.getElementById('my-prof-theme-select');
+        const selectedTheme = selectEl ? selectEl.value : "gold";
         try {
             const res = await fetch(WORKER_URL + '/api/profile/save', {
                 method: 'POST',
@@ -561,7 +637,8 @@
                 body: JSON.stringify({
                     username: currentUsername,
                     password: currentPassword,
-                    bio: bioText
+                    bio: bioText,
+                    theme: selectedTheme
                 })
             });
             const data = await res.json();
@@ -572,27 +649,17 @@
         } catch(e) { alert("Ошибка сохранения профиля."); }
     }
 
-    // 👤 Просмотр чужого профиля при клике на ник или аватарку
+    // 👤 Просмотр чужого профиля с проверкой киберпанк-линий и короны создателя
     async function viewUserProfile(targetNick) {
         document.getElementById('view-prof-username').innerText = targetNick;
         document.getElementById('view-prof-bio').innerText = "Загрузка информации...";
         
-        // Меняем цвет рамки карточки в зависимости от группы (Админ, Модер, Игрок)
-        const cardEl = document.getElementById('view-profile-card');
-        cardEl.className = "modal-content profile-card user-border"; // Сброс
-        
-        const lowerTarget = targetNick.toLowerCase();
-        const isTargetAdmin = ADMIN_WHITELIST.map(v => v.toLowerCase()).includes(lowerTarget);
-        
-        if (isTargetAdmin) cardEl.classList.add('admin-border'); // Из CSS стилей
-
-        // Ставим правильную большую аватарку игрока
         let avaSrc = './robot.png';
+        const lowerTarget = targetNick.toLowerCase();
         const customAva = Object.keys(ADMIN_AVATARS).find(key => key.toLowerCase() === lowerTarget);
         if (customAva) avaSrc = ADMIN_AVATARS[customAva];
         document.getElementById('view-prof-avatar').src = avaSrc;
 
-        // Запрашиваем описание "О себе" с сервера
         try {
             const res = await fetch(WORKER_URL + '/api/profile/get', {
                 method: 'POST',
@@ -601,6 +668,21 @@
             });
             const data = await res.json();
             document.getElementById('view-prof-bio').innerText = data.bio;
+            
+            // Считываем тему игрока. Если это обычный юзер без темы — ставим стандартный серый класс
+            const lowerCleanTarget = targetNick.trim().toLowerCase().replace('@', '');
+            const isTargetAdmin = ADMIN_WHITELIST.map(v => v.toLowerCase()).includes(targetNick.toLowerCase());
+            
+            const theme = isTargetAdmin ? (data.theme || "gold") : "user-default";
+            const cardEl = document.getElementById('view-profile-card');
+            if (cardEl) cardEl.className = "modal-content profile-card theme-" + theme;
+            
+            // Если админ выбрал золото — вешаем над ним парящую корону 👑
+            const crown = document.getElementById('view-profile-crown');
+            if (crown) {
+                if (theme === "gold") crown.classList.remove('hidden');
+                else crown.classList.add('hidden');
+            }
         } catch(e) { document.getElementById('view-prof-bio').innerText = "Ошибка загрузки профиля."; }
 
         document.getElementById('view-profile-modal').classList.remove('hidden');
