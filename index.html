@@ -296,7 +296,7 @@
                 avaSrc = customAva ? ADMIN_AVATARS[customAva] : './robot.png';
             }
 
-            const badge = isPostAdmin ? '<span class="verified-badge" title="Верифицированный аккаунт!">✓</span>' : '';
+            const badge = isPostAdmin ? '<span class="verified-badge" title="Верифицированный аккаунт">✓</span>' : '';
             const styleClass = isPostAdmin ? 'admin-style' : '';
             const deleteBtn = isAdmin ? '<br><button class="admin-btn" onclick="deletePost(' + post.id + ')">❌ Стереть пост</button>' : '';
 
@@ -310,7 +310,7 @@
             }
 
             // ГЕНЕРАЦИЯ ВЕТОК КОММЕНТАРИЕВ ДЛЯ КАЖДОГО ПОСТА
-           let commentsHTML = '<div class="comments-section">';
+            let commentsHTML = '<div class="comments-section">';
             if (post.comments && post.comments.length > 0) {
                 post.comments.forEach(comm => {
                     const lowerCommUser = comm.username.toLowerCase();
@@ -325,34 +325,34 @@
                     const commStyle = isCommAdmin ? 'admin-style' : '';
                     const commBadge = isCommAdmin ? '<span class="verified-badge" title="Верифицированный аккаунт">✓</span>' : '';
                     
-                    // Кнопка удаления коммента (показывается только если ты админ)
+                    // Кнопка удаления комментария
                     const commDeleteBtn = isAdmin ? '<button class="admin-btn" style="margin: 5px 0 0 0; padding: 3px 8px; font-size: 0.75rem;" onclick="deleteComment(' + post.id + ', ' + comm.id + ')">❌ Стереть ответ</button>' : '';
 
                     commentsHTML += '<div class="comment">' +
-                        '<img class="comment-avatar" src="' + commAva + '" alt="ava">' +
+                        '<img class="comment-avatar" src="' + commAva + '" alt="ava" onclick="viewUserProfile(\'' + comm.username + '\')">' +
                         '<div class="comment-body">' +
                             '<div class="comment-header">' +
-                                '<span class="author ' + commStyle + '" style="font-size:0.95rem;">' + comm.username + ' ' + commBadge + '</span>' +
+                                '<span class="author ' + commStyle + '" style="font-size:0.95rem;" onclick="viewUserProfile(\'' + comm.username + '\')">' + comm.username + ' ' + commBadge + '</span>' +
                                 '<span class="time" style="font-size:0.75rem;">' + comm.time + '</span>' +
                             '</div>' +
                             '<div class="comment-text">' + escapeHTML(comm.text) + '</div>' +
-                            commDeleteBtn + // Вставляем админ-кнопку удаления
+                            commDeleteBtn +
                         '</div>' +
                     '</div>';
                 });
             }
             
-            // Форма отправки коммента под постом
+            // Форма отправки комментария под постом
             commentsHTML += '<div class="comment-form">' +
                 '<input type="text" id="comm-input-' + post.id + '" class="comment-input" placeholder="Написать ответ в ветку...">' +
                 '<button class="primary comment-btn" onclick="sendComment(' + post.id + ')">Ответить</button>' +
             '</div></div>';
 
             container.innerHTML += '<div class="post">' +
-                '<img class="avatar" src="' + avaSrc + '" alt="ava">' +
+                '<img class="avatar" src="' + avaSrc + '" alt="ava" onclick="viewUserProfile(\'' + post.username + '\')">' +
                 '<div class="post-body">' +
                     '<div class="post-header">' +
-                        '<span class="author ' + styleClass + '">' + post.username + ' ' + badge + '</span>' +
+                        '<span class="author ' + styleClass + '" onclick="viewUserProfile(\'' + post.username + '\')">' + post.username + ' ' + badge + '</span>' +
                         '<span class="time">' + post.time + '</span>' +
                     '</div>' +
                     '<div class="text">' + escapeHTML(post.text) + '</div>' +
