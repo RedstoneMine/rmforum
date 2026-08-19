@@ -36,8 +36,6 @@
 <!-- 👤 ФОРМА №2: ПРОСМОТР ЧУЖОГО ПРОФИЛЯ (КОРОНА И КИБЕРПАНК) -->
 <div id="view-profile-modal" class="modal-overlay hidden">
     <div class="modal-content profile-card" id="view-profile-card">
-        <!-- 👑 Корона над чужой карточкой (включится, если у админа золото) -->
-        <div id="view-profile-crown" class="profile-crown hidden">👑</div>
         
         <h2>👤 КАРТОЧКА ИГРОКА</h2>
         <img id="view-prof-avatar" class="profile-big-avatar" src="./robot.png" alt="Аватар">
@@ -232,14 +230,14 @@
     // 🔮 2. РУЧНОЙ СПИСОК ФОНОВ ДЛЯ КАРТОЧЕК ПРОФИЛЕЙ (none / gold / purple / green)
     const ADMIN_CARDS = {
         "@redstonemine": "gold",
-        "@krutoi": "purple",
-        "@RM_Emperor": "green"
+        "@krutoi": "none",
+        "@RM_Emperor": "purple"
     };
 
     // 🌈 3. РУЧНОЙ СПИСОК ЦВЕТОВ ДЛЯ ИМЕНИ (none / gold / purple / green)
     const ADMIN_NAMES = {
         "@redstonemine": "gold",
-        "@krutoi": "purple",
+        "@krutoi": "gold",
         "@RM_Emperor": "purple" // Ему можно сделать фиолетовый ник на зелёной карточке!
     };
     
