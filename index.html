@@ -444,28 +444,6 @@
                 '</div>';
         });
     }
-            
-            // Форма отправки комментария под постом
-            commentsHTML += '<div class="comment-form">' +
-                '<input type="text" id="comm-input-' + post.id + '" class="comment-input" placeholder="Написать ответ в ветку...">' +
-                '<button class="primary comment-btn" onclick="sendComment(' + post.id + ')">Ответить</button>' +
-            '</div></div>';
-
-            container.innerHTML += '<div class="post">' +
-                '<img class="avatar" src="' + avaSrc + '" alt="ava" onclick="viewUserProfile(\'' + post.username + '\')">' +
-                '<div class="post-body">' +
-                    '<div class="post-header">' +
-                        '<span class="author ' + styleClass + '" onclick="viewUserProfile(\'' + post.username + '\')">' + post.username + ' ' + badge + '</span>' +
-                        '<span class="time">' + post.time + '</span>' +
-                    '</div>' +
-                    '<div class="text">' + escapeHTML(post.text) + '</div>' +
-                    tagsHTML +
-                    deleteBtn +
-                    commentsHTML +
-                '</div>' +
-            '</div>';
-        });
-    }
 
     async function sendPost() {
         const textInput = document.getElementById('post-text');
