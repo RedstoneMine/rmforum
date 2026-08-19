@@ -93,8 +93,6 @@ button.secondary:hover { background: #34d399; box-shadow: 0 0 15px rgba(52, 211,
 .tag:hover { background: #38bdf822; }
 .search-box { display: flex; gap: 10px; margin-bottom: 20px; }
 .admin-btn { background: #27272a; color: #f87171; padding: 6px 12px; font-size: 0.8rem; border-radius: 4px; border: 1px solid #451a1a; cursor: pointer; margin-top: 10px; }
-
-/* 💬 РЕДДИТ-ВЕТКИ */
 .comments-section { margin-top: 15px; padding-top: 10px; border-top: 1px solid #27272a; }
 .comment { display: flex; gap: 12px; margin-left: 25px; padding-left: 12px; border-left: 2px solid #3f3f46; margin-top: 12px; }
 .comment-avatar { width: 35px; height: 35px; border-radius: 6px; object-fit: cover; border: 1px solid #52525b; cursor: pointer; }
@@ -110,59 +108,68 @@ button.secondary:hover { background: #34d399; box-shadow: 0 0 15px rgba(52, 211,
 .profile-username { font-size: 1.5rem; font-weight: bold; margin-bottom: 15px; display: flex; align-items: center; justify-content: center; gap: 8px; position: relative; z-index: 5; color: #fff; }
 .profile-bio-text { background: #1a1a1e; padding: 15px; border-radius: 8px; border: 1px solid #27272a; color: #d4d4d8; text-align: justify; line-height: 1.5; font-size: 0.95rem; margin-bottom: 20px; word-break: break-word; position: relative; z-index: 5; }
 
-/* 🌀 АНИМАЦИЯ ЖИВОГО НЕОНОВОГО ТУМАНА */
+/* 🌀 АНИМАЦИИ ГРАДИЕНТОВ И НЕОНОВОГО ТУМАНА */
 @keyframes profileGlow {
     0% { background-position: 0% 50%; }
     50% { background-position: 100% 50%; }
     100% { background-position: 0% 50%; }
 }
+@keyframes nameGradient {
+    0%   { background-position: 0% 50%; }
+    50%  { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
 
-/* 🌌 Фиолетовый стиль (Твой Аметистовый Космос) */
+/* 🌌 Фиолетовый стиль (Твой обновлённый аметистовый космос + Твой анимированный ник!) */
 .profile-card.theme-purple {
     background: 
         radial-gradient(circle at 20% 20%, rgba(150, 0, 255, 0.35), transparent 35%),
         radial-gradient(circle at 80% 80%, rgba(70, 0, 140, 0.3), transparent 40%),
         linear-gradient(120deg, #000000, #09000f, #3b0066, #09000f, #000000) !important;
-    background-size: 200% 200% !important;
-    animation: profileGlow 3.5s ease-in-out infinite !important;
-    border: 2px solid #a855f7 !important;
-    box-shadow: 0 0 30px rgba(168, 85, 247, 0.4) !important;
+    background-size: 200% 200% !important; animation: profileGlow 3.5s ease-in-out infinite !important;
+    border: 2px solid #a855f7 !important; box-shadow: 0 0 30px rgba(168, 85, 247, 0.4) !important;
 }
 .profile-card.theme-purple .profile-big-avatar { border-color: #c084fc !important; box-shadow: 0 0 15px rgba(168, 85, 247, 0.5) !important; }
-.profile-card.theme-purple .profile-username { color: #c084fc !important; text-shadow: 0 0 10px rgba(168, 85, 247, 0.6); }
-.profile-card.theme-purple h2 { color: #a855f7 !important; text-shadow: 0 0 12px rgba(168, 85, 247, 0.5); }
+.name-theme-purple {
+    background: linear-gradient(90deg, #8a2be2, #c43cff, #ff5cff, #a83cff, #7226d9, #b84dff);
+    background-size: 300% 100%; -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 0 6px rgba(174, 60, 255, 0.45)); animation: nameGradient 3s ease-in-out infinite !important;
+}
 
-/* 🟢 Зелёный стиль (Изумрудный Космос) */
+/* 🟢 Зелёный стиль (Изумрудный космос + Анимированный изумрудный ник!) */
 .profile-card.theme-green {
     background: 
         radial-gradient(circle at 20% 20%, rgba(0, 255, 100, 0.25), transparent 35%),
         radial-gradient(circle at 80% 80%, rgba(0, 100, 40, 0.25), transparent 40%),
         linear-gradient(120deg, #000000, #000a03, #004d1a, #000a03, #000000) !important;
-    background-size: 200% 200% !important;
-    animation: profileGlow 3.5s ease-in-out infinite !important;
-    border: 2px solid #22c55e !important;
-    box-shadow: 0 0 30px rgba(34, 197, 94, 0.3) !important;
+    background-size: 200% 200% !important; animation: profileGlow 3.5s ease-in-out infinite !important;
+    border: 2px solid #22c55e !important; box-shadow: 0 0 30px rgba(34, 197, 94, 0.3) !important;
 }
 .profile-card.theme-green .profile-big-avatar { border-color: #4ade80 !important; box-shadow: 0 0 15px rgba(34, 197, 94, 0.5) !important; }
-.profile-card.theme-green .profile-username { color: #4ade80 !important; text-shadow: 0 0 10px rgba(34, 197, 94, 0.6); }
-.profile-card.theme-green h2 { color: #22c55e !important; text-shadow: 0 0 12px rgba(34, 197, 94, 0.5); }
+.name-theme-green {
+    background: linear-gradient(90deg, #16a34a, #4ade80, #22c55e, #86efac, #15803d, #22c55e);
+    background-size: 300% 100%; -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 0 6px rgba(34, 197, 94, 0.45)); animation: nameGradient 3s ease-in-out infinite !important;
+}
 
-/* 🟡 Жёлтый стиль (Жидкое Золото) */
+/* 🟡 Жёлтый стиль (Жидкое золото + Анимированный золотой ник Создателя!) */
 .profile-card.theme-gold {
     background: 
         radial-gradient(circle at 20% 20%, rgba(255, 200, 0, 0.25), transparent 35%),
         radial-gradient(circle at 80% 80%, rgba(150, 100, 0, 0.25), transparent 40%),
         linear-gradient(120deg, #000000, #0a0800, #664d00, #0a0800, #000000) !important;
-    background-size: 200% 200% !important;
-    animation: profileGlow 3.5s ease-in-out infinite !important;
-    border: 2px solid #eab308 !important;
-    box-shadow: 0 0 30px rgba(234, 179, 8, 0.3) !important;
+    background-size: 200% 200% !important; animation: profileGlow 3.5s ease-in-out infinite !important;
+    border: 2px solid #eab308 !important; box-shadow: 0 0 30px rgba(234, 179, 8, 0.3) !important;
 }
 .profile-card.theme-gold .profile-big-avatar { border-color: #fde047 !important; box-shadow: 0 0 15px rgba(234, 179, 8, 0.5) !important; }
-.profile-card.theme-gold .profile-username { color: #fde047 !important; text-shadow: 0 0 10px rgba(234, 179, 8, 0.6); }
-.profile-card.theme-gold h2 { color: #eab308 !important; text-shadow: 0 0 12px rgba(234, 179, 8, 0.5); }
+.name-theme-gold {
+    background: linear-gradient(90deg, #ca8a04, #fde047, #eab308, #fef08a, #854d0e, #eab308);
+    background-size: 300% 100%; -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 0 6px rgba(234, 179, 8, 0.45)); animation: nameGradient 3s ease-in-out infinite !important;
+}
 
 /* МОДАЛКИ ОБЩИЕ */
 .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); backdrop-filter: blur(5px); display: flex; justify-content: center; align-items: center; z-index: 1000; }
 .modal-content { background: #121214; padding: 30px; border-radius: 12px; width: 100%; max-width: 450px; text-align: center; border: 2px solid #ef4444; box-shadow: 0 0 25px rgba(239, 68, 68, 0.3); box-sizing: border-box; overflow: hidden; }
 .hidden { display: none !important; }
+.banned-screen { filter: blur(8px); pointer-events: none; user-select: none; }
