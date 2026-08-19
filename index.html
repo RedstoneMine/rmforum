@@ -8,32 +8,6 @@
 </head>
 <body>
 
-<!-- 👤 ФОРМА №1: МОЙ СОБСТВЕННЫЙ ПРОФИЛЬ (ЧИСТЫЙ ОФФЛАЙН-ВАРИАНТ) -->
-<div id="my-profile-modal" class="modal-overlay hidden">
-    <div class="modal-content profile-card" id="my-profile-card">
-        <h2>📝 МОЙ ПРОФИЛЬ</h2>
-        <img id="my-prof-avatar" class="profile-big-avatar" src="./robot.png" alt="Аватар">
-        <div id="my-prof-username" class="profile-username" style="color: #fff;">@User</div>
-        <textarea id="my-prof-bio-input" placeholder="Расскажи о себе..." rows="4" maxlength="200" style="border-color: #27272a; background: #141417; margin-bottom:10px;"></textarea>
-        <p style="color:#71717a; font-size:0.8rem; margin-top:0; margin-bottom:20px; text-align:left;">Лимит: 200 символов. Изменять текст можно раз в 3 часа.</p>
-        <div style="display: flex; gap: 10px;">
-            <button class="secondary" style="flex:1;" onclick="saveMyProfile()">Сохранить текст</button>
-            <button class="back-btn" style="margin:0; flex:1;" onclick="closeModal('my-profile-modal')">Закрыть</button>
-        </div>
-    </div>
-</div>
-
-<!-- 👤 ФОРМА №2: ПРОСМОТР ЧУЖОГО ПРОФИЛЯ (ЧИСТЫЙ ОФФЛАЙН-ВАРИАНТ) -->
-<div id="view-profile-modal" class="modal-overlay hidden">
-    <div class="modal-content profile-card" id="view-profile-card">
-        <h2>👤 КАРТОЧКА ИГРОКА</h2>
-        <img id="view-prof-avatar" class="profile-big-avatar" src="./robot.png" alt="Аватар">
-        <div id="view-prof-username" class="profile-username">@User</div>
-        <div id="view-prof-bio" class="profile-bio-text">Загрузка информации...</div>
-        <button class="back-btn" style="width:100%; margin:0;" onclick="closeModal('view-profile-modal')">ЗАКРЫТЬ</button>
-    </div>
-</div>
-    
 <!-- Экран банов вкладки -->
 <div id="block-modal" class="modal-overlay hidden">
     <div class="modal-content" style="border-color: #ef4444;">
@@ -42,10 +16,10 @@
     </div>
 </div>
 
-<!-- Официальное окно соглашения с Hover-эффектом ссылки -->
+<!-- Официальное окно соглашения -->
 <div id="notice-modal" class="modal-overlay">
     <div class="modal-content">
-        <h2>ПОЛЬЗОВАТЕЛЬСКОЕ СОГЛАШЕНИЕ</h2>
+        <h2>⚠️ ПОЛЬЗОВАТЕЛЬСКОЕ СОГЛАШЕНИЕ</h2>
         <p style="color: #d4d4d8; line-height: 1.6; text-align: justify; font-size: 0.95rem; margin-bottom: 20px;">
             Для входа на форум проекта RedstoneMine вам необходимо подтвердить свое согласие с официальными правилами нашего проекта.
         </p>
@@ -61,10 +35,36 @@
     .agreement-link { color: #ef4444; text-decoration: underline; font-weight: bold; transition: all 0.2s ease-in-out; }
     .agreement-link:hover { color: #f43f5e; text-shadow: 0 0 12px rgba(244, 63, 94, 0.8); }
 </style>
-    
+
+<!-- 👤 ФОРМА №1: МОЙ СОБСТВЕННЫЙ ПРОФИЛЬ -->
+<div id="my-profile-modal" class="modal-overlay hidden">
+    <div class="modal-content profile-card" id="my-profile-card">
+        <h2>📝 МОЙ ПРОФИЛЬ</h2>
+        <img id="my-prof-avatar" class="profile-big-avatar" src="./robot.png" alt="Аватар">
+        <div id="my-prof-username" class="profile-username" style="color: #fff;">@User</div>
+        <textarea id="my-prof-bio-input" placeholder="Расскажи о себе..." rows="4" maxlength="200" style="border-color: #27272a; background: #141417; margin-bottom:10px;"></textarea>
+        <p style="color:#71717a; font-size:0.8rem; margin-top:0; margin-bottom:20px; text-align:left;">Лимит: 200 символов. Изменять текст можно раз в 3 часа.</p>
+        <div style="display: flex; gap: 10px;">
+            <button class="secondary" style="flex:1;" onclick="saveMyProfile()">Сохранить текст</button>
+            <button class="back-btn" style="margin:0; flex:1;" onclick="closeModal('my-profile-modal')">Закрыть</button>
+        </div>
+    </div>
+</div>
+
+<!-- 👤 ФОРМА №2: ПРОСМОТР ЧУЖОГО ПРОФИЛЯ -->
+<div id="view-profile-modal" class="modal-overlay hidden">
+    <div class="modal-content profile-card" id="view-profile-card">
+        <h2>👤 КАРТОЧКА ИГРОКА</h2>
+        <img id="view-prof-avatar" class="profile-big-avatar" src="./robot.png" alt="Аватар">
+        <div id="view-prof-username" class="profile-username">@User</div>
+        <div id="view-prof-bio" class="profile-bio-text">Загрузка информации...</div>
+        <button class="back-btn" style="width:100%; margin:0;" onclick="closeModal('view-profile-modal')">ЗАКРЫТЬ</button>
+    </div>
+</div>
+
 <div class="container hidden" id="main-content">
     
-    <!-- КРАСИВОЕ МЕНЮ ВЫБОРА -->
+    <!-- СТАРТОВОЕ МЕНЮ ВЫБОРА -->
     <div id="menu-box" class="box">
         <h2>⛏️ ДОБРО ПОЖАЛОВАТЬ НА REDSTONE MINE</h2>
         <p style="color: #a1a1aa">Выберите действие для входа на форум сервера:</p>
@@ -74,7 +74,7 @@
         </div>
     </div>
 
-    <!-- ФОРМА АВТОРИЗАЦИИ С ОБНОВЛЕННЫМ СТИЛЕМ -->
+    <!-- ФОРМА АВТОРИЗАЦИИ ПО ЦЕНТРУ -->
     <div id="login-box" class="hidden">
         <h2>АВТОРИЗАЦИЯ</h2>
         <p id="auth-desc" style="color: #a1a1aa; font-size: 0.9rem; margin-bottom: 20px;"></p>
@@ -102,7 +102,7 @@
             </div>
         </div>
 
-        <!-- КНОПКА ВХОДА В СВОЙ ПРОФИЛЬ В ШАПКЕ ЛЕНТЫ -->
+        <!-- КНОПКА МОЙ ПРОФИЛЬ В ШАПКЕ -->
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; background:#121214; padding:15px; border-radius:12px; border:1px solid #27272a;">
             <h3 id="welcome-msg" style="margin:0; font-size:1.1rem; color:#fff; text-shadow:none;">⛏️ Лента</h3>
             <button class="secondary" style="padding: 8px 16px; font-size:0.85rem;" onclick="openMyProfile()">📝 Мой Профиль</button>
@@ -126,44 +126,7 @@
 </div>
 
 <script>
-    // 🧠 СИСТЕМА ЗАЩИТЫ (Анти-F5 и Брутфорс)
-    (function checkGlobalBlocks() {
-        const now = Date.now();
-        const passwordBanUntil = sessionStorage.getItem("password_ban_until");
-        if (passwordBanUntil && now < parseInt(passwordBanUntil)) {
-            window.addEventListener("DOMContentLoaded", () => {
-                document.getElementById('block-title').innerText = "🚫 ПОДОЗРИТЕЛЬНАЯ АКТИВНОСТЬ";
-                document.getElementById('block-text').innerHTML = "Ваш аккаунт ограничен на <b>1 час и 30 минут</b> из-за подозрений в подборе пароля! <br><br>Доступ заблокирован.";
-                document.getElementById('block-modal').classList.remove('hidden');
-                document.body.classList.add('banned-screen');
-            });
-            return;
-        }
-
-        const spamBanUntil = sessionStorage.getItem("spam_ban_until");
-        if (spamBanUntil && now < parseInt(spamBanUntil)) {
-            window.addEventListener("DOMContentLoaded", () => {
-                document.getElementById('block-title').innerText = "🚫 ДОСТУП ОГРАНИЧЕН";
-                document.getElementById('block-text').innerHTML = "Ваш аккаунт временно ограничен на <b>1 час</b> за спам обновлениями страницы! <br><br>Хватит терзать редстоун-схемы форума.";
-                document.getElementById('block-modal').classList.remove('hidden');
-                document.body.classList.add('banned-screen');
-            });
-            return;
-        }
-
-        let history = JSON.parse(sessionStorage.getItem("reload_history") || "[]");
-        history = history.filter(time => now - time < 60000); 
-        history.push(now);
-        sessionStorage.setItem("reload_history", JSON.stringify(history));
-
-        if (history.length > 5) { 
-            sessionStorage.setItem("spam_ban_until", (now + 3600000).toString());
-            window.location.reload();
-        }
-    })();
-
-    // ⚙️ ССЫЛКА НА ВОРКЕР И ВАЙТ-ЛИСТ АДМИНОВ (ССЫЛКА ОФИЦИАЛЬНО ВШИТА)
-    const WORKER_URL = 'https://restless-hill-dd2a.redstonemineforum.workers.dev'; 
+const WORKER_URL = 'https://restless-hill-dd2a.redstonemineforum.workers.dev'; 
     const ADMIN_WHITELIST = ["@redstonemine", "@krutoi", "@RM_Emperor"];
 
     // 🖼️ 1. РУЧНОЙ СПИСОК АВАТАРОК ДЛЯ АДМИНОВ
@@ -176,46 +139,68 @@
     // 🔮 2. РУЧНОЙ СПИСОК КОСМИЧЕСКИХ ТЕМ ДЛЯ КАРТОЧЕК ПРОФИЛЕЙ (none / gold / purple / green)
     const ADMIN_CARDS = {
         "@redstonemine": "gold",
-        "@krutoi": "none",
-        "@RM_Emperor": "purple"
+        "@krutoi": "purple",
+        "@RM_Emperor": "green"
     };
 
     // 🌈 3. РУЧНОЙ СПИСОК ПЕРЕЛИВАЮЩИХСЯ ЦВЕТОВ НИКНЕЙМОВ (none / gold / purple / green)
     const ADMIN_NAMES = {
         "@redstonemine": "gold",
-        "@krutoi": "gold",
+        "@krutoi": "purple",
         "@RM_Emperor": "purple"
     };
-    
+
+    // ⚡ 4. РУЧНОЙ СПИСОК ЖИВЫХ ПЕРЕЛИВАЮЩИХСЯ РАМОК ВОКРУГ АВАТАРОК (none / gold / purple / green)
+    const ADMIN_BORDERS = {
+        "@redstonemine": "gold",
+        "@krutoi": "purple",
+        "@RM_Emperor": "green"
+    };
+
+    let allPosts = [];
+    let currentFilterTag = "";
     let currentUsername = "";
     let currentPassword = "";
-    let currentAuthType = "login"; 
     let isAdmin = false;
-    let allPosts = []; 
-    let currentFilterTag = "";
-    let lastPostTime = 0; 
+
+    // Вспомогательная оффлайн-функция определения стиля по нику
+    function getAdminStyle(username, list) {
+        const lowerUser = username.trim().toLowerCase();
+        const foundKey = Object.keys(list).find(key => key.toLowerCase() === lowerUser);
+        return foundKey ? list[foundKey] : "none";
+    }
 
     function acceptTerms() {
-        document.getElementById('notice-modal').classList.add('hidden');
-        document.getElementById('main-content').classList.remove('hidden');
+        const modal = document.getElementById('notice-modal');
+        if (modal) modal.classList.add('hidden');
+        const mainContent = document.getElementById('main-content');
+        if (mainContent) mainContent.classList.remove('hidden');
     }
 
-    // ЛОГИКА ИНТЕРАКТИВНОГО МЕНЮ ВЫБОРОВ
+    function closeModal(modalId) {
+        document.getElementById(modalId).classList.add('hidden');
+    }
+
     function showAuthForm(type) {
-        currentAuthType = type;
         document.getElementById('menu-box').classList.add('hidden');
-        document.getElementById('login-box').classList.remove('hidden');
+        const loginBox = document.getElementById('login-box');
+        loginBox.classList.remove('hidden');
+        
+        const title = document.querySelector('#login-box h2');
+        const desc = document.getElementById('auth-desc');
+        const actionBtn = document.getElementById('auth-action-btn');
         
         if (type === 'login') {
-            document.getElementById('auth-title').innerText = "🔑 ВХОД НА ФОРУМ";
-            document.getElementById('auth-desc').innerText = "Введи свой ник и верный пароль от аккаунта:";
-            document.getElementById('auth-action-btn').innerText = "ВОЙТИ";
+            if(title) title.innerText = "АВТОРИЗАЦИЯ";
+            if(desc) desc.innerText = "Введите свой ник и пароль для входа на форум:";
+            if(actionBtn) { actionBtn.innerText = "ВОЙТИ"; actionBtn.setAttribute('onclick', "submitAuth('login')"); }
         } else {
-            document.getElementById('auth-title').innerText = "📝 РЕГИСТРАЦИЯ НОВОГО ПРОФИЛЯ";
-            document.getElementById('auth-desc').innerText = "Придумай уникальный ник и пароль. Твой ник закрепится навсегда:";
-            document.getElementById('auth-action-btn').innerText = "ЗАРЕГИСТРИРОВАТЬСЯ";
+            if(title) title.innerText = "РЕГИСТРАЦИЯ";
+            if(desc) desc.innerText = "Придумайте игровой ник и пароль для создания аккаунта:";
+            if(actionBtn) { actionBtn.innerText = "СОЗДАТЬ"; actionBtn.setAttribute('onclick', "submitAuth('register')"); }
         }
     }
+
     function hideAuthForm() {
         document.getElementById('login-box').classList.add('hidden');
         document.getElementById('menu-box').classList.remove('hidden');
@@ -223,59 +208,40 @@
         document.getElementById('password-input').value = "";
     }
 
-    async function submitAuth() {
-        let nick = document.getElementById('username-input').value.trim();
-        let pass = document.getElementById('password-input').value.trim();
-        if(!nick || !pass) return alert("Заполни ник и пароль!");
-        if(!nick.startsWith('@')) nick = '@' + nick;
-
+    async function submitAuth(authType) {
+        const userIn = document.getElementById('username-input').value.trim();
+        const passIn = document.getElementById('password-input').value.trim();
+        
+        if(!userIn || !passIn) return alert("Заполните все поля формы!");
+        
+        const actionBtn = document.getElementById('auth-action-btn');
+        actionBtn.disabled = true;
+        
         try {
             const res = await fetch(WORKER_URL + '/api/auth', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ username: nick, password: pass, type: currentAuthType })
+                body: JSON.stringify({ username: userIn, password: passIn, type: authType })
             });
-            const data = await res.json();
-
-            if (data.error) {
-                if (currentAuthType === "login" && (res.status === 401 || data.error.includes("пароль"))) {
-                    let attempts = parseInt(sessionStorage.getItem("password_attempts") || "0");
-                    attempts++;
-                    sessionStorage.setItem("password_attempts", attempts.toString());
-
-                    if (attempts >= 3) {
-                        const ninetyMinutes = Date.now() + 5400000; 
-                        sessionStorage.setItem("password_ban_until", ninetyMinutes.toString());
-                        alert("Слишком много неверных попыток! Доступ ограничен на 1,5 часа.");
-                        window.location.reload(); 
-                        return;
-                    }
-                    return alert(data.error + " (Осталось попыток: " + (3 - attempts) + ")");
-                }
-                return alert(data.error);
-            }
-
-            if (currentAuthType === "register") {
-                alert("Аккаунт успешно создан! Теперь выберите режим 'ВОЙТИ'.");
-                hideAuthForm();
-                return;
-            }
-
-            sessionStorage.removeItem("password_attempts");
-            currentUsername = nick;
-            currentPassword = pass;
             
-            if (ADMIN_WHITELIST.map(v => v.toLowerCase()).includes(nick.toLowerCase())) {
-                isAdmin = true;
-                document.getElementById('admin-panel').classList.remove('hidden');
-            }
-
+            const data = await res.json();
+            if(!res.ok) { alert(data.error || "Ошибка авторизации"); actionBtn.disabled = false; return; }
+            
+            currentUsername = userIn.startsWith('@') ? userIn : '@' + userIn;
+            currentPassword = passIn;
+            
+            const cleanUser = userIn.toLowerCase().replace('@', '');
+            isAdmin = ADMIN_WHITELIST.map(v => v.toLowerCase().replace('@', '')).includes(cleanUser);
+            
             document.getElementById('login-box').classList.add('hidden');
             document.getElementById('forum-box').classList.remove('hidden');
-            document.getElementById('welcome-msg').innerText = "⛏️ Лента | Юзер: " + currentUsername;
-
-            loadPosts(); 
-        } catch(e) { alert("Ошибка подключения к бэкенду. Проверь статус Воркера!"); }
+            
+            if (isAdmin) {
+                document.getElementById('admin-panel').classList.remove('hidden');
+            }
+            
+            loadPosts();
+        } catch(e) { alert("Не удалось связаться с сервером."); actionBtn.disabled = false; }
     }
 
     async function loadPosts() {
@@ -283,19 +249,11 @@
             const res = await fetch(WORKER_URL + '/api/posts');
             allPosts = await res.json();
             renderPosts();
-        } catch (e) { console.error(e); }
+        } catch(e) { document.getElementById('posts-container').innerText = "Ошибка загрузки ленты."; }
     }
-
     function renderPosts() {
         const container = document.getElementById('posts-container');
         container.innerHTML = "";
-
-        // Вспомогательная локальная функция для чтения оффлайн-конфигов админов
-        function getAdminStyle(username, list) {
-            const lowerUser = username.trim().toLowerCase();
-            const foundKey = Object.keys(list).find(key => key.toLowerCase() === lowerUser);
-            return foundKey ? list[foundKey] : "none";
-        }
 
         const filtered = currentFilterTag 
             ? allPosts.filter(p => p.tags && p.tags.map(t => t.toLowerCase()).includes(currentFilterTag.toLowerCase()))
@@ -317,11 +275,8 @@
             }
 
             const badge = isPostAdmin ? '<span class="verified-badge" title="Верифицированный аккаунт">✓</span>' : '';
-            
-            // Динамически вычисляем класс для никнейма автора поста по списку ADMIN_NAMES
             const postNameTheme = isPostAdmin ? getAdminStyle(post.username, ADMIN_NAMES) : "none";
             const styleClass = postNameTheme !== "none" ? "name-theme-" + postNameTheme : (isPostAdmin ? "admin-style" : "");
-            
             const deleteBtn = isAdmin ? '<br><button class="admin-btn" onclick="deletePost(' + post.id + ')">❌ Стереть пост</button>' : '';
 
             let tagsHTML = "";
@@ -333,7 +288,6 @@
                 tagsHTML += '</div>';
             }
 
-            // ГЕНЕРАЦИЯ ВЕТОК КОММЕНТАРИЕВ ДЛЯ КАЖДОГО ПОСТА
             let commentsHTML = '<div class="comments-section">';
             if (post.comments && post.comments.length > 0) {
                 post.comments.forEach(comm => {
@@ -346,10 +300,8 @@
                         commAva = customCommAva ? ADMIN_AVATARS[customCommAva] : './robot.png';
                     }
                     
-                    // Динамически вычисляем класс для никнейма комментатора по списку ADMIN_NAMES
                     const commNameTheme = isCommAdmin ? getAdminStyle(comm.username, ADMIN_NAMES) : "none";
                     const commStyle = commNameTheme !== "none" ? "name-theme-" + commNameTheme : (isCommAdmin ? "admin-style" : "");
-                    
                     const commBadge = isCommAdmin ? '<span class="verified-badge" title="Верифицированный аккаунт">✓</span>' : '';
                     const commDeleteBtn = isAdmin ? '<button class="admin-btn" style="margin: 5px 0 0 0; padding: 3px 8px; font-size: 0.75rem;" onclick="deleteComment(' + post.id + ', ' + comm.id + ')">❌ Стереть ответ</button>' : '';
 
@@ -387,145 +339,62 @@
                 '</div>';
         });
     }
-
     async function sendPost() {
-        const textInput = document.getElementById('post-text');
-        const tagsInput = document.getElementById('post-tags');
-        if(!textInput.value.trim()) return;
-
-        const now = Date.now();
-        if (now - lastPostTime < 60000) {
-            return alert("А ну стоять! Сообщения можно отправлять раз в минуту!");
-        }
-
+        const text = document.getElementById('post-text').value.trim();
+        const tags = document.getElementById('post-tags').value.trim();
+        if(!text) return;
+        
         try {
             await fetch(WORKER_URL + '/api/posts', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ 
-                    username: currentUsername, 
-                    password: currentPassword, 
-                    text: textInput.value.trim(), 
-                    tags: tagsInput.value.trim() 
-                })
+                body: JSON.stringify({ username: currentUsername, password: currentPassword, text: text, tags: tags })
             });
-
-            textInput.value = "";
-            tagsInput.value = "";
-            lastPostTime = Date.now();
-            startCooldownTimer(60); 
-            loadPosts(); 
-        } catch (e) { alert("Ошибка отправки."); }
+            document.getElementById('post-text').value = "";
+            document.getElementById('post-tags').value = "";
+            loadPosts();
+        } catch(e) { alert("Ошибка публикации."); }
     }
-
-    function startCooldownTimer(seconds) {
-        const sendBtn = document.getElementById('send-btn');
-        sendBtn.disabled = true;
-        let timeLeft = seconds;
-        sendBtn.innerText = 'Подождите ' + timeLeft + 'с';
-
-        const interval = setInterval(() => {
-            timeLeft--;
-            sendBtn.innerText = 'Подождите ' + timeLeft + 'с';
-            if (timeLeft <= 0) {
-                clearInterval(interval);
-                sendBtn.disabled = false;
-                sendBtn.innerText = "Опубликовать";
-            }
-        }, 1000);
-    }
-
-    function setSearchTag(tag) {
-        document.getElementById('search-input').value = tag;
-        currentFilterTag = tag;
-        renderPosts();
-    }
-
-    function filterByTag() {
-        const val = document.getElementById('search-input').value.trim();
-        currentFilterTag = val.startsWith('#') ? val : (val ? '#' + val : "");
-        loadPosts(); 
-    }
-
-    function resetFilter() {
-        document.getElementById('search-input').value = "";
-        currentFilterTag = "";
-        loadPosts(); 
-    }
-
-  async function deletePost(postId) {
-        if(!confirm("Удалить пост?")) return;
-        await fetch(WORKER_URL + '/api/admin/delete', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ username: currentUsername, password: currentPassword, postId: postId })
-        });
-        loadPosts();
-    }
-
-    async function banUser() {
-        const userToBan = document.getElementById('ban-username').value.trim();
-        if(!userToBan || !confirm("Забанить " + userToBan + "?")) return;
-
-        await fetch(WORKER_URL + '/api/admin/ban', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ username: currentUsername, password: currentPassword, userToBan: userToBan })
-        });
-        document.getElementById('ban-username').value = "";
-        alert("Игрок аннигилирован!");
-        loadPosts();
-    }
-
-    async function unbanUser() {
-        const userToUnUnban = document.getElementById('unban-username').value.trim();
-        if(!userToUnUnban || !confirm("Разбанить " + userToUnUnban + "?")) return;
-
-        await fetch(WORKER_URL + '/api/admin/unban', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ username: currentUsername, password: currentPassword, userToUnban: userToUnUnban })
-        });
-        document.getElementById('unban-username').value = "";
-        alert("Игрок амнистирован!");
-        loadPosts();
-    }
-
-      let lastCommentTime = 0; 
 
     async function sendComment(postId) {
         const inputEl = document.getElementById('comm-input-' + postId);
         if (!inputEl || !inputEl.value.trim()) return;
-
-        const now = Date.now();
-        if (now - lastCommentTime < 15000) {
-            const timeLeft = Math.ceil((15000 - (now - lastCommentTime)) / 1000);
-            return alert("Не спамь в ветку! Подожди ещё " + timeLeft + " сек.");
-        }
-
         const text = inputEl.value.trim();
-
         try {
             const res = await fetch(WORKER_URL + '/api/comments', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    username: currentUsername,
-                    password: currentPassword,
-                    postId: postId,
-                    text: text
-                })
+                body: JSON.stringify({ username: currentUsername, password: currentPassword, postId: postId, text: text })
             });
-
             const data = await res.json();
             if (data.error) return alert(data.error);
 
+            const postIndex = allPosts.findIndex(p => p.id === postId);
+            if (postIndex !== -1) {
+                if (!allPosts[postIndex].comments) allPosts[postIndex].comments = [];
+                allPosts[postIndex].comments.push({
+                    id: Date.now(),
+                    username: currentUsername,
+                    text: text,
+                    time: new Date().toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' })
+                });
+            }
             inputEl.value = "";
-            lastCommentTime = Date.now(); // Засекаем время успешной отправки
-            loadPosts(); 
-        } catch (e) { 
-            alert("Ошибка отправки комментария."); 
-        }
+            renderPosts();
+        } catch (e) { alert("Ошибка отправки комментария."); }
+    }
+
+    async function deletePost(postId) {
+        if(!confirm("Удалить пост?")) return;
+        try {
+            await fetch(WORKER_URL + '/api/admin/delete', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username: currentUsername, password: currentPassword, postId: postId })
+            });
+            allPosts = allPosts.filter(p => p.id !== postId);
+            renderPosts();
+        } catch(e) { alert("Ошибка сервера."); }
     }
 
     async function deleteComment(postId, commentId) {
@@ -534,58 +403,16 @@
             await fetch(WORKER_URL + '/api/admin/delete-comment', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ 
-                    username: currentUsername, 
-                    password: currentPassword, 
-                    postId: postId, 
-                    commentId: commentId 
-                })
+                body: JSON.stringify({ username: currentUsername, password: currentPassword, postId: postId, commentId: commentId })
             });
-            loadPosts(); // Мгновенно перерисовываем ленту
+            const postIndex = allPosts.findIndex(p => p.id === postId);
+            if (postIndex !== -1 && allPosts[postIndex].comments) {
+                allPosts[postIndex].comments = allPosts[postIndex].comments.filter(c => c.id !== commentId);
+            }
+            renderPosts();
         } catch (e) { alert("Ошибка удаления ответа."); }
     }
 
-    // 👤 Вспомогательные функции для модальных окон профилей
-    function closeModal(modalId) {
-        document.getElementById(modalId).classList.add('hidden');
-    }
-
- // Мгновенное превью темы при выборе в меню (Без корон)
-    function previewMyTheme() {
-        const select = document.getElementById('my-prof-theme-select');
-        const myCard = document.getElementById('my-profile-card');
-        if (myCard) {
-            myCard.className = "modal-content profile-card " + (select.value !== "none" ? "theme-" + select.value : "");
-        }
-    }
-
-    // 🔥 БЫСТРОЕ СОХРАНЕНИЕ ЦВЕТА И ТЕМЫ БЕЗ КУЛДАУНА 3 ЧАСА!
-    async function saveMyThemeOnly() {
-        const selectedTheme = document.getElementById('my-prof-theme-select').value;
-        try {
-            await fetch(WORKER_URL + '/api/profile/save', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    username: currentUsername,
-                    password: currentPassword,
-                    bio: document.getElementById('my-prof-bio-input').value.trim(),
-                    theme: selectedTheme,
-                    isThemeOnly: true
-                })
-            });
-            alert("Неоновый стиль успешно обновлен!");
-        } catch(e) { alert("Ошибка сохранения стиля."); }
-    }
-
-     // Вспомогательная оффлайн-функция определения стиля по нику
-    function getAdminStyle(username, list) {
-        const lowerUser = username.trim().toLowerCase();
-        const foundKey = Object.keys(list).find(key => key.toLowerCase() === lowerUser);
-        return foundKey ? list[foundKey] : "none";
-    }
-
-    // 👤 Открытие своего профиля (Полностью независимая поштучная кастомизация)
     async function openMyProfile() {
         const lowerUser = currentUsername.toLowerCase();
         document.getElementById('my-prof-username').innerText = currentUsername;
@@ -595,22 +422,18 @@
         if (customAva) avaSrc = ADMIN_AVATARS[customAva];
         document.getElementById('my-prof-avatar').src = avaSrc;
 
-        // 1. Применяем фон карточки из твоего списка ADMIN_CARDS
         const cardTheme = getAdminStyle(currentUsername, ADMIN_CARDS);
         const myCard = document.getElementById('my-profile-card');
         if (myCard) myCard.className = "modal-content profile-card " + (cardTheme !== "none" ? "theme-" + cardTheme : "");
 
-        // 2. Применяем цвет имени из твоего списка ADMIN_NAMES
         const nameTheme = getAdminStyle(currentUsername, ADMIN_NAMES);
         const myName = document.getElementById('my-prof-username');
         if (myName) myName.className = "profile-username " + (nameTheme !== "none" ? "name-theme-" + nameTheme : "");
 
-        // 3. 🚀 Применяем НЕЗАВИСИМУЮ живую переливающуюся рамку из списка ADMIN_BORDERS!
         const borderTheme = getAdminStyle(currentUsername, ADMIN_BORDERS);
         const myAvatar = document.getElementById('my-prof-avatar');
         if (myAvatar) myAvatar.className = "profile-big-avatar " + (borderTheme !== "none" ? "avatar-theme-" + borderTheme : "");
 
-        // Из бэкенда Cloudflare тянем ТОЛЬКО текст описания
         try {
             const res = await fetch(WORKER_URL + '/api/profile/get', {
                 method: 'POST',
@@ -624,7 +447,6 @@
         document.getElementById('my-profile-modal').classList.remove('hidden');
     }
 
-    // 👤 Сохранение описания профиля (С кулдауном 3 часа для защиты базы текста)
     async function saveMyProfile() {
         const bioText = document.getElementById('my-prof-bio-input').value.trim();
         try {
@@ -639,7 +461,6 @@
         } catch(e) { alert("Ошибка сохранения профиля."); }
     }
 
-    // 👤 Просмотр чужого профиля (Абсолютно 0 запросов темы на сервер!)
     async function viewUserProfile(targetNick) {
         document.getElementById('view-prof-username').innerText = targetNick;
         document.getElementById('view-prof-bio').innerText = "Загрузка информации...";
@@ -650,17 +471,14 @@
         if (customAva) avaSrc = ADMIN_AVATARS[customAva];
         document.getElementById('view-prof-avatar').src = avaSrc;
 
-        // 1. Подгружаем фон карточки чужого админа мгновенно из конфига
         const cardTheme = getAdminStyle(targetNick, ADMIN_CARDS);
         const cardEl = document.getElementById('view-profile-card');
         if (cardEl) cardEl.className = "modal-content profile-card " + (cardTheme !== "none" ? "theme-" + cardTheme : "");
 
-        // 2. Подгружаем цвет имени чужого админа мгновенно из конфига
         const nameTheme = getAdminStyle(targetNick, ADMIN_NAMES);
         const nameEl = document.getElementById('view-prof-username');
         if (nameEl) nameEl.className = "profile-username " + (nameTheme !== "none" ? "name-theme-" + nameTheme : "");
 
-        // 3. 🚀 Подгружаем НЕЗАВИСИМУЮ живую рамку чужого админа из списка ADMIN_BORDERS!
         const borderTheme = getAdminStyle(targetNick, ADMIN_BORDERS);
         const viewAvatar = document.getElementById('view-prof-avatar');
         if (viewAvatar) viewAvatar.className = "profile-big-avatar " + (borderTheme !== "none" ? "avatar-theme-" + borderTheme : "");
@@ -677,15 +495,52 @@
 
         document.getElementById('view-profile-modal').classList.remove('hidden');
     }
-    function acceptTerms() {
-        const modal = document.getElementById('notice-modal');
-        if (modal) modal.classList.add('hidden');
-        
-        const mainContent = document.getElementById('main-content');
-        if (mainContent) mainContent.classList.remove('hidden');
+
+    async function banUser() {
+        const target = document.getElementById('ban-username').value.trim();
+        if(!target) return;
+        try {
+            const res = await fetch(WORKER_URL + '/api/admin/ban', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username: currentUsername, password: currentPassword, userToBan: target })
+            });
+            if(res.ok) { alert("Пользователь забанен!"); document.getElementById('ban-username').value = ""; }
+            else { const d = await res.json(); alert(d.error || "Ошибка"); }
+        } catch(e) { alert("Ошибка сервера."); }
     }
 
-    
+    async function unbanUser() {
+        const target = document.getElementById('unban-username').value.trim();
+        if(!target) return;
+        try {
+            const res = await fetch(WORKER_URL + '/api/admin/unban', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username: currentUsername, password: currentPassword, userToUnban: target })
+            });
+            if(res.ok) { alert("Пользователь разбанен!"); document.getElementById('unban-username').value = ""; }
+        } catch(e) { alert("Ошибка сервера."); }
+    }
+
+    function setSearchTag(tag) {
+        document.getElementById('search-input').value = tag;
+        currentFilterTag = tag;
+        renderPosts();
+    }
+
+    function filterByTag() {
+        const val = document.getElementById('search-input').value.trim();
+        currentFilterTag = val;
+        renderPosts();
+    }
+
+    function resetFilter() {
+        document.getElementById('search-input').value = "";
+        currentFilterTag = "";
+        renderPosts();
+    }
+
     function escapeHTML(str) {
         return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
     }
