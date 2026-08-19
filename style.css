@@ -156,92 +156,90 @@ button.secondary:hover { background: #34d399; box-shadow: 0 0 15px rgba(52, 211,
 .banned-screen { filter: blur(8px); pointer-events: none; user-select: none; }
 @keyframes descGradient {
     0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
+    100% { background-position: 400% 50%; }
 }
 
-/* 📝 1. АНИМИРОВАННЫЙ ЦВЕТ БУКВ ТЕКСТА (ADMIN_DESCRIPTION) */
-.desc-text-purple { 
-    font-weight: 600 !important; 
-    letter-spacing: 0.15px !important; 
-    background: linear-gradient(90deg, #9b7cff, #d0b8ff, #829cff, #b58cff, #927dff, #d4c2ff) !important; 
-    background-size: 300% 100% !important; 
-    -webkit-background-clip: text !important; 
-    background-clip: text !important; 
-    -webkit-text-fill-color: transparent !important; 
-    animation: descGradient 4s ease-in-out infinite !important; 
-    filter: drop-shadow(0 0 5px rgba(150, 120, 255, 0.3)) !important; 
+.desc-text-purple {
+    font-weight: 800 !important;
+    color: #b99cff !important;
+    background: linear-gradient(90deg, #7c5cff 0%, #b48cff 20%, #e1caff 40%, #8d7aff 60%, #c09aff 80%, #7455ff 100%) !important;
+    background-size: 400% 100% !important;
+    background-position: 0% 50% !important;
+    -webkit-background-clip: text !important;
+    background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+    animation: descGradient 2.5s linear infinite !important;
 }
 
-.desc-text-green { 
-    font-weight: 600 !important; 
-    letter-spacing: 0.15px !important; 
-    background: linear-gradient(90deg, #6ee7b7, #a7f3d0, #34d399, #059669, #34d399, #a7f3d0) !important; 
-    background-size: 300% 100% !important; 
-    -webkit-background-clip: text !important; 
-    background-clip: text !important; 
-    -webkit-text-fill-color: transparent !important; 
-    animation: descGradient 4s ease-in-out infinite !important; 
-    filter: drop-shadow(0 0 5px rgba(52, 211, 153, 0.3)) !important; 
+.desc-text-green {
+    font-weight: 800 !important;
+    color: #a7f3d0 !important;
+    background: linear-gradient(90deg, #059669 0%, #34d399 20%, #a7f3d0 40%, #10b981 60%, #6ee7b7 80%, #047857 100%) !important;
+    background-size: 400% 100% !important;
+    background-position: 0% 50% !important;
+    -webkit-background-clip: text !important;
+    background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+    animation: descGradient 2.5s linear infinite !important;
 }
 
-.desc-text-gold { 
-    font-weight: 600 !important; 
-    letter-spacing: 0.15px !important; 
-    background: linear-gradient(90deg, #fde047, #fef08a, #facc15, #ca8a04, #facc15, #fef08a) !important; 
-    background-size: 300% 100% !important; 
-    -webkit-background-clip: text !important; 
-    background-clip: text !important; 
-    -webkit-text-fill-color: transparent !important; 
-    animation: descGradient 4s ease-in-out infinite !important; 
-    filter: drop-shadow(0 0 5px rgba(250, 204, 21, 0.3)) !important; 
+.desc-text-gold {
+    font-weight: 800 !important;
+    color: #fef08a !important;
+    background: linear-gradient(90deg, #d97706 0%, #fbbf24 20%, #fef08a 40%, #facc15 60%, #fde047 80%, #b45309 100%) !important;
+    background-size: 400% 100% !important;
+    background-position: 0% 50% !important;
+    -webkit-background-clip: text !important;
+    background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+    animation: descGradient 2.5s linear infinite !important;
 }
 
-.desc-text-red { 
-    font-weight: 600 !important; 
-    letter-spacing: 0.15px !important; 
-    background: linear-gradient(90deg, #f87171, #fca5a5, #ef4444, #991b1b, #ef4444, #fca5a5) !important; 
-    background-size: 300% 100% !important; 
-    -webkit-background-clip: text !important; 
-    background-clip: text !important; 
-    -webkit-text-fill-color: transparent !important; 
-    animation: descGradient 4s ease-in-out infinite !important; 
-    filter: drop-shadow(0 0 5px rgba(239, 68, 68, 0.3)) !important; 
+.desc-text-red {
+    font-weight: 800 !important;
+    color: #fca5a5 !important;
+    background: linear-gradient(90deg, #991b1b 0%, #ef4444 20%, #fca5a5 40%, #dc2626 60%, #f87171 80%, #7f1d1d 100%) !important;
+    background-size: 400% 100% !important;
+    background-position: 0% 50% !important;
+    -webkit-background-clip: text !important;
+    background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+    animation: descGradient 2.5s linear infinite !important;
 }
-.desc-text-blue { 
-    font-weight: 600 !important; 
-    letter-spacing: 0.15px !important; 
-    background: linear-gradient(90deg, #60a5fa, #93c5fd, #3b82f6, #1e40af, #3b82f6, #93c5fd) !important; 
-    background-size: 300% 100% !important; 
-    -webkit-background-clip: text !important; 
-    background-clip: text !important; 
-    -webkit-text-fill-color: transparent !important; 
-    animation: descGradient 4s ease-in-out infinite !important; 
-    filter: drop-shadow(0 0 5px rgba(59, 130, 246, 0.3)) !important; 
-}
-
-.desc-text-cyan { 
-    font-weight: 600 !important; 
-    letter-spacing: 0.15px !important; 
-    background: linear-gradient(90deg, #22d3ee, #67e8f9, #06b6d4, #155e75, #06b6d4, #67e8f9) !important; 
-    background-size: 300% 100% !important; 
-    -webkit-background-clip: text !important; 
-    background-clip: text !important; 
-    -webkit-text-fill-color: transparent !important; 
-    animation: descGradient 4s ease-in-out infinite !important; 
-    filter: drop-shadow(0 0 5px rgba(6, 182, 212, 0.3)) !important; 
+.desc-text-blue {
+    font-weight: 800 !important;
+    color: #93c5fd !important;
+    background: linear-gradient(90deg, #1e40af 0%, #3b82f6 20%, #93c5fd 40%, #2563eb 60%, #60a5fa 80%, #1d4ed8 100%) !important;
+    background-size: 400% 100% !important;
+    background-position: 0% 50% !important;
+    -webkit-background-clip: text !important;
+    background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+    animation: descGradient 2.5s linear infinite !important;
 }
 
-.desc-text-pink { 
-    font-weight: 600 !important; 
-    letter-spacing: 0.15px !important; 
-    background: linear-gradient(90deg, #f472b6, #f9a8d4, #ec4899, #9d174d, #ec4899, #f9a8d4) !important; 
-    background-size: 300% 100% !important; 
-    -webkit-background-clip: text !important; 
-    background-clip: text !important; 
-    -webkit-text-fill-color: transparent !important; 
-    animation: descGradient 4s ease-in-out infinite !important; 
-    filter: drop-shadow(0 0 5px rgba(236, 72, 153, 0.3)) !important; 
+.desc-text-cyan {
+    font-weight: 800 !important;
+    color: #67e8f9 !important;
+    background: linear-gradient(90deg, #155e75 0%, #06b6d4 20%, #67e8f9 40%, #0891b2 60%, #22d3ee 80%, #0e7490 100%) !important;
+    background-size: 400% 100% !important;
+    background-position: 0% 50% !important;
+    -webkit-background-clip: text !important;
+    background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+    animation: descGradient 2.5s linear infinite !important;
+}
+
+.desc-text-pink {
+    font-weight: 800 !important;
+    color: #f9a8d4 !important;
+    background: linear-gradient(90deg, #9d174d 0%, #ec4899 20%, #f9a8d4 40%, #db2777 60%, #f472b6 80%, #be185d 100%) !important;
+    background-size: 400% 100% !important;
+    background-position: 0% 50% !important;
+    -webkit-background-clip: text !important;
+    background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+    animation: descGradient 2.5s linear infinite !important;
 }
 
 /* 🖼️ 2. АНИМИРОВАННЫЙ ЗАДНИЙ ФОН ПОДЛОЖКИ (ADMIN_DESCBACK) */
