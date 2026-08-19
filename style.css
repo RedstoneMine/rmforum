@@ -159,87 +159,58 @@ button.secondary:hover { background: #34d399; box-shadow: 0 0 15px rgba(52, 211,
     100% { background-position: 400% 50%; }
 }
 
+@keyframes descriptionFlow {
+    0% { background-position: 0% 50%; }
+    100% { background-position: 250% 50%; }
+}
+
+/* 🌌 Фиолетовый (Твой идеальный аметистовый поток) */
 .desc-text-purple {
-    font-weight: 800 !important;
-    color: #b99cff !important;
-    background: linear-gradient(90deg, #7c5cff 0%, #b48cff 20%, #e1caff 40%, #8d7aff 60%, #c09aff 80%, #7455ff 100%) !important;
-    background-size: 400% 100% !important;
-    background-position: 0% 50% !important;
-    -webkit-background-clip: text !important;
-    background-clip: text !important;
-    -webkit-text-fill-color: transparent !important;
-    animation: descGradient 2.5s linear infinite !important;
+    font-weight: 900 !important; color: transparent !important; -webkit-text-fill-color: transparent !important; -webkit-background-clip: text !important; background-clip: text !important;
+    background: linear-gradient(90deg, #6f4cff 0%, #9b6dff 15%, #e0c7ff 30%, #8a6cff 45%, #c39aff 60%, #7350ff 75%, #d8c0ff 90%, #6f4cff 100%) !important;
+    background-size: 250% 100% !important; background-position: 0% 50% !important; animation: descriptionFlow 2s linear infinite !important;
 }
 
+/* 🟢 Зелёный (Чистый ядовитый салатовый неон без голубизны!) */
 .desc-text-green {
-    font-weight: 800 !important;
-    color: #a7f3d0 !important;
-    background: linear-gradient(90deg, #059669 0%, #34d399 20%, #a7f3d0 40%, #10b981 60%, #6ee7b7 80%, #047857 100%) !important;
-    background-size: 400% 100% !important;
-    background-position: 0% 50% !important;
-    -webkit-background-clip: text !important;
-    background-clip: text !important;
-    -webkit-text-fill-color: transparent !important;
-    animation: descGradient 2.5s linear infinite !important;
+    font-weight: 900 !important; color: transparent !important; -webkit-text-fill-color: transparent !important; -webkit-background-clip: text !important; background-clip: text !important;
+    background: linear-gradient(90deg, #107c10 0%, #39b54a 15%, #adff2f 30%, #22c55e 45%, #86efac 60%, #15803d 75%, #ccff00 90%, #107c10 100%) !important;
+    background-size: 250% 100% !important; background-position: 0% 50% !important; animation: descriptionFlow 2s linear infinite !important;
 }
 
+/* 🟡 Жёлтый (Плотное жидкое золото Создателя) */
 .desc-text-gold {
-    font-weight: 800 !important;
-    color: #fef08a !important;
-    background: linear-gradient(90deg, #d97706 0%, #fbbf24 20%, #fef08a 40%, #facc15 60%, #fde047 80%, #b45309 100%) !important;
-    background-size: 400% 100% !important;
-    background-position: 0% 50% !important;
-    -webkit-background-clip: text !important;
-    background-clip: text !important;
-    -webkit-text-fill-color: transparent !important;
-    animation: descGradient 2.5s linear infinite !important;
+    font-weight: 900 !important; color: transparent !important; -webkit-text-fill-color: transparent !important; -webkit-background-clip: text !important; background-clip: text !important;
+    background: linear-gradient(90deg, #ca8a04 0%, #facc15 15%, #fffbeb 30%, #eab308 45%, #fef08a 60%, #854d0e 75%, #fde047 90%, #ca8a04 100%) !important;
+    background-size: 250% 100% !important; background-position: 0% 50% !important; animation: descriptionFlow 2s linear infinite !important;
 }
 
+/* 🔴 Красный (Адский рубиновый поток) */
 .desc-text-red {
-    font-weight: 800 !important;
-    color: #fca5a5 !important;
-    background: linear-gradient(90deg, #991b1b 0%, #ef4444 20%, #fca5a5 40%, #dc2626 60%, #f87171 80%, #7f1d1d 100%) !important;
-    background-size: 400% 100% !important;
-    background-position: 0% 50% !important;
-    -webkit-background-clip: text !important;
-    background-clip: text !important;
-    -webkit-text-fill-color: transparent !important;
-    animation: descGradient 2.5s linear infinite !important;
+    font-weight: 900 !important; color: transparent !important; -webkit-text-fill-color: transparent !important; -webkit-background-clip: text !important; background-clip: text !important;
+    background: linear-gradient(90deg, #991b1b 0%, #dc2626 15%, #fee2e2 30%, #ef4444 45%, #fca5a5 60%, #7f1d1d 75%, #f87171 90%, #991b1b 100%) !important;
+    background-size: 250% 100% !important; background-position: 0% 50% !important; animation: descriptionFlow 2s linear infinite !important;
 }
+
+/* 🔵 Синий (Глубокий сапфировый ультрамарин) */
 .desc-text-blue {
-    font-weight: 800 !important;
-    color: #93c5fd !important;
-    background: linear-gradient(90deg, #1e40af 0%, #3b82f6 20%, #93c5fd 40%, #2563eb 60%, #60a5fa 80%, #1d4ed8 100%) !important;
-    background-size: 400% 100% !important;
-    background-position: 0% 50% !important;
-    -webkit-background-clip: text !important;
-    background-clip: text !important;
-    -webkit-text-fill-color: transparent !important;
-    animation: descGradient 2.5s linear infinite !important;
+    font-weight: 900 !important; color: transparent !important; -webkit-text-fill-color: transparent !important; -webkit-background-clip: text !important; background-clip: text !important;
+    background: linear-gradient(90deg, #1e40af 0%, #2563eb 15%, #dbeafe 30%, #3b82f6 45%, #93c5fd 60%, #1e3a8a 75%, #60a5fa 90%, #1e40af 100%) !important;
+    background-size: 250% 100% !important; background-position: 0% 50% !important; animation: descriptionFlow 2s linear infinite !important;
 }
 
+/* 💎 Голубой (Электрический неоновый циан) */
 .desc-text-cyan {
-    font-weight: 800 !important;
-    color: #67e8f9 !important;
-    background: linear-gradient(90deg, #155e75 0%, #06b6d4 20%, #67e8f9 40%, #0891b2 60%, #22d3ee 80%, #0e7490 100%) !important;
-    background-size: 400% 100% !important;
-    background-position: 0% 50% !important;
-    -webkit-background-clip: text !important;
-    background-clip: text !important;
-    -webkit-text-fill-color: transparent !important;
-    animation: descGradient 2.5s linear infinite !important;
+    font-weight: 900 !important; color: transparent !important; -webkit-text-fill-color: transparent !important; -webkit-background-clip: text !important; background-clip: text !important;
+    background: linear-gradient(90deg, #0e7490 0%, #0891b2 15%, #ecfeff 30%, #06b6d4 45%, #67e8f9 60%, #164e63 75%, #22d3ee 90%, #0e7490 100%) !important;
+    background-size: 250% 100% !important; background-position: 0% 50% !important; animation: descriptionFlow 2s linear infinite !important;
 }
 
+/* 🌸 Розовый (Кислотный неоновый кварц) */
 .desc-text-pink {
-    font-weight: 800 !important;
-    color: #f9a8d4 !important;
-    background: linear-gradient(90deg, #9d174d 0%, #ec4899 20%, #f9a8d4 40%, #db2777 60%, #f472b6 80%, #be185d 100%) !important;
-    background-size: 400% 100% !important;
-    background-position: 0% 50% !important;
-    -webkit-background-clip: text !important;
-    background-clip: text !important;
-    -webkit-text-fill-color: transparent !important;
-    animation: descGradient 2.5s linear infinite !important;
+    font-weight: 900 !important; color: transparent !important; -webkit-text-fill-color: transparent !important; -webkit-background-clip: text !important; background-clip: text !important;
+    background: linear-gradient(90deg, #9d174d 0%, #db2777 15%, #fdf2f8 30%, #ec4899 45%, #f9a8d4 60%, #831843 75%, #f472b6 90%, #9d174d 100%) !important;
+    background-size: 250% 100% !important; background-position: 0% 50% !important; animation: descriptionFlow 2s linear infinite !important;
 }
 
 /* 🖼️ 2. АНИМИРОВАННЫЙ ЗАДНИЙ ФОН ПОДЛОЖКИ (ADMIN_DESCBACK) */
