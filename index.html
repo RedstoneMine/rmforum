@@ -16,10 +16,10 @@
     </div>
 </div>
 
-<!-- Дисклеймер -->
+<!-- Официальное окно соглашения с Hover-эффектом ссылки -->
 <div id="notice-modal" class="modal-overlay">
     <div class="modal-content">
-        <h2>ПОЛЬЗОВАТЕЛЬСКОЕ СОГЛАШЕНИЕ</h2>
+        <h2>⚠️ ПОЛЬЗОВАТЕЛЬСКОЕ СОГЛАШЕНИЕ</h2>
         <p style="color: #d4d4d8; line-height: 1.6; text-align: justify; font-size: 0.95rem; margin-bottom: 20px;">
             Для входа на форум проекта RedstoneMine вам необходимо подтвердить свое согласие с официальными правилами нашего проекта.
         </p>
@@ -32,17 +32,36 @@
 </div>
 
 <style>
-    .agreement-link {
-        color: #ef4444; 
-        text-decoration: underline; 
-        font-weight: bold;
-        transition: all 0.2s ease-in-out;
-    }
-    .agreement-link:hover {
-        color: #f43f5e; /* Чуть ярче оттенок */
-        text-shadow: 0 0 12px rgba(244, 63, 94, 0.8);
-    }
+    .agreement-link { color: #ef4444; text-decoration: underline; font-weight: bold; transition: all 0.2s ease-in-out; }
+    .agreement-link:hover { color: #f43f5e; text-shadow: 0 0 12px rgba(244, 63, 94, 0.8); }
 </style>
+
+<!-- 👤 ФОРМА №1: МОЙ СОБСТВЕННЫЙ ПРОФИЛЬ (Окно редактирования) -->
+<div id="my-profile-modal" class="modal-overlay hidden">
+    <div class="modal-content profile-card" style="border-color: #facc15; box-shadow: 0 0 25px rgba(250, 204, 21, 0.25);">
+        <h2>📝 МОЙ ПРОФИЛЬ</h2>
+        <img id="my-prof-avatar" class="profile-big-avatar" src="./robot.png" alt="Аватар">
+        <div id="my-prof-username" class="profile-username" style="color: #fff;">@User</div>
+        <textarea id="my-prof-bio-input" placeholder="Расскажи о себе (например: Продаю алмазы, строю город...)" rows="4" maxlength="200" style="border-color: #27272a; background: #141417;"></textarea>
+        <p style="color:#71717a; font-size:0.8rem; margin-top:-10px; margin-bottom:20px; text-align:left;">Лимит: 200 символов. Менять можно раз в 3 часа.</p>
+        <div style="display: flex; gap: 10px;">
+            <button class="secondary" style="flex:1;" onclick="saveMyProfile()">Сохранить</button>
+            <button class="back-btn" style="margin:0; flex:1;" onclick="closeModal('my-profile-modal')">Закрыть</button>
+        </div>
+    </div>
+</div>
+
+<!-- 👤 ФОРМА №2: ПРОСМОТР ЧУЖОГО ПРОФИЛЯ (Окно только для чтения) -->
+<div id="view-profile-modal" class="modal-overlay hidden">
+    <div class="modal-content profile-card" id="view-profile-card">
+        <h2>👤 КАРТОЧКА ИГРОКА</h2>
+        <img id="view-prof-avatar" class="profile-big-avatar" src="./robot.png" alt="Аватар">
+        <div id="view-prof-username" class="profile-username">@User</div>
+        <div id="view-prof-bio" class="profile-bio-text">Загрузка информации...</div>
+        <button class="back-btn" style="width:100%; margin:0;" onclick="closeModal('view-profile-modal')">ЗАКРЫТЬ</button>
+    </div>
+</div>
+
 
 <div class="container hidden" id="main-content">
     
@@ -56,10 +75,10 @@
         </div>
     </div>
 
-    <!-- ФОРМА АВТОРИЗАЦИИ (ИЗНАЧАЛЬНО СКРЫТА) -->
+    <!-- ФОРМА АВТОРИЗАЦИИ С ОБНОВЛЕННЫМ СТИЛЕМ -->
     <div id="login-box" class="hidden">
-        <h2 id="auth-title">АВТОРИЗАЦИЯ</h2>
-        <p id="auth-desc" style="color: #a1a1aa"></p>
+        <h2>АВТОРИЗАЦИЯ</h2>
+        <p id="auth-desc" style="color: #a1a1aa; font-size: 0.9rem; margin-bottom: 20px;"></p>
         <input type="text" id="username-input" placeholder="Твой ник (например: Stepan)">
         <input type="password" id="password-input" placeholder="Пароль от аккаунта...">
         <div class="auth-buttons">
@@ -70,6 +89,7 @@
 
     <!-- ЛЕНТА ФОРУМА -->
     <div id="forum-box" class="hidden">
+        
         <!-- АДМИНКА С ПОЛЕМ ДЛЯ РАЗБАНА -->
         <div id="admin-panel" class="box hidden" style="border-color: #f43f5e;">
             <h4 style="margin: 0 0 12px 0; color: #f43f5e;">🛡️ УПРАВЛЕНИЕ СЕРВЕРОМ СДЕЛАННОЕ @REDSTONEMINE</h4>
@@ -83,6 +103,12 @@
             </div>
         </div>
 
+        <!-- КНОПКА ВХОДА В СВОЙ ПРОФИЛЬ В ШАПКЕ ЛЕНТЫ -->
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; background:#121214; padding:15px; border-radius:12px; border:1px solid #27272a;">
+            <h3 id="welcome-msg" style="margin:0; font-size:1.1rem; color:#fff; text-shadow:none;">⛏️ Лента</h3>
+            <button class="secondary" style="padding: 8px 16px; font-size:0.85rem;" onclick="openMyProfile()">📝 Мой Профиль</button>
+        </div>
+
         <div class="search-box">
             <input type="text" id="search-input" placeholder="Поиск по хэштегу (например: #дом)..." style="margin:0;">
             <button class="primary" onclick="filterByTag()">Искать / Обновить</button>
@@ -90,7 +116,7 @@
         </div>
 
         <div class="box">
-            <h3 id="welcome-msg">💬 НОВЫЙ ПОСТ</h3>
+            <h3>💬 НОВЫЙ ПОСТ</h3>
             <textarea id="post-text" placeholder="Текст сообщения..." rows="3"></textarea>
             <input type="text" id="post-tags" placeholder="Хэштеги через пробел (например: дом торговля спавн)">
             <button class="primary" id="send-btn" onclick="sendPost()">Опубликовать</button>
