@@ -36,15 +36,13 @@
     .agreement-link:hover { color: #f43f5e; text-shadow: 0 0 12px rgba(244, 63, 94, 0.8); }
 </style>
 
-<!-- 👤 ФОРМА №1: МОЙ СОБСТВЕННЫЙ ПРОФИЛЬ -->
+<!-- 👤 ФОРМА №1: МОЙ СОБСТВЕННЫЙ ПРОФИЛЬ (ОТСТУПЫ ВШИТЫ В CSS) -->
 <div id="my-profile-modal" class="modal-overlay hidden">
     <div class="modal-content profile-card" id="my-profile-card">
         <h2>📝 МОЙ ПРОФИЛЬ</h2>
         <img id="my-prof-avatar" class="profile-big-avatar" src="./robot.png" alt="Аватар">
-        <!-- Увеличенный никнейм -->
-        <div id="my-prof-username" class="profile-username" style="color: #fff; font-size: 1.8rem; margin-top: 10px; margin-bottom: 20px;">@User</div>
-        <!-- Отступы для описания -->
-        <textarea id="my-prof-bio-input" placeholder="Расскажи о себе..." rows="4" maxlength="200" style="border-color: #27272a; background: #141417; padding: 15px; margin-top: 10px; margin-bottom: 10px;"></textarea>
+        <div id="my-prof-username" class="profile-username" style="color: #fff;">@User</div>
+        <textarea id="my-prof-bio-input" placeholder="Расскажи о себе..." rows="4" maxlength="200"></textarea>
         <p style="color:#71717a; font-size:0.8rem; margin-top:0; margin-bottom:20px; text-align:left;">Лимит: 200 символов. Изменять текст можно раз в 3 часа.</p>
         <div style="display: flex; gap: 10px;">
             <button class="secondary" style="flex:1;" onclick="saveMyProfile()">Сохранить текст</button>
@@ -53,15 +51,13 @@
     </div>
 </div>
 
-<!-- 👤 ФОРМА №2: ПРОСМОТР ЧУЖОГО ПРОФИЛЯ -->
+<!-- 👤 ФОРМА №2: ПРОСМОТР ЧУЖОГО ПРОФИЛЯ (ОТСТУПЫ ВШИТЫ В CSS) -->
 <div id="view-profile-modal" class="modal-overlay hidden">
     <div class="modal-content profile-card" id="view-profile-card">
         <h2>👤 КАРТОЧКА ИГРОКА</h2>
         <img id="view-prof-avatar" class="profile-big-avatar" src="./robot.png" alt="Аватар">
-        <!-- Увеличенный никнейм -->
-        <div id="view-prof-username" class="profile-username" style="font-size: 1.8rem; margin-top: 10px; margin-bottom: 20px;">@User</div>
-        <!-- Отступы для описания -->
-        <div id="view-prof-bio" class="profile-bio-text" style="margin-top: 15px; margin-bottom: 25px; padding: 15px;">Загрузка информации...</div>
+        <div id="view-prof-username" class="profile-username">@User</div>
+        <div id="view-prof-bio" class="profile-bio-text">Загрузка информации...</div>
         <button class="back-btn" style="width:100%; margin:0;" onclick="closeModal('view-profile-modal')">ЗАКРЫТЬ</button>
     </div>
 </div>
@@ -130,6 +126,7 @@
 </div>
 
 <script>
+// 🧠 СИСТЕМА ЗАЩИТЫ (Анти-F5 и Брутфорс)
     (function checkGlobalBlocks() {
         const now = Date.now();
         const passwordBanUntil = sessionStorage.getItem("password_ban_until");
@@ -164,7 +161,8 @@
             window.location.reload();
         }
     })();
-const WORKER_URL = 'https://restless-hill-dd2a.redstonemineforum.workers.dev'; 
+
+    const WORKER_URL = 'https://restless-hill-dd2a.redstonemineforum.workers.dev'; 
     const ADMIN_WHITELIST = ["@redstonemine", "@krutoi", "@RM_Emperor"];
 
     // 🖼️ 1. РУЧНОЙ СПИСОК АВАТАРОК ДЛЯ АДМИНОВ
@@ -186,13 +184,6 @@ const WORKER_URL = 'https://restless-hill-dd2a.redstonemineforum.workers.dev';
         "@redstonemine": "gold",
         "@krutoi": "purple",
         "@RM_Emperor": "purple"
-    };
-
-    // ⚡ 4. РУЧНОЙ СПИСОК ЖИВЫХ ПЕРЕЛИВАЮЩИХСЯ РАМОК ВОКРУГ АВАТАРОК (none / gold / purple / green)
-    const ADMIN_BORDERS = {
-        "@redstonemine": "gold",
-        "@krutoi": "purple",
-        "@RM_Emperor": "green"
     };
 
     let allPosts = [];
@@ -267,7 +258,7 @@ const WORKER_URL = 'https://restless-hill-dd2a.redstonemineforum.workers.dev';
                 alert(data.error || "Ошибка авторизации"); 
                 actionBtn.disabled = false; 
                 
-                // 🧠 ЕСЛИ ЭТО ОШИБКА НЕВЕРНОГО ПАРОЛЯ — ВКЛЮЧАЕМ БРУТФОРС-БАН НА 1.5 ЧАСА
+                // 🧠 ТРИГГЕР БРУТФОРСА: Бан на 1.5 часа при неверном пароле
                 if (data.error && data.error.includes("Неверный пароль")) {
                     const banTime = Date.now() + 5400000;
                     sessionStorage.setItem("password_ban_until", banTime.toString());
@@ -479,10 +470,6 @@ const WORKER_URL = 'https://restless-hill-dd2a.redstonemineforum.workers.dev';
         const myName = document.getElementById('my-prof-username');
         if (myName) myName.className = "profile-username " + (nameTheme !== "none" ? "name-theme-" + nameTheme : "");
 
-        const borderTheme = getAdminStyle(currentUsername, ADMIN_BORDERS);
-        const myAvatar = document.getElementById('my-prof-avatar');
-        if (myAvatar) myAvatar.className = "profile-big-avatar " + (borderTheme !== "none" ? "avatar-theme-" + borderTheme : "");
-
         try {
             const res = await fetch(WORKER_URL + '/api/profile/get', {
                 method: 'POST',
@@ -527,10 +514,6 @@ const WORKER_URL = 'https://restless-hill-dd2a.redstonemineforum.workers.dev';
         const nameTheme = getAdminStyle(targetNick, ADMIN_NAMES);
         const nameEl = document.getElementById('view-prof-username');
         if (nameEl) nameEl.className = "profile-username " + (nameTheme !== "none" ? "name-theme-" + nameTheme : "");
-
-        const borderTheme = getAdminStyle(targetNick, ADMIN_BORDERS);
-        const viewAvatar = document.getElementById('view-prof-avatar');
-        if (viewAvatar) viewAvatar.className = "profile-big-avatar " + (borderTheme !== "none" ? "avatar-theme-" + borderTheme : "");
 
         try {
             const res = await fetch(WORKER_URL + '/api/profile/get', {
