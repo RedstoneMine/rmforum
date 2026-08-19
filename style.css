@@ -6,7 +6,7 @@ body {
     padding: 20px; 
     display: flex; 
     justify-content: center; 
-    align-items: center; /* Центрирование по вертикали */
+    align-items: center; /* Центрирование формы входа по вертикали */
     min-height: 100vh;   /* Растягиваем на всю высоту экрана */
     box-sizing: border-box;
 }
@@ -47,16 +47,16 @@ input:focus, textarea:focus {
     box-shadow: 0 0 8px rgba(239, 68, 68, 0.5); 
 }
 
-/* 🔒 СОВРЕМЕННАЯ КИБЕРСПОРТИВНАЯ ФОРМА АВТОРИЗАЦИИ */
+/* 🔒 СОВРЕМЕННАЯ ФОРМА АВТОРИЗАЦИИ ПО ЦЕНТРУ */
 #login-box {
     width: 100%;
-    max-width: 400px; /* Идеальная ширина формы */
+    max-width: 400px; 
     background: #0b0b0c;
     border: 1px solid #3b82f6; /* Ультра-тонкая синяя рамка */
     box-shadow: 0 0 25px rgba(59, 130, 246, 0.25); /* Мягкое неоновое свечение */
     border-radius: 16px;
     padding: 35px 25px;
-    margin: auto; /* Жесткое центрирование внутри контейнера */
+    margin: auto; /* Центрирование */
     box-sizing: border-box;
 }
 #login-box h2 {
@@ -67,63 +67,21 @@ input:focus, textarea:focus {
     text-transform: uppercase;
     margin-bottom: 8px;
 }
-#login-box input {
-    border: 1px solid #27272a;
-    background: #141417;
-}
-#login-box input:focus {
-    border-color: #3b82f6;
-    box-shadow: 0 0 10px rgba(59, 130, 246, 0.4);
-}
-#login-box .auth-buttons { 
-    display: flex; 
-    gap: 12px; 
-    margin-top: 10px;
-}
-#login-box .auth-buttons button {
-    flex: 1;
-}
+#login-box input { border: 1px solid #27272a; background: #141417; }
+#login-box input:focus { border-color: #3b82f6; box-shadow: 0 0 10px rgba(59, 130, 246, 0.4); }
+#login-box .auth-buttons { display: flex; gap: 12px; margin-top: 10px; }
+#login-box .auth-buttons button { flex: 1; }
 
 /* КНОПКИ */
 button { 
-    background: #dc2626; 
-    color: white; 
-    border: none; 
-    padding: 12px 24px; 
-    border-radius: 6px; 
-    cursor: pointer; 
-    font-weight: bold; 
-    text-transform: uppercase; 
-    letter-spacing: 1px; 
-    transition: all 0.2s; 
+    background: #dc2626; color: white; border: none; padding: 12px 24px; border-radius: 6px; cursor: pointer; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; transition: all 0.2s; 
 }
-button:hover { 
-    background: #ef4444; 
-    box-shadow: 0 0 15px rgba(239, 68, 68, 0.6); 
-}
-button:disabled { 
-    background: #27272a; 
-    color: #71717a; 
-    box-shadow: none; 
-    cursor: not-allowed; 
-    border: 1px solid #3f3f46; 
-}
-button.primary { 
-    background: #2563eb; 
-    box-shadow: 0 0 10px rgba(37, 99, 235, 0.2);
-}
-button.primary:hover { 
-    background: #3b82f6; 
-    box-shadow: 0 0 15px rgba(59, 130, 246, 0.6); 
-}
-button.secondary { 
-    background: #10b981; 
-    box-shadow: 0 0 10px rgba(16, 185, 129, 0.2);
-}
-button.secondary:hover { 
-    background: #34d399; 
-    box-shadow: 0 0 15px rgba(52, 211, 153, 0.6);
-}
+button:hover { background: #ef4444; box-shadow: 0 0 15px rgba(239, 68, 68, 0.6); }
+button:disabled { background: #27272a; color: #71717a; box-shadow: none; cursor: not-allowed; border: 1px solid #3f3f46; }
+button.primary { background: #2563eb; box-shadow: 0 0 10px rgba(37, 99, 235, 0.2); }
+button.primary:hover { background: #3b82f6; box-shadow: 0 0 15px rgba(59, 130, 246, 0.6); }
+button.secondary { background: #10b981; box-shadow: 0 0 10px rgba(16, 185, 129, 0.2); }
+button.secondary:hover { background: #34d399; box-shadow: 0 0 15px rgba(52, 211, 153, 0.6); }
 
 .menu-choice { display: flex; flex-direction: column; gap: 15px; margin-top: 20px; }
 .menu-btn { font-size: 1.2rem; padding: 20px; text-align: center; }
@@ -131,47 +89,27 @@ button.secondary:hover {
 .back-btn:hover { background: #3f3f46; color: #fff; box-shadow: none; }
 
 /* ЛЕНТА И ПОСТЫ */
-.post { 
-    display: flex; gap: 16px; background: #141417; padding: 18px; border-radius: 12px; border: 1px solid #27272a; margin-bottom: 15px; 
-}
-.avatar { 
-    width: 55px; height: 55px; border-radius: 8px; object-fit: cover; border: 2px solid #3f3f46; cursor: pointer; 
-}
+.post { display: flex; gap: 16px; background: #141417; padding: 18px; border-radius: 12px; border: 1px solid #27272a; margin-bottom: 15px; }
+.avatar { width: 55px; height: 55px; border-radius: 8px; object-fit: cover; border: 2px solid #3f3f46; cursor: pointer; }
 .post-body { flex: 1; }
-.author { 
-    font-weight: bold; color: #a1a1aa; display: inline-flex; align-items: center; gap: 6px; font-size: 1.1rem; cursor: pointer; 
-}
+.author { font-weight: bold; color: #a1a1aa; display: inline-flex; align-items: center; gap: 6px; font-size: 1.1rem; cursor: pointer; }
 .author:hover { text-decoration: underline; }
 
-/* ⭐ АДМИНСКИЕ СТИЛИ НИКОВ */
-.author.admin-style { 
-    color: #facc15; 
-    text-shadow: 0 0 8px rgba(250, 204, 21, 0.4); 
-}
-.author.mod-style { 
-    color: #3b82f6; 
-    text-shadow: 0 0 8px rgba(59, 130, 246, 0.4); 
-}
+/* ⭐ СТИЛИ НИКОВ В ЛЕНТЕ */
+.author.admin-style { color: #facc15; text-shadow: 0 0 8px rgba(250, 204, 21, 0.4); }
+.author.mod-style { color: #3b82f6; text-shadow: 0 0 8px rgba(59, 130, 246, 0.4); }
 
-.verified-badge { 
-    width: 18px; height: 18px; background: #1d9bf0; color: white; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 11px; font-weight: bold; box-shadow: 0 0 8px rgba(29, 155, 240, 0.6); cursor: pointer; 
-}
-.mod-badge {
-    width: 18px; height: 18px; background: #2563eb; color: white; border-radius: 4px; display: inline-flex; align-items: center; justify-content: center; font-size: 11px; font-weight: bold; box-shadow: 0 0 8px rgba(37, 99, 235, 0.6); cursor: pointer;
-}
+.verified-badge { width: 18px; height: 18px; background: #1d9bf0; color: white; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 11px; font-weight: bold; box-shadow: 0 0 8px rgba(29, 155, 240, 0.6); cursor: pointer; }
 
 .time { font-size: 0.8rem; color: #52525b; margin-left: 10px; }
 .text { color: #e4e4e7; line-height: 1.5; margin-bottom: 10px; }
 .tags-container { display: flex; flex-wrap: wrap; gap: 6px; }
-.tag { 
-    background: #27272a; color: #38bdf8; padding: 3px 8px; font-size: 0.85rem; border-radius: 4px; cursor: pointer; border: 1px solid #38bdf833; 
-}
+.tag { background: #27272a; color: #38bdf8; padding: 3px 8px; font-size: 0.85rem; border-radius: 4px; cursor: pointer; border: 1px solid #38bdf833; }
 .tag:hover { background: #38bdf822; }
 .search-box { display: flex; gap: 10px; margin-bottom: 20px; }
-.admin-btn { 
-    background: #27272a; color: #f87171; padding: 6px 12px; font-size: 0.8rem; border-radius: 4px; border: 1px solid #451a1a; cursor: pointer; margin-top: 10px; 
-}
+.admin-btn { background: #27272a; color: #f87171; padding: 6px 12px; font-size: 0.8rem; border-radius: 4px; border: 1px solid #451a1a; cursor: pointer; margin-top: 10px; }
 
+/* 💬 РЕДДИТ-ВЕТКИ */
 .comments-section { margin-top: 15px; padding-top: 10px; border-top: 1px solid #27272a; }
 .comment { display: flex; gap: 12px; margin-left: 25px; padding-left: 12px; border-left: 2px solid #3f3f46; margin-top: 12px; }
 .comment-avatar { width: 35px; height: 35px; border-radius: 6px; object-fit: cover; border: 1px solid #52525b; cursor: pointer; }
@@ -182,23 +120,62 @@ button.secondary:hover {
 .comment-input { flex: 1; padding: 8px 12px; background: #1a1a1e; border: 1px solid #27272a; color: white; border-radius: 6px; font-size: 0.9rem; margin-bottom: 0; }
 .comment-btn { padding: 8px 16px; font-size: 0.8rem; border-radius: 6px; }
 
-/* 👤 ПРОФИЛИ */
-.profile-big-avatar {
-    width: 120px; height: 120px; border-radius: 16px; object-fit: cover; border: 3px solid #ef4444; box-shadow: 0 0 20px rgba(239, 68, 68, 0.4); margin-bottom: 15px;
+/* 👤 ПРОФИЛИ ОБЩИЕ */
+.profile-big-avatar { width: 120px; height: 120px; border-radius: 16px; object-fit: cover; margin-bottom: 15px; transition: all 0.2s; }
+.profile-username { font-size: 1.5rem; font-weight: bold; margin-bottom: 15px; display: flex; align-items: center; justify-content: center; gap: 8px; }
+.profile-bio-text { background: #1a1a1e; padding: 15px; border-radius: 8px; border: 1px solid #27272a; color: #d4d4d8; text-align: justify; line-height: 1.5; font-size: 0.95rem; margin-bottom: 20px; word-break: break-word; }
+
+/* 👑 ПАРЯЩАЯ КОРОНА НАД ЖЁЛТОЙ КАРТОЧКОЙ */
+.profile-crown {
+    position: absolute;
+    top: -46px; 
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 42px;
+    filter: drop-shadow(0 0 10px rgba(234, 179, 8, 0.8));
+    animation: crownFloat 2s ease-in-out infinite; 
+    z-index: 1010;
 }
-.profile-username {
-    font-size: 1.5rem; font-weight: bold; margin-bottom: 15px; display: flex; align-items: center; justify-content: center; gap: 8px;
-}
-.profile-bio-text {
-    background: #1a1a1e; padding: 15px; border-radius: 8px; border: 1px solid #27272a; color: #d4d4d8; text-align: justify; line-height: 1.5; font-size: 0.95rem; margin-bottom: 20px; word-break: break-word;
+@keyframes crownFloat {
+    0% { top: -46px; }
+    50% { top: -52px; }
+    100% { top: -46px; }
 }
 
-/* МОДАЛКИ */
-.modal-overlay { 
-    position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); backdrop-filter: blur(5px); display: flex; justify-content: center; align-items: center; z-index: 1000; 
+/* 🔮 КИБЕРПАНК НЕОНОВЫЕ СТИЛИ КАРТОЧЕК ПРОФИЛЕЙ */
+
+/* 🌌 Фиолетовый стиль (Аметист) */
+.profile-card.theme-purple {
+    background: #050506 !important; /* Ультра-чёрный глубокий фон карточки */
+    border: 2px solid #a855f7 !important; /* Фиолетовый контур */
+    box-shadow: 0 0 30px rgba(168, 85, 247, 0.4) !important;
 }
-.modal-content { 
-    background: #121214; padding: 30px; border-radius: 12px; width: 100%; max-width: 450px; text-align: center; border: 2px solid #ef4444; box-shadow: 0 0 25px rgba(239, 68, 68, 0.3); box-sizing: border-box;
+.profile-card.theme-purple .profile-big-avatar { border-color: #c084fc !important; box-shadow: 0 0 15px rgba(168, 85, 247, 0.6) !important; }
+.profile-card.theme-purple .profile-username { color: #c084fc !important; text-shadow: 0 0 10px rgba(168, 85, 247, 0.6); }
+.profile-card.theme-purple h2 { color: #a855f7 !important; text-shadow: 0 0 12px rgba(168, 85, 247, 0.5); }
+
+/* 🟢 Зелёный стиль (Изумруд) */
+.profile-card.theme-green {
+    background: #050506 !important;
+    border: 2px solid #22c55e !important; /* Зелёный контур */
+    box-shadow: 0 0 30px rgba(34, 197, 94, 0.3) !important;
 }
+.profile-card.theme-green .profile-big-avatar { border-color: #4ade80 !important; box-shadow: 0 0 15px rgba(34, 197, 94, 0.6) !important; }
+.profile-card.theme-green .profile-username { color: #4ade80 !important; text-shadow: 0 0 10px rgba(34, 197, 94, 0.6); }
+.profile-card.theme-green h2 { color: #22c55e !important; text-shadow: 0 0 12px rgba(34, 197, 94, 0.5); }
+
+/* 🟡 Жёлтый стиль (Золото) */
+.profile-card.theme-gold {
+    background: #050506 !important;
+    border: 2px solid #eab308 !important; /* Золотой контур */
+    box-shadow: 0 0 30px rgba(234, 179, 8, 0.3) !important;
+}
+.profile-card.theme-gold .profile-big-avatar { border-color: #fde047 !important; box-shadow: 0 0 15px rgba(234, 179, 8, 0.6) !important; }
+.profile-card.theme-gold .profile-username { color: #fde047 !important; text-shadow: 0 0 10px rgba(234, 179, 8, 0.6); }
+.profile-card.theme-gold h2 { color: #eab308 !important; text-shadow: 0 0 12px rgba(234, 179, 8, 0.5); }
+
+/* МОДАЛКИ ОБЩИЕ */
+.modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); backdrop-filter: blur(5px); display: flex; justify-content: center; align-items: center; z-index: 1000; }
+.modal-content { position: relative; background: #121214; padding: 30px; border-radius: 12px; width: 100%; max-width: 450px; text-align: center; border: 2px solid #ef4444; box-shadow: 0 0 25px rgba(239, 68, 68, 0.3); box-sizing: border-box; }
 .hidden { display: none !important; }
 .banned-screen { filter: blur(8px); pointer-events: none; user-select: none; }
