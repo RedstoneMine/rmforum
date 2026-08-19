@@ -41,8 +41,10 @@
     <div class="modal-content profile-card" id="my-profile-card">
         <h2>📝 МОЙ ПРОФИЛЬ</h2>
         <img id="my-prof-avatar" class="profile-big-avatar" src="./robot.png" alt="Аватар">
-        <div id="my-prof-username" class="profile-username" style="color: #fff;">@User</div>
-        <textarea id="my-prof-bio-input" placeholder="Расскажи о себе..." rows="4" maxlength="200" style="border-color: #27272a; background: #141417; margin-bottom:10px;"></textarea>
+        <!-- Увеличенный никнейм -->
+        <div id="my-prof-username" class="profile-username" style="color: #fff; font-size: 1.8rem; margin-top: 10px; margin-bottom: 20px;">@User</div>
+        <!-- Отступы для описания -->
+        <textarea id="my-prof-bio-input" placeholder="Расскажи о себе..." rows="4" maxlength="200" style="border-color: #27272a; background: #141417; padding: 15px; margin-top: 10px; margin-bottom: 10px;"></textarea>
         <p style="color:#71717a; font-size:0.8rem; margin-top:0; margin-bottom:20px; text-align:left;">Лимит: 200 символов. Изменять текст можно раз в 3 часа.</p>
         <div style="display: flex; gap: 10px;">
             <button class="secondary" style="flex:1;" onclick="saveMyProfile()">Сохранить текст</button>
@@ -56,8 +58,10 @@
     <div class="modal-content profile-card" id="view-profile-card">
         <h2>👤 КАРТОЧКА ИГРОКА</h2>
         <img id="view-prof-avatar" class="profile-big-avatar" src="./robot.png" alt="Аватар">
-        <div id="view-prof-username" class="profile-username">@User</div>
-        <div id="view-prof-bio" class="profile-bio-text">Загрузка информации...</div>
+        <!-- Увеличенный никнейм -->
+        <div id="view-prof-username" class="profile-username" style="font-size: 1.8rem; margin-top: 10px; margin-bottom: 20px;">@User</div>
+        <!-- Отступы для описания -->
+        <div id="view-prof-bio" class="profile-bio-text" style="margin-top: 15px; margin-bottom: 25px; padding: 15px;">Загрузка информации...</div>
         <button class="back-btn" style="width:100%; margin:0;" onclick="closeModal('view-profile-modal')">ЗАКРЫТЬ</button>
     </div>
 </div>
@@ -126,6 +130,40 @@
 </div>
 
 <script>
+    (function checkGlobalBlocks() {
+        const now = Date.now();
+        const passwordBanUntil = sessionStorage.getItem("password_ban_until");
+        if (passwordBanUntil && now < parseInt(passwordBanUntil)) {
+            window.addEventListener("DOMContentLoaded", () => {
+                document.getElementById('block-title').innerText = "🚫 ПОДОЗРИТЕЛЬНАЯ АКТИВНОСТЬ";
+                document.getElementById('block-text').innerHTML = "Ваш аккаунт ограничен на <b>1 час и 30 минут</b> из-за подозрений в подборе пароля! <br><br>Доступ заблокирован.";
+                document.getElementById('block-modal').classList.remove('hidden');
+                document.body.classList.add('banned-screen');
+            });
+            return;
+        }
+
+        const spamBanUntil = sessionStorage.getItem("spam_ban_until");
+        if (spamBanUntil && now < parseInt(spamBanUntil)) {
+            window.addEventListener("DOMContentLoaded", () => {
+                document.getElementById('block-title').innerText = "🚫 ДОСТУП ОГРАНИЧЕН";
+                document.getElementById('block-text').innerHTML = "Ваш аккаунт временно ограничен на <b>1 час</b> за спам обновлениями страницы! <br><br>Хватит терзать редстоун-схемы форума.";
+                document.getElementById('block-modal').classList.remove('hidden');
+                document.body.classList.add('banned-screen');
+            });
+            return;
+        }
+
+        let history = JSON.parse(sessionStorage.getItem("reload_history") || "[]");
+        history = history.filter(time => now - time < 60000); 
+        history.push(now);
+        sessionStorage.setItem("reload_history", JSON.stringify(history));
+
+        if (history.length > 5) { 
+            sessionStorage.setItem("spam_ban_until", (now + 3600000).toString());
+            window.location.reload();
+        }
+    })();
 const WORKER_URL = 'https://restless-hill-dd2a.redstonemineforum.workers.dev'; 
     const ADMIN_WHITELIST = ["@redstonemine", "@krutoi", "@RM_Emperor"];
 
@@ -225,7 +263,18 @@ const WORKER_URL = 'https://restless-hill-dd2a.redstonemineforum.workers.dev';
             });
             
             const data = await res.json();
-            if(!res.ok) { alert(data.error || "Ошибка авторизации"); actionBtn.disabled = false; return; }
+            if(!res.ok) { 
+                alert(data.error || "Ошибка авторизации"); 
+                actionBtn.disabled = false; 
+                
+                // 🧠 ЕСЛИ ЭТО ОШИБКА НЕВЕРНОГО ПАРОЛЯ — ВКЛЮЧАЕМ БРУТФОРС-БАН НА 1.5 ЧАСА
+                if (data.error && data.error.includes("Неверный пароль")) {
+                    const banTime = Date.now() + 5400000;
+                    sessionStorage.setItem("password_ban_until", banTime.toString());
+                    window.location.reload(); 
+                }
+                return; 
+            }
             
             currentUsername = userIn.startsWith('@') ? userIn : '@' + userIn;
             currentPassword = passIn;
