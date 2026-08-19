@@ -1,15 +1,20 @@
 body { 
-    font-family: 'Segoe UI', sans-serif; 
+    font-family: 'Segoe UI', system-ui, sans-serif; 
     background: #09090b; 
     color: #f4f4f5; 
     margin: 0; 
     padding: 20px; 
     display: flex; 
     justify-content: center; 
+    align-items: center; /* Центрирование по вертикали */
+    min-height: 100vh;   /* Растягиваем на всю высоту экрана */
+    box-sizing: border-box;
 }
 .container { 
     width: 100%; 
     max-width: 650px; 
+    display: flex;
+    flex-direction: column;
 }
 .box { 
     background: #121214; 
@@ -28,17 +33,55 @@ input, textarea {
     width: 100%; 
     padding: 14px; 
     background: #1a1a1e; 
-    border: 1px solid #451a1a; 
+    border: 1px solid #27272a; 
     color: white; 
     border-radius: 8px; 
     margin-bottom: 15px; 
     box-sizing: border-box; 
     font-size: 1rem; 
+    transition: all 0.2s;
 }
 input:focus, textarea:focus { 
     outline: none; 
     border-color: #ef4444; 
     box-shadow: 0 0 8px rgba(239, 68, 68, 0.5); 
+}
+
+/* 🔒 СОВРЕМЕННАЯ КИБЕРСПОРТИВНАЯ ФОРМА АВТОРИЗАЦИИ */
+#login-box {
+    width: 100%;
+    max-width: 400px; /* Идеальная ширина формы */
+    background: #0b0b0c;
+    border: 1px solid #3b82f6; /* Ультра-тонкая синяя рамка */
+    box-shadow: 0 0 25px rgba(59, 130, 246, 0.25); /* Мягкое неоновое свечение */
+    border-radius: 16px;
+    padding: 35px 25px;
+    margin: auto; /* Жесткое центрирование внутри контейнера */
+    box-sizing: border-box;
+}
+#login-box h2 {
+    color: #3b82f6;
+    text-shadow: 0 0 15px rgba(59, 130, 246, 0.5);
+    font-size: 1.6rem;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+}
+#login-box input {
+    border: 1px solid #27272a;
+    background: #141417;
+}
+#login-box input:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 10px rgba(59, 130, 246, 0.4);
+}
+#login-box .auth-buttons { 
+    display: flex; 
+    gap: 12px; 
+    margin-top: 10px;
+}
+#login-box .auth-buttons button {
+    flex: 1;
 }
 
 /* КНОПКИ */
@@ -82,241 +125,80 @@ button.secondary:hover {
     box-shadow: 0 0 15px rgba(52, 211, 153, 0.6);
 }
 
-/* КРАСИВЫЙ ВЫБОР ДЛЯ АВТОРИЗАЦИИ */
-.menu-choice {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-    margin-top: 20px;
-}
-.menu-btn {
-    font-size: 1.2rem;
-    padding: 20px;
-    text-align: center;
-}
+.menu-choice { display: flex; flex-direction: column; gap: 15px; margin-top: 20px; }
+.menu-btn { font-size: 1.2rem; padding: 20px; text-align: center; }
+.back-btn { background: #27272a; color: #a1a1aa; }
+.back-btn:hover { background: #3f3f46; color: #fff; box-shadow: none; }
 
-.auth-buttons { 
-    display: flex; 
-    gap: 10px; 
-}
-.back-btn {
-    background: #27272a;
-    color: #a1a1aa;
-    margin-top: 10px;
-}
-.back-btn:hover {
-    background: #3f3f46;
-    color: #fff;
-    box-shadow: none;
-}
-
+/* ЛЕНТА И ПОСТЫ */
 .post { 
-    display: flex; 
-    gap: 16px; 
-    background: #141417; 
-    padding: 18px; 
-    border-radius: 12px; 
-    border: 1px solid #27272a; 
-    margin-bottom: 15px; 
+    display: flex; gap: 16px; background: #141417; padding: 18px; border-radius: 12px; border: 1px solid #27272a; margin-bottom: 15px; 
 }
 .avatar { 
-    width: 55px; 
-    height: 55px; 
-    border-radius: 8px; 
-    object-fit: cover; 
-    border: 2px solid #3f3f46; 
+    width: 55px; height: 55px; border-radius: 8px; object-fit: cover; border: 2px solid #3f3f46; cursor: pointer; 
 }
-.post-body { 
-    flex: 1;
-}
+.post-body { flex: 1; }
 .author { 
-    font-weight: bold; 
-    color: #a1a1aa; 
-    display: inline-flex; 
-    align-items: center; 
-    gap: 6px; 
-    font-size: 1.1rem; 
+    font-weight: bold; color: #a1a1aa; display: inline-flex; align-items: center; gap: 6px; font-size: 1.1rem; cursor: pointer; 
 }
+.author:hover { text-decoration: underline; }
 
-/* ⭐ ЗОЛОТИСТО-ЖЁЛТЫЙ НИК АДМИНА С КРАСИВЫМ СВЕЧЕНИЕМ */
+/* ⭐ АДМИНСКИЕ СТИЛИ НИКОВ */
 .author.admin-style { 
     color: #facc15; 
     text-shadow: 0 0 8px rgba(250, 204, 21, 0.4); 
 }
+.author.mod-style { 
+    color: #3b82f6; 
+    text-shadow: 0 0 8px rgba(59, 130, 246, 0.4); 
+}
 
 .verified-badge { 
-    width: 18px; 
-    height: 18px; 
-    background: #1d9bf0; 
-    color: white; 
-    border-radius: 50%; 
-    display: inline-flex; 
-    align-items: center; 
-    justify-content: center; 
-    font-size: 11px; 
-    font-weight: bold; 
-    box-shadow: 0 0 8px rgba(29, 155, 240, 0.6); 
-    cursor: pointer; 
+    width: 18px; height: 18px; background: #1d9bf0; color: white; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 11px; font-weight: bold; box-shadow: 0 0 8px rgba(29, 155, 240, 0.6); cursor: pointer; 
 }
-.time { 
-    font-size: 0.8rem; 
-    color: #52525b; 
-    margin-left: 10px; 
-}
-.text { 
-    color: #e4e4e7; 
-    line-height: 1.5; 
-    margin-bottom: 10px; 
+.mod-badge {
+    width: 18px; height: 18px; background: #2563eb; color: white; border-radius: 4px; display: inline-flex; align-items: center; justify-content: center; font-size: 11px; font-weight: bold; box-shadow: 0 0 8px rgba(37, 99, 235, 0.6); cursor: pointer;
 }
 
-.tags-container { 
-    display: flex; 
-    flex-wrap: wrap; 
-    gap: 6px; 
-}
+.time { font-size: 0.8rem; color: #52525b; margin-left: 10px; }
+.text { color: #e4e4e7; line-height: 1.5; margin-bottom: 10px; }
+.tags-container { display: flex; flex-wrap: wrap; gap: 6px; }
 .tag { 
-    background: #27272a; 
-    color: #38bdf8; 
-    padding: 3px 8px; 
-    font-size: 0.85rem; 
-    border-radius: 4px; 
-    cursor: pointer; 
-    border: 1px solid #38bdf833; 
+    background: #27272a; color: #38bdf8; padding: 3px 8px; font-size: 0.85rem; border-radius: 4px; cursor: pointer; border: 1px solid #38bdf833; 
 }
-.tag:hover { 
-    background: #38bdf822; 
-}
-.search-box { 
-    display: flex; 
-    gap: 10px; 
-    margin-bottom: 20px; 
-}
+.tag:hover { background: #38bdf822; }
+.search-box { display: flex; gap: 10px; margin-bottom: 20px; }
 .admin-btn { 
-    background: #27272a; 
-    color: #f87171; 
-    padding: 6px 12px; 
-    font-size: 0.8rem; 
-    border-radius: 4px; 
-    border: 1px solid #451a1a; 
-    cursor: pointer; 
-    margin-top: 10px; 
+    background: #27272a; color: #f87171; padding: 6px 12px; font-size: 0.8rem; border-radius: 4px; border: 1px solid #451a1a; cursor: pointer; margin-top: 10px; 
 }
 
+.comments-section { margin-top: 15px; padding-top: 10px; border-top: 1px solid #27272a; }
+.comment { display: flex; gap: 12px; margin-left: 25px; padding-left: 12px; border-left: 2px solid #3f3f46; margin-top: 12px; }
+.comment-avatar { width: 35px; height: 35px; border-radius: 6px; object-fit: cover; border: 1px solid #52525b; cursor: pointer; }
+.comment-body { flex: 1; }
+.comment-header { font-size: 0.9rem; margin-bottom: 4px; }
+.comment-text { color: #d4d4d8; font-size: 0.95rem; line-height: 1.4; }
+.comment-form { display: flex; gap: 10px; margin-top: 15px; margin-left: 25px; }
+.comment-input { flex: 1; padding: 8px 12px; background: #1a1a1e; border: 1px solid #27272a; color: white; border-radius: 6px; font-size: 0.9rem; margin-bottom: 0; }
+.comment-btn { padding: 8px 16px; font-size: 0.8rem; border-radius: 6px; }
+
+/* 👤 ПРОФИЛИ */
+.profile-big-avatar {
+    width: 120px; height: 120px; border-radius: 16px; object-fit: cover; border: 3px solid #ef4444; box-shadow: 0 0 20px rgba(239, 68, 68, 0.4); margin-bottom: 15px;
+}
+.profile-username {
+    font-size: 1.5rem; font-weight: bold; margin-bottom: 15px; display: flex; align-items: center; justify-content: center; gap: 8px;
+}
+.profile-bio-text {
+    background: #1a1a1e; padding: 15px; border-radius: 8px; border: 1px solid #27272a; color: #d4d4d8; text-align: justify; line-height: 1.5; font-size: 0.95rem; margin-bottom: 20px; word-break: break-word;
+}
+
+/* МОДАЛКИ */
 .modal-overlay { 
-    position: fixed; 
-    top: 0; 
-    left: 0; 
-    width: 100%; 
-    height: 100%; 
-    background: rgba(0,0,0,0.85); 
-    backdrop-filter: blur(5px); 
-    display: flex; 
-    justify-content: center; 
-    align-items: center; 
-    z-index: 1000; 
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); backdrop-filter: blur(5px); display: flex; justify-content: center; align-items: center; z-index: 1000; 
 }
 .modal-content { 
-    background: #121214; 
-    padding: 30px; 
-    border-radius: 12px; 
-    max-width: 450px; 
-    text-align: center; 
-    border: 2px solid #ef4444; 
-    box-shadow: 0 0 25px rgba(239, 68, 68, 0.3); 
+    background: #121214; padding: 30px; border-radius: 12px; width: 100%; max-width: 450px; text-align: center; border: 2px solid #ef4444; box-shadow: 0 0 25px rgba(239, 68, 68, 0.3); box-sizing: border-box;
 }
-.hidden { 
-    display: none !important; 
-}
-
-.banned-screen { 
-    filter: blur(8px); 
-    pointer-events: none; 
-    user-select: none; 
-}
-.comments-section {
-    margin-top: 15px;
-    padding-top: 10px;
-    border-top: 1px solid #27272a;
-}
-.comment {
-    display: flex;
-    gap: 12px;
-    margin-left: 25px; /* Сдвиг вправо как на Reddit */
-    padding-left: 12px;
-    border-left: 2px solid #3f3f46; /* Вертикальная линия ветки */
-    margin-top: 12px;
-}
-.comment-avatar {
-    width: 35px;
-    height: 35px;
-    border-radius: 6px;
-    object-fit: cover;
-    border: 1px solid #52525b;
-}
-.comment-body {
-    flex: 1;
-}
-.comment-header {
-    font-size: 0.9rem;
-    margin-bottom: 4px;
-}
-.comment-text {
-    color: #d4d4d8;
-    font-size: 0.95rem;
-    line-height: 1.4;
-}
-
-/* Форма быстрой отправки коммента */
-.comment-form {
-    display: flex;
-    gap: 10px;
-    margin-top: 15px;
-    margin-left: 25px;
-}
-.comment-input {
-    flex: 1;
-    padding: 8px 12px;
-    background: #1a1a1e;
-    border: 1px solid #27272a;
-    color: white;
-    border-radius: 6px;
-    font-size: 0.9rem;
-    margin-bottom: 0;
-}
-.comment-btn {
-    padding: 8px 16px;
-    font-size: 0.8rem;
-    border-radius: 6px;
-}
-#login-box {
-    max-width: 420px; /* Делаем окно компактным */
-    margin: 0 auto 25px auto; /* Центрируем его на экране */
-    border: 2px solid #2563eb; /* Неоново-синяя админская рамка */
-    box-shadow: 0 0 20px rgba(37, 99, 235, 0.25); /* Красивое синее свечение */
-    text-align: center;
-}
-#login-box h2 {
-    color: #3b82f6; /* Перекрашиваем заголовок в синий */
-    text-shadow: 0 0 10px rgba(59, 130, 246, 0.5);
-    margin-bottom: 20px;
-}
-#login-box input {
-    max-width: 320px; /* Чтобы поля ввода не растягивались на весь экран */
-    margin-left: auto;
-    margin-right: auto;
-    display: block;
-    border: 1px solid #1e3a8a;
-}
-#login-box input:focus {
-    border-color: #3b82f6;
-    box-shadow: 0 0 8px rgba(59, 130, 246, 0.6);
-}
-#login-box .auth-buttons {
-    max-width: 320px;
-    margin: 10px auto 0 auto;
-    display: flex;
-    gap: 10px;
-}
-#login-box .auth-buttons button {
-    flex: 1; /* Кнопки ПОДТВЕРДИТЬ и НАЗАД будут одинакового размера */
-}
+.hidden { display: none !important; }
+.banned-screen { filter: blur(8px); pointer-events: none; user-select: none; }
