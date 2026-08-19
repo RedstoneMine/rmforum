@@ -223,15 +223,29 @@
 
     // ⚙️ ССЫЛКА НА ВОРКЕР И ВАЙТ-ЛИСТ АДМИНОВ (ССЫЛКА ОФИЦИАЛЬНО ВШИТА)
     const WORKER_URL = 'https://restless-hill-dd2a.redstonemineforum.workers.dev'; 
-    const ADMIN_WHITELIST = ["@redstonemine","@krutoi","@RM_Emperor"];
+    const ADMIN_WHITELIST = ["@redstonemine", "@krutoi", "@RM_Emperor"];
 
-    // 🖼️ РУЧНОЙ СПИСОК АВАТАРОК ДЛЯ АДМИНОВ
+    // 🖼️ 1. РУЧНОЙ СПИСОК АВАТАРОК
     const ADMIN_AVATARS = {
         "@redstonemine": "./admin_cube.png",
         "@krutoi": "./popcat.jpg",
         "@RM_Emperor": "./RM_Emperor.png"
     };
 
+    // 🔮 2. РУЧНОЙ СПИСОК ФОНОВ ДЛЯ КАРТОЧЕК ПРОФИЛЕЙ (none / gold / purple / green)
+    const ADMIN_CARDS = {
+        "@redstonemine": "gold",
+        "@krutoi": "purple",
+        "@RM_Emperor": "green"
+    };
+
+    // 🌈 3. РУЧНОЙ СПИСОК ЦВЕТОВ ДЛЯ ИМЕНИ (none / gold / purple / green)
+    const ADMIN_NAMES = {
+        "@redstonemine": "gold",
+        "@krutoi": "purple",
+        "@RM_Emperor": "purple" // Ему можно сделать фиолетовый ник на зелёной карточке!
+    };
+    
     let currentUsername = "";
     let currentPassword = "";
     let currentAuthType = "login"; 
@@ -335,6 +349,13 @@
         const container = document.getElementById('posts-container');
         container.innerHTML = "";
 
+        // Вспомогательная локальная функция для чтения оффлайн-конфигов админов
+        function getAdminStyle(username, list) {
+            const lowerUser = username.trim().toLowerCase();
+            const foundKey = Object.keys(list).find(key => key.toLowerCase() === lowerUser);
+            return foundKey ? list[foundKey] : "none";
+        }
+
         const filtered = currentFilterTag 
             ? allPosts.filter(p => p.tags && p.tags.map(t => t.toLowerCase()).includes(currentFilterTag.toLowerCase()))
             : allPosts;
@@ -355,7 +376,11 @@
             }
 
             const badge = isPostAdmin ? '<span class="verified-badge" title="Верифицированный аккаунт">✓</span>' : '';
-            const styleClass = isPostAdmin ? 'admin-style' : '';
+            
+            // Динамически вычисляем класс для никнейма автора поста по списку ADMIN_NAMES
+            const postNameTheme = isPostAdmin ? getAdminStyle(post.username, ADMIN_NAMES) : "none";
+            const styleClass = postNameTheme !== "none" ? "name-theme-" + postNameTheme : (isPostAdmin ? "admin-style" : "");
+            
             const deleteBtn = isAdmin ? '<br><button class="admin-btn" onclick="deletePost(' + post.id + ')">❌ Стереть пост</button>' : '';
 
             let tagsHTML = "";
@@ -380,10 +405,11 @@
                         commAva = customCommAva ? ADMIN_AVATARS[customCommAva] : './robot.png';
                     }
                     
-                    const commStyle = isCommAdmin ? 'admin-style' : '';
-                    const commBadge = isCommAdmin ? '<span class="verified-badge" title="Верифицированный аккаунт">✓</span>' : '';
+                    // Динамически вычисляем класс для никнейма комментатора по списку ADMIN_NAMES
+                    const commNameTheme = isCommAdmin ? getAdminStyle(comm.username, ADMIN_NAMES) : "none";
+                    const commStyle = commNameTheme !== "none" ? "name-theme-" + commNameTheme : (isCommAdmin ? "admin-style" : "");
                     
-                    // Кнопка удаления комментария
+                    const commBadge = isCommAdmin ? '<span class="verified-badge" title="Верифицированный аккаунт">✓</span>' : '';
                     const commDeleteBtn = isAdmin ? '<button class="admin-btn" style="margin: 5px 0 0 0; padding: 3px 8px; font-size: 0.75rem;" onclick="deleteComment(' + post.id + ', ' + comm.id + ')">❌ Стереть ответ</button>' : '';
 
                     commentsHTML += '<div class="comment">' +
@@ -399,6 +425,27 @@
                     '</div>';
                 });
             }
+            
+            commentsHTML += '<div class="comment-form">' +
+                '<input type="text" id="comm-input-' + post.id + '" class="comment-input" placeholder="Написать ответ в ветку...">' +
+                '<button class="primary comment-btn" onclick="sendComment(' + post.id + ')">Ответить</button>' +
+            '</div></div>';
+
+            container.innerHTML += '<div class="post">' +
+                '<img class="avatar" src="' + avaSrc + '" alt="ava" onclick="viewUserProfile(\'' + post.username + '\')">' +
+                '<div class="post-body">' +
+                    '<div class="post-header">' +
+                        '<span class="author ' + styleClass + '" onclick="viewUserProfile(\'' + post.username + '\')">' + post.username + ' ' + badge + '</span>' +
+                        '<span class="time">' + post.time + '</span>' +
+                    '</div>' +
+                    '<div class="text">' + escapeHTML(post.text) + '</div>' +
+                    tagsHTML +
+                    deleteBtn +
+                    commentsHTML +
+                '</div>' +
+                '</div>';
+        });
+    }
             
             // Форма отправки комментария под постом
             commentsHTML += '<div class="comment-form">' +
@@ -612,20 +659,31 @@
         } catch(e) { alert("Ошибка сохранения стиля."); }
     }
 
-    // 👤 Открытие своего профиля
     async function openMyProfile() {
+        const lowerUser = currentUsername.toLowerCase();
         document.getElementById('my-prof-username').innerText = currentUsername;
         
         let avaSrc = './robot.png';
-        const lowerUser = currentUsername.toLowerCase();
         const customAva = Object.keys(ADMIN_AVATARS).find(key => key.toLowerCase() === lowerUser);
         if (customAva) avaSrc = ADMIN_AVATARS[customAva];
         document.getElementById('my-prof-avatar').src = avaSrc;
 
-        if (isAdmin && document.getElementById('admin-theme-selector')) {
-            document.getElementById('admin-theme-selector').classList.remove('hidden');
-        }
+        const getStyle = (user, list) => {
+            const foundKey = Object.keys(list).find(k => k.toLowerCase() === user.trim().toLowerCase());
+            return foundKey ? list[foundKey] : "none";
+        };
 
+        // Применяем кастомный фон карточки из нашего списка
+        const cardTheme = getStyle(currentUsername, ADMIN_CARDS);
+        const myCard = document.getElementById('my-profile-card');
+        if (myCard) myCard.className = "modal-content profile-card " + (cardTheme !== "none" ? "theme-" + cardTheme : "");
+
+        // Применяем кастомный цвет имени из нашего списка
+        const nameTheme = getStyle(currentUsername, ADMIN_NAMES);
+        const myName = document.getElementById('my-prof-username');
+        if (myName) myName.className = "profile-username " + (nameTheme !== "none" ? "name-theme-" + nameTheme : "");
+
+        // Из бэкенда качаем ТОЛЬКО текст описания
         try {
             const res = await fetch(WORKER_URL + '/api/profile/get', {
                 method: 'POST',
@@ -634,44 +692,27 @@
             });
             const data = await res.json();
             document.getElementById('my-prof-bio-input').value = (data.bio.includes("написал о себе") || data.bio.includes("hasn't written")) ? "" : data.bio;
-            
-            const theme = data.theme || "none";
-            if (document.getElementById('my-prof-theme-select')) {
-                document.getElementById('my-prof-theme-select').value = theme;
-            }
-            
-            const myCard = document.getElementById('my-profile-card');
-            if (myCard) myCard.className = "modal-content profile-card " + (theme !== "none" ? "theme-" + theme : "");
         } catch(e) { console.error(e); }
 
         document.getElementById('my-profile-modal').classList.remove('hidden');
     }
 
-    // 👤 Сохранение текста профиля с кулдауном 3 часа
+    // 👤 Сохранение текста профиля (Остаётся кулдаун раз в 3 часа для защиты базы)
     async function saveMyProfile() {
         const bioText = document.getElementById('my-prof-bio-input').value.trim();
-        const selectEl = document.getElementById('my-prof-theme-select');
-        const selectedTheme = selectEl ? selectEl.value : "none";
         try {
             const res = await fetch(WORKER_URL + '/api/profile/save', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    username: currentUsername,
-                    password: currentPassword,
-                    bio: bioText,
-                    theme: selectedTheme
-                })
-            });
+                body: JSON.stringify({ username: currentUsername, password: currentPassword, bio: bioText })});
             const data = await res.json();
             if (data.error) return alert(data.error);
-
-            alert("Текст профиля успешно изменен!");
+            alert("Описание профиля успешно изменено!");
             closeModal('my-profile-modal');
         } catch(e) { alert("Ошибка сохранения профиля."); }
     }
 
-    // 👤 Просмотр чужого профиля (ФИКС ОШИБОК)
+    // 👤 Просмотр чужого профиля (0 запросов темы на сервер!)
     async function viewUserProfile(targetNick) {
         document.getElementById('view-prof-username').innerText = targetNick;
         document.getElementById('view-prof-bio').innerText = "Загрузка информации...";
@@ -682,6 +723,21 @@
         if (customAva) avaSrc = ADMIN_AVATARS[customAva];
         document.getElementById('view-prof-avatar').src = avaSrc;
 
+        const getStyle = (user, list) => {
+            const foundKey = Object.keys(list).find(k => k.toLowerCase() === user.trim().toLowerCase());
+            return foundKey ? list[foundKey] : "none";
+        };
+
+        // Подгружаем фон карточки чужого админа мгновенно из конфига Гитхаба
+        const cardTheme = getStyle(targetNick, ADMIN_CARDS);
+        const cardEl = document.getElementById('view-profile-card');
+        if (cardEl) cardEl.className = "modal-content profile-card " + (cardTheme !== "none" ? "theme-" + cardTheme : "");
+
+        // Подгружаем цвет имени чужого админа мгновенно из конфига Гитхаба
+        const nameTheme = getStyle(targetNick, ADMIN_NAMES);
+        const nameEl = document.getElementById('view-prof-username');
+        if (nameEl) nameEl.className = "profile-username " + (nameTheme !== "none" ? "name-theme-" + nameTheme : "");
+
         try {
             const res = await fetch(WORKER_URL + '/api/profile/get', {
                 method: 'POST',
@@ -690,15 +746,6 @@
             });
             const data = await res.json();
             document.getElementById('view-prof-bio').innerText = data.bio;
-            
-            // Защищённая проверка вайт-листа
-            const cleanTargetNick = targetNick.trim().toLowerCase().replace('@', '');
-            const isTargetAdmin = ADMIN_WHITELIST.map(v => v.trim().toLowerCase().replace('@', '')).includes(cleanTargetNick);
-            
-            const theme = (isTargetAdmin && data.theme) ? data.theme : "none";
-            
-            const cardEl = document.getElementById('view-profile-card');
-            if (cardEl) cardEl.className = "modal-content profile-card " + (theme !== "none" ? "theme-" + theme : "");
         } catch(e) { document.getElementById('view-prof-bio').innerText = "Ошибка загрузки профиля."; }
 
         document.getElementById('view-profile-modal').classList.remove('hidden');
