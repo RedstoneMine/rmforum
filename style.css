@@ -288,3 +288,35 @@ button.secondary:hover {
     font-size: 0.8rem;
     border-radius: 6px;
 }
+#login-box {
+    max-width: 420px; /* Делаем окно компактным */
+    margin: 0 auto 25px auto; /* Центрируем его на экране */
+    border: 2px solid #2563eb; /* Неоново-синяя админская рамка */
+    box-shadow: 0 0 20px rgba(37, 99, 235, 0.25); /* Красивое синее свечение */
+    text-align: center;
+}
+#login-box h2 {
+    color: #3b82f6; /* Перекрашиваем заголовок в синий */
+    text-shadow: 0 0 10px rgba(59, 130, 246, 0.5);
+    margin-bottom: 20px;
+}
+#login-box input {
+    max-width: 320px; /* Чтобы поля ввода не растягивались на весь экран */
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+    border: 1px solid #1e3a8a;
+}
+#login-box input:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 8px rgba(59, 130, 246, 0.6);
+}
+#login-box .auth-buttons {
+    max-width: 320px;
+    margin: 10px auto 0 auto;
+    display: flex;
+    gap: 10px;
+}
+#login-box .auth-buttons button {
+    flex: 1; /* Кнопки ПОДТВЕРДИТЬ и НАЗАД будут одинакового размера */
+}
