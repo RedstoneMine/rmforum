@@ -104,74 +104,368 @@ button.secondary:hover { background: #34d399; box-shadow: 0 0 15px rgba(52, 211,
 .profile-bio-text, .profile-card textarea { background: #1a1a1e !important; padding: 12px !important; border-radius: 8px !important; border: 1px solid #27272a !important; color: #d4d4d8 !important; text-align: justify; line-height: 1.5; letter-spacing: 0.3px; word-spacing: normal; font-size: 0.95rem; margin-top: 8px !important; margin-bottom: 12px !important; word-break: break-word; box-sizing: border-box !important; }
 
 /* 🌀 АНИМАЦИИ КОСМОСА И НИКОВ */
-@keyframes profileGlow { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
-@keyframes nameGradient { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+@keyframes profileGlow { 
+    0% { background-position: 0% 50%; } 
+    50% { background-position: 100% 50%; } 
+    100% { background-position: 0% 50%; } 
+}
+
+@keyframes nameGradient { 
+    0% { background-position: 0% 50%; } 
+    50% { background-position: 100% 50%; } 
+    100% { background-position: 0% 50%; } 
+}
 
 
 /* 🔮 КОСМИЧЕСКИЕ ФОНЫ КАРТОЧЕК И ТЕКСТ h2 (РАСШИРЕННАЯ ПАЛИТРА) */
-.profile-card.theme-purple { background: radial-gradient(circle at 20% 20%, rgba(150, 0, 255, 0.35), transparent 35%), radial-gradient(circle at 80% 80%, rgba(70, 0, 140, 0.3), transparent 40%), linear-gradient(120deg, #000000, #09000f, #3b0066, #09000f, #000000) !important; background-size: 200% 200% !important; animation: profileGlow 3.5s ease-in-out infinite !important; border: 2px solid #a855f7 !important; box-shadow: 0 0 30px rgba(168, 85, 247, 0.4) !important; }
-.profile-card.theme-purple h2 { color: #c084fc !important; text-shadow: 0 0 15px rgba(168, 85, 247, 0.7) !important; }
-.profile-card.theme-green { background: radial-gradient(circle at 20% 20%, rgba(0, 255, 100, 0.25), transparent 35%), radial-gradient(circle at 80% 80%, rgba(0, 100, 40, 0.25), transparent 40%), linear-gradient(120deg, #000000, #000a03, #004d1a, #000a03, #000000) !important; background-size: 200% 200% !important; animation: profileGlow 3.5s ease-in-out infinite !important; border: 2px solid #22c55e !important; box-shadow: 0 0 30px rgba(34, 197, 94, 0.3) !important; }
-.profile-card.theme-green h2 { color: #4ade80 !important; text-shadow: 0 0 15px rgba(34, 197, 94, 0.7) !important; }
-.profile-card.theme-gold { background: radial-gradient(circle at 20% 20%, rgba(255, 200, 0, 0.25), transparent 35%), radial-gradient(circle at 80% 80%, rgba(150, 100, 0, 0.25), transparent 40%), linear-gradient(120deg, #000000, #0a0800, #664d00, #0a0800, #000000) !important; background-size: 200% 200% !important; animation: profileGlow 3.5s ease-in-out infinite !important; border: 2px solid #eab308 !important; box-shadow: 0 0 30px rgba(234, 179, 8, 0.3) !important; }
-.profile-card.theme-gold h2 { color: #fde047 !important; text-shadow: 0 0 15px rgba(234, 179, 8, 0.7) !important; }
-.profile-card.theme-red { background: radial-gradient(circle at 20% 20%, rgba(255, 0, 0, 0.35), transparent 35%), radial-gradient(circle at 80% 80%, rgba(120, 0, 0, 0.3), transparent 40%), linear-gradient(120deg, #000000, #0c0000, #550000, #0c0000, #000000) !important; background-size: 200% 200% !important; animation: profileGlow 3.5s ease-in-out infinite !important; border: 2px solid #ef4444 !important; box-shadow: 0 0 30px rgba(239, 68, 68, 0.4) !important; }
-.profile-card.theme-red h2 { color: #f87171 !important; text-shadow: 0 0 15px rgba(239, 68, 68, 0.7) !important; }
-.profile-card.theme-blue { background: radial-gradient(circle at 20% 20%, rgba(0, 0, 255, 0.35), transparent 35%), radial-gradient(circle at 80% 80%, rgba(0, 0, 120, 0.3), transparent 40%), linear-gradient(120deg, #000000, #00020c, #001a55, #00020c, #000000) !important; background-size: 200% 200% !important; animation: profileGlow 3.5s ease-in-out infinite !important; border: 2px solid #2563eb !important; box-shadow: 0 0 30px rgba(37, 99, 235, 0.4) !important; }
-.profile-card.theme-blue h2 { color: #60a5fa !important; text-shadow: 0 0 15px rgba(37, 99, 235, 0.7) !important; }
-.profile-card.theme-cyan { background: radial-gradient(circle at 20% 20%, rgba(0, 255, 255, 0.25), transparent 35%), radial-gradient(circle at 80% 80%, rgba(0, 120, 120, 0.25), transparent 40%), linear-gradient(120deg, #000000, #00080c, #004455, #00080c, #000000) !important; background-size: 200% 200% !important; animation: profileGlow 3.5s ease-in-out infinite !important; border: 2px solid #06b6d4 !important; box-shadow: 0 0 30px rgba(6, 182, 212, 0.4) !important; }
-.profile-card.theme-cyan h2 { color: #22d3ee !important; text-shadow: 0 0 15px rgba(6, 182, 212, 0.7) !important; }
-.profile-card.theme-pink { background: radial-gradient(circle at 20% 20%, rgba(255, 0, 150, 0.3), transparent 35%), radial-gradient(circle at 80% 80%, rgba(120, 0, 70, 0.3), transparent 40%), linear-gradient(120deg, #000000, #0c0006, #550033, #0c0006, #000000) !important; background-size: 200% 200% !important; animation: profileGlow 3.5s ease-in-out infinite !important; border: 2px solid #ec4899 !important; box-shadow: 0 0 30px rgba(236, 72, 153, 0.4) !important; }
-.profile-card.theme-pink h2 { color: #f472b6 !important; text-shadow: 0 0 15px rgba(236, 72, 153, 0.7) !important; }
+
+.profile-card.theme-purple { 
+    background: radial-gradient(circle at 20% 20%, rgba(150, 0, 255, 0.35), transparent 35%), radial-gradient(circle at 80% 80%, rgba(70, 0, 140, 0.3), transparent 40%), linear-gradient(120deg, #000000, #09000f, #3b0066, #09000f, #000000) !important; 
+    background-size: 200% 200% !important; 
+    animation: profileGlow 3.5s ease-in-out infinite !important; 
+    border: 2px solid #a855f7 !important; 
+    box-shadow: 0 0 30px rgba(168, 85, 247, 0.4) !important; 
+}
+
+.profile-card.theme-purple h2 { 
+    color: #c084fc !important; 
+    text-shadow: 0 0 15px rgba(168, 85, 247, 0.7) !important; 
+}
+
+.profile-card.theme-green { 
+    background: radial-gradient(circle at 20% 20%, rgba(0, 255, 100, 0.25), transparent 35%), radial-gradient(circle at 80% 80%, rgba(0, 100, 40, 0.25), transparent 40%), linear-gradient(120deg, #000000, #000a03, #004d1a, #000a03, #000000) !important; 
+    background-size: 200% 200% !important; 
+    animation: profileGlow 3.5s ease-in-out infinite !important; 
+    border: 2px solid #22c55e !important; 
+    box-shadow: 0 0 30px rgba(34, 197, 94, 0.3) !important; 
+}
+
+.profile-card.theme-green h2 { 
+    color: #4ade80 !important; 
+    text-shadow: 0 0 15px rgba(34, 197, 94, 0.7) !important; 
+}
+
+.profile-card.theme-gold { 
+    background: radial-gradient(circle at 20% 20%, rgba(255, 200, 0, 0.25), transparent 35%), radial-gradient(circle at 80% 80%, rgba(150, 100, 0, 0.25), transparent 40%), linear-gradient(120deg, #000000, #0a0800, #664d00, #0a0800, #000000) !important; 
+    background-size: 200% 200% !important; 
+    animation: profileGlow 3.5s ease-in-out infinite !important; 
+    border: 2px solid #eab308 !important; 
+    box-shadow: 0 0 30px rgba(234, 179, 8, 0.3) !important; 
+}
+
+.profile-card.theme-gold h2 { 
+    color: #fde047 !important; 
+    text-shadow: 0 0 15px rgba(234, 179, 8, 0.7) !important; 
+}
+
+.profile-card.theme-red { 
+    background: radial-gradient(circle at 20% 20%, rgba(255, 0, 0, 0.35), transparent 35%), radial-gradient(circle at 80% 80%, rgba(120, 0, 0, 0.3), transparent 40%), linear-gradient(120deg, #000000, #0c0000, #550000, #0c0000, #000000) !important; 
+    background-size: 200% 200% !important; 
+    animation: profileGlow 3.5s ease-in-out infinite !important; 
+    border: 2px solid #ef4444 !important; 
+    box-shadow: 0 0 30px rgba(239, 68, 68, 0.4) !important; 
+}
+
+.profile-card.theme-red h2 { 
+    color: #f87171 !important; 
+    text-shadow: 0 0 15px rgba(239, 68, 68, 0.7) !important; 
+}
+
+.profile-card.theme-blue { 
+    background: radial-gradient(circle at 20% 20%, rgba(0, 0, 255, 0.35), transparent 35%), radial-gradient(circle at 80% 80%, rgba(0, 0, 120, 0.3), transparent 40%), linear-gradient(120deg, #000000, #00020c, #001a55, #00020c, #000000) !important; 
+    background-size: 200% 200% !important; 
+    animation: profileGlow 3.5s ease-in-out infinite !important; 
+    border: 2px solid #2563eb !important; 
+    box-shadow: 0 0 30px rgba(37, 99, 235, 0.4) !important; 
+}
+
+.profile-card.theme-blue h2 { 
+    color: #60a5fa !important; 
+    text-shadow: 0 0 15px rgba(37, 99, 235, 0.7) !important; 
+}
+
+.profile-card.theme-cyan { 
+    background: radial-gradient(circle at 20% 20%, rgba(0, 255, 255, 0.25), transparent 35%), radial-gradient(circle at 80% 80%, rgba(0, 120, 120, 0.25), transparent 40%), linear-gradient(120deg, #000000, #00080c, #004455, #00080c, #000000) !important; 
+    background-size: 200% 200% !important; 
+    animation: profileGlow 3.5s ease-in-out infinite !important; 
+    border: 2px solid #06b6d4 !important; 
+    box-shadow: 0 0 30px rgba(6, 182, 212, 0.4) !important; 
+}
+
+.profile-card.theme-cyan h2 { 
+    color: #22d3ee !important; 
+    text-shadow: 0 0 15px rgba(6, 182, 212, 0.7) !important; 
+}
+
+.profile-card.theme-pink { 
+    background: radial-gradient(circle at 20% 20%, rgba(255, 0, 150, 0.3), transparent 35%), radial-gradient(circle at 80% 80%, rgba(120, 0, 70, 0.3), transparent 40%), linear-gradient(120deg, #000000, #0c0006, #550033, #0c0006, #000000) !important; 
+    background-size: 200% 200% !important; 
+    animation: profileGlow 3.5s ease-in-out infinite !important; 
+    border: 2px solid #ec4899 !important; 
+    box-shadow: 0 0 30px rgba(236, 72, 153, 0.4) !important; 
+}
+
+.profile-card.theme-pink h2 { 
+    color: #f472b6 !important; 
+    text-shadow: 0 0 15px rgba(236, 72, 153, 0.7) !important; 
+}
+
+
+/* ⚪ СЕРЫЙ */
+
+.profile-card.theme-gray { 
+    background: radial-gradient(circle at 20% 20%, rgba(180, 180, 180, 0.20), transparent 35%), radial-gradient(circle at 80% 80%, rgba(80, 80, 80, 0.25), transparent 40%), linear-gradient(120deg, #000000, #0a0a0a, #3a3a3a, #0a0a0a, #000000) !important; 
+    background-size: 200% 200% !important; 
+    animation: profileGlow 3.5s ease-in-out infinite !important; 
+    border: 2px solid #a3a3a3 !important; 
+    box-shadow: 0 0 30px rgba(163, 163, 163, 0.3) !important; 
+}
+
+.profile-card.theme-gray h2 { 
+    color: #d4d4d4 !important; 
+    text-shadow: 0 0 15px rgba(163, 163, 163, 0.7) !important; 
+}
+
+
+/* 🟠 ОРАНЖЕВЫЙ */
+
+.profile-card.theme-orange { 
+    background: radial-gradient(circle at 20% 20%, rgba(255, 140, 0, 0.30), transparent 35%), radial-gradient(circle at 80% 80%, rgba(140, 60, 0, 0.30), transparent 40%), linear-gradient(120deg, #000000, #0f0700, #663000, #0f0700, #000000) !important; 
+    background-size: 200% 200% !important; 
+    animation: profileGlow 3.5s ease-in-out infinite !important; 
+    border: 2px solid #f97316 !important; 
+    box-shadow: 0 0 30px rgba(249, 115, 22, 0.4) !important; 
+}
+
+.profile-card.theme-orange h2 { 
+    color: #fb923c !important; 
+    text-shadow: 0 0 15px rgba(249, 115, 22, 0.7) !important; 
+}
+
+
 /* 🌈 ПЕРЕЛИВАЮЩИЕСЯ НИКИ И ТЕКСТ ПОСТОВ */
-.text { color: #e4e4e7; line-height: 1.5; letter-spacing: 0.3px; word-spacing: normal; margin-bottom: 10px; }
-.post-header { display: flex; align-items: center; margin-bottom: 6px; }
+
+.text { 
+    color: #e4e4e7; 
+    line-height: 1.5; 
+    letter-spacing: 0.3px; 
+    word-spacing: normal; 
+    margin-bottom: 10px; 
+}
+
+.post-header { 
+    display: flex; 
+    align-items: center; 
+    margin-bottom: 6px; 
+}
+
 
 /* ⏱️ ИСПРАВЛЕННЫЙ СТИЛЬ ДЛЯ ВРЕМЕНИ ПОСТОВ И ОТВЕТОВ */
+
 .time { 
     font-size: 0.8rem !important; 
-    color: #71717a !important; /* Насыщенный серый цвет, как ты просил! */
-    -webkit-text-fill-color: #71717a !important; /* Убираем прозрачность градиента ников */
-    margin-left: 12px !important; /* Отодвигаем время дальше от ника и галочки */
+    color: #71717a !important; 
+    -webkit-text-fill-color: #71717a !important; 
+    margin-left: 12px !important; 
     font-weight: normal !important;
     text-shadow: none !important;
     display: inline-block !important;
 }
 
-.name-theme-purple { background: linear-gradient(90deg, #8a2be2, #c43cff, #ff5cff, #a83cff, #7226d9, #b84dff); background-size: 300% 100%; -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0 0 6px rgba(174, 60, 255, 0.45)); animation: nameGradient 3s ease-in-out infinite !important; }
-.name-theme-green { background: linear-gradient(90deg, #16a34a, #4ade80, #22c55e, #86efac, #15803d, #22c55e); background-size: 300% 100%; -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0 0 6px rgba(34, 197, 94, 0.45)); animation: nameGradient 3s ease-in-out infinite !important; }
-.name-theme-gold { background: linear-gradient(90deg, #ca8a04, #fde047, #eab308, #fef08a, #854d0e, #eab308); background-size: 300% 100%; -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0 0 6px rgba(234, 179, 8, 0.45)); animation: nameGradient 3s ease-in-out infinite !important; }
-.name-theme-red { background: linear-gradient(90deg, #dc2626, #f87171, #ef4444, #fca5a5, #991b1b, #ef4444); background-size: 300% 100%; -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0 0 6px rgba(239, 68, 68, 0.45)); animation: nameGradient 3s ease-in-out infinite !important; }
-.name-theme-blue { background: linear-gradient(90deg, #1d4ed8, #60a5fa, #3b82f6, #93c5fd, #1e40af, #3b82f6); background-size: 300% 100%; -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0 0 6px rgba(59, 130, 246, 0.45)); animation: nameGradient 3s ease-in-out infinite !important; }
-.name-theme-cyan { background: linear-gradient(90deg, #0e7490, #22d3ee, #06b6d4, #67e8f9, #15803d, #06b6d4); background-size: 300% 100%; -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0 0 6px rgba(6, 182, 212, 0.45)); animation: nameGradient 3s ease-in-out infinite !important; }
-.name-theme-pink { background: linear-gradient(90deg, #be185d, #f472b6, #ec4899, #f9a8d4, #9d174d, #ec4899); background-size: 300% 100%; -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0 0 6px rgba(236, 72, 153, 0.45)); animation: nameGradient 3s ease-in-out infinite !important; }
+.name-theme-purple { 
+    background: linear-gradient(90deg, #8a2be2, #c43cff, #ff5cff, #a83cff, #7226d9, #b84dff); 
+    background-size: 300% 100%; 
+    -webkit-background-clip: text; 
+    background-clip: text; 
+    -webkit-text-fill-color: transparent; 
+    filter: drop-shadow(0 0 6px rgba(174, 60, 255, 0.45)); 
+    animation: nameGradient 3s ease-in-out infinite !important; 
+}
 
-.tags-container { display: flex; flex-wrap: wrap; gap: 6px; }
-.tag { background: #27272a; color: #38bdf8; padding: 3px 8px; font-size: 0.85rem; border-radius: 4px; cursor: pointer; border: 1px solid #38bdf833; }
-.tag:hover { background: #38bdf822; }
-.search-box { display: flex; gap: 10px; margin-bottom: 20px; }
-.admin-btn { background: #27272a; color: #f87171; padding: 6px 12px; font-size: 0.8rem; border-radius: 4px; border: 1px solid #451a1a; cursor: pointer; margin-top: 10px; }
-.hidden { display: none !important; }
-.modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); backdrop-filter: blur(5px); display: flex; justify-content: center; align-items: center; z-index: 1000; }
-.modal-content { background: #121214; padding: 30px; border-radius: 12px; width: 100%; max-width: 450px; text-align: center; border: 2px solid #ef4444; box-shadow: 0 0 25px rgba(239, 68, 68, 0.3); box-sizing: border-box; overflow: hidden; }
-.banned-screen { filter: blur(8px); pointer-events: none; user-select: none; }
+.name-theme-green { 
+    background: linear-gradient(90deg, #16a34a, #4ade80, #22c55e, #86efac, #15803d, #22c55e); 
+    background-size: 300% 100%; 
+    -webkit-background-clip: text; 
+    background-clip: text; 
+    -webkit-text-fill-color: transparent; 
+    filter: drop-shadow(0 0 6px rgba(34, 197, 94, 0.45)); 
+    animation: nameGradient 3s ease-in-out infinite !important; 
+}
+
+.name-theme-gold { 
+    background: linear-gradient(90deg, #ca8a04, #fde047, #eab308, #fef08a, #854d0e, #eab308); 
+    background-size: 300% 100%; 
+    -webkit-background-clip: text; 
+    background-clip: text; 
+    -webkit-text-fill-color: transparent; 
+    filter: drop-shadow(0 0 6px rgba(234, 179, 8, 0.45)); 
+    animation: nameGradient 3s ease-in-out infinite !important; 
+}
+
+.name-theme-red { 
+    background: linear-gradient(90deg, #dc2626, #f87171, #ef4444, #fca5a5, #991b1b, #ef4444); 
+    background-size: 300% 100%; 
+    -webkit-background-clip: text; 
+    background-clip: text; 
+    -webkit-text-fill-color: transparent; 
+    filter: drop-shadow(0 0 6px rgba(239, 68, 68, 0.45)); 
+    animation: nameGradient 3s ease-in-out infinite !important; 
+}
+
+.name-theme-blue { 
+    background: linear-gradient(90deg, #1d4ed8, #60a5fa, #3b82f6, #93c5fd, #1e40af, #3b82f6); 
+    background-size: 300% 100%; 
+    -webkit-background-clip: text; 
+    background-clip: text; 
+    -webkit-text-fill-color: transparent; 
+    filter: drop-shadow(0 0 6px rgba(59, 130, 246, 0.45)); 
+    animation: nameGradient 3s ease-in-out infinite !important; 
+}
+
+.name-theme-cyan { 
+    background: linear-gradient(90deg, #0e7490, #22d3ee, #06b6d4, #67e8f9, #15803d, #06b6d4); 
+    background-size: 300% 100%; 
+    -webkit-background-clip: text; 
+    background-clip: text; 
+    -webkit-text-fill-color: transparent; 
+    filter: drop-shadow(0 0 6px rgba(6, 182, 212, 0.45)); 
+    animation: nameGradient 3s ease-in-out infinite !important; 
+}
+
+.name-theme-pink { 
+    background: linear-gradient(90deg, #be185d, #f472b6, #ec4899, #f9a8d4, #9d174d, #ec4899); 
+    background-size: 300% 100%; 
+    -webkit-background-clip: text; 
+    background-clip: text; 
+    -webkit-text-fill-color: transparent; 
+    filter: drop-shadow(0 0 6px rgba(236, 72, 153, 0.45)); 
+    animation: nameGradient 3s ease-in-out infinite !important; 
+}
+
+
+/* ⚪ СЕРЫЙ НИК */
+
+.name-theme-gray { 
+    background: linear-gradient(90deg, #737373, #d4d4d4, #a3a3a3, #f5f5f5, #525252, #a3a3a3); 
+    background-size: 300% 100%; 
+    -webkit-background-clip: text; 
+    background-clip: text; 
+    -webkit-text-fill-color: transparent; 
+    filter: drop-shadow(0 0 6px rgba(163, 163, 163, 0.45)); 
+    animation: nameGradient 3s ease-in-out infinite !important; 
+}
+
+
+/* 🟠 ОРАНЖЕВЫЙ НИК */
+
+.name-theme-orange { 
+    background: linear-gradient(90deg, #c2410c, #fb923c, #f97316, #fed7aa, #9a3412, #f97316); 
+    background-size: 300% 100%; 
+    -webkit-background-clip: text; 
+    background-clip: text; 
+    -webkit-text-fill-color: transparent; 
+    filter: drop-shadow(0 0 6px rgba(249, 115, 22, 0.45)); 
+    animation: nameGradient 3s ease-in-out infinite !important; 
+}
+
+
+.tags-container { 
+    display: flex; 
+    flex-wrap: wrap; 
+    gap: 6px; 
+}
+
+.tag { 
+    background: #27272a; 
+    color: #38bdf8; 
+    padding: 3px 8px; 
+    font-size: 0.85rem; 
+    border-radius: 4px; 
+    cursor: pointer; 
+    border: 1px solid #38bdf833; 
+}
+
+.tag:hover { 
+    background: #38bdf822; 
+}
+
+.search-box { 
+    display: flex; 
+    gap: 10px; 
+    margin-bottom: 20px; 
+}
+
+.admin-btn { 
+    background: #27272a; 
+    color: #f87171; 
+    padding: 6px 12px; 
+    font-size: 0.8rem; 
+    border-radius: 4px; 
+    border: 1px solid #451a1a; 
+    cursor: pointer; 
+    margin-top: 10px; 
+}
+
+.hidden { 
+    display: none !important; 
+}
+
+.modal-overlay { 
+    position: fixed; 
+    top: 0; 
+    left: 0; 
+    width: 100%; 
+    height: 100%; 
+    background: rgba(0,0,0,0.85); 
+    backdrop-filter: blur(5px); 
+    display: flex; 
+    justify-content: center; 
+    align-items: center; 
+    z-index: 1000; 
+}
+
+.modal-content { 
+    background: #121214; 
+    padding: 30px; 
+    border-radius: 12px; 
+    width: 100%; 
+    max-width: 450px; 
+    text-align: center; 
+    border: 2px solid #ef4444; 
+    box-shadow: 0 0 25px rgba(239, 68, 68, 0.3); 
+    box-sizing: border-box; 
+    overflow: hidden; 
+}
+
+.banned-screen { 
+    filter: blur(8px); 
+    pointer-events: none; 
+    user-select: none; 
+}
 
 @keyframes descGradient {
     0% { background-position: 0% 50%; }
     100% { background-position: 400% 50%; }
 }
 
+
 /* 🛠️ ФИКС: Проявляем текст во ВСЕХ полях ввода при редактировании */
-input[class*="desc-text-"], textarea[class*="desc-text-"],
-input[class*="name-theme-"], textarea[class*="name-theme-"],
-input.desc-text, textarea.desc-text {
-  -webkit-text-fill-color: initial !important; /* Убирает прозрачность букв */
-  text-fill-color: initial !important;
-  background: #1a1a1e !important; /* Родной фон инпута */
-  overflow: visible !important; /* Предотвращает обрезку фрейма */
+
+input[class*="desc-text-"], 
+textarea[class*="desc-text-"],
+input[class*="name-theme-"], 
+textarea[class*="name-theme-"],
+input.desc-text, 
+textarea.desc-text {
+    -webkit-text-fill-color: initial !important;
+    text-fill-color: initial !important;
+    background: #1a1a1e !important;
+    overflow: visible !important;
 }
 
+
 /* 🌌 Фиолетовый */
+
 .desc-text-purple {
     font-weight: 800 !important;
     color: #b99cff !important;
@@ -184,20 +478,25 @@ input.desc-text, textarea.desc-text {
     animation: descGradient 2.5s linear infinite !important;
 }
 
-/* 🟢 Зелёный (ИСПРАВЛЕНО: размер 400% и принудительный display для анимации) */
-.desc-text-green, .desc-text { 
-  font-weight: 800 !important; 
-  color: #00ff00 !important; 
-  background: linear-gradient(90deg, #00ff00 0%, #39ff14 25%, #00ff66 50%, #39ff14 75%, #00ff00 100%) !important; 
-  background-size: 400% 100% !important; /* ПОЧИНЕНО: теперь фон будет двигаться */
-  background-position: 0% 50% !important; 
-  -webkit-background-clip: text !important; 
-  background-clip: text !important; 
-  -webkit-text-fill-color: transparent !important; 
-  animation: descGradient 2.5s linear infinite !important;
+
+/* 🟢 Зелёный */
+
+.desc-text-green, 
+.desc-text { 
+    font-weight: 800 !important; 
+    color: #00ff00 !important; 
+    background: linear-gradient(90deg, #00ff00 0%, #39ff14 25%, #00ff66 50%, #39ff14 75%, #00ff00 100%) !important; 
+    background-size: 400% 100% !important;
+    background-position: 0% 50% !important; 
+    -webkit-background-clip: text !important; 
+    background-clip: text !important; 
+    -webkit-text-fill-color: transparent !important; 
+    animation: descGradient 2.5s linear infinite !important;
 }
 
+
 /* 🟡 Жёлтый */
+
 .desc-text-gold {
     font-weight: 800 !important;
     color: #fde047 !important;
@@ -210,7 +509,9 @@ input.desc-text, textarea.desc-text {
     animation: descGradient 2.5s linear infinite !important;
 }
 
+
 /* 🔴 Красный */
+
 .desc-text-red {
     font-weight: 800 !important;
     color: #fca5a5 !important;
@@ -223,7 +524,9 @@ input.desc-text, textarea.desc-text {
     animation: descGradient 2.5s linear infinite !important;
 }
 
+
 /* 🔵 Синий */
+
 .desc-text-blue {
     font-weight: 800 !important;
     color: #93c5fd !important;
@@ -236,7 +539,9 @@ input.desc-text, textarea.desc-text {
     animation: descGradient 2.5s linear infinite !important;
 }
 
+
 /* 💎 Голубой */
+
 .desc-text-cyan {
     font-weight: 800 !important;
     color: #67e8f9 !important;
@@ -249,7 +554,9 @@ input.desc-text, textarea.desc-text {
     animation: descGradient 2.5s linear infinite !important;
 }
 
+
 /* 🌸 Розовый */
+
 .desc-text-pink {
     font-weight: 800 !important;
     color: #f9a8d4 !important;
@@ -262,20 +569,161 @@ input.desc-text, textarea.desc-text {
     animation: descGradient 2.5s linear infinite !important;
 }
 
+
+/* ⚪ Серый */
+
+.desc-text-gray {
+    font-weight: 800 !important;
+    color: #d4d4d4 !important;
+    background: linear-gradient(90deg, #737373 0%, #a3a3a3 20%, #f5f5f5 40%, #d4d4d4 60%, #a3a3a3 80%, #737373 100%) !important;
+    background-size: 400% 100% !important;
+    background-position: 0% 50% !important;
+    -webkit-background-clip: text !important;
+    background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+    animation: descGradient 2.5s linear infinite !important;
+}
+
+
+/* 🟠 Оранжевый */
+
+.desc-text-orange {
+    font-weight: 800 !important;
+    color: #fb923c !important;
+    background: linear-gradient(90deg, #c2410c 0%, #f97316 20%, #fed7aa 40%, #fb923c 60%, #f97316 80%, #c2410c 100%) !important;
+    background-size: 400% 100% !important;
+    background-position: 0% 50% !important;
+    -webkit-background-clip: text !important;
+    background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+    animation: descGradient 2.5s linear infinite !important;
+}
+
+
 /* 🖼️ 2. АНИМИРОВАННЫЙ ЗАДНИЙ ФОН ПОДЛОЖКИ (ADMIN_DESCBACK) */
-.desc-back-purple { background: linear-gradient(135deg, #130026, #2a085c, #130026) !important; background-size: 200% 200% !important; animation: descGradient 5s ease infinite !important; border: 1px solid #7c3aed !important; box-shadow: inset 0 0 12px rgba(124, 58, 237, 0.3) !important; color: #fff; }
-.desc-back-green { background: linear-gradient(135deg, #022c16, #064e3b, #022c16) !important; background-size: 200% 200% !important; animation: descGradient 5s ease infinite !important; border: 1px solid #059669 !important; box-shadow: inset 0 0 12px rgba(5, 150, 105, 0.3) !important; color: #fff; }
-.desc-back-gold { background: linear-gradient(135deg, #2e1a05, #78350f, #2e1a05) !important; background-size: 200% 200% !important; animation: descGradient 5s ease infinite !important; border: 1px solid #d97706 !important; box-shadow: inset 0 0 12px rgba(217, 119, 70, 0.3) !important; color: #fff; }
-.desc-back-red { background: linear-gradient(135deg, #2d0000, #7f1d1d, #2d0000) !important; background-size: 200% 200% !important; animation: descGradient 5s ease infinite !important; border: 1px solid #dc2626 !important; box-shadow: inset 0 0 12px rgba(220, 38, 38, 0.3) !important; color: #fff; }
-.desc-back-blue { background: linear-gradient(135deg, #031b4e, #1e3a8a, #031b4e) !important; background-size: 200% 200% !important; animation: descGradient 5s ease infinite !important; border: 1px solid #2563eb !important; box-shadow: inset 0 0 12px rgba(37, 99, 235, 0.3) !important; color: #fff; }
-.desc-back-cyan { background: linear-gradient(135deg, #042f44, #164e63, #042f44) !important; background-size: 200% 200% !important; animation: descGradient 5s ease infinite !important; border: 1px solid #0891b2 !important; box-shadow: inset 0 0 12px rgba(8, 145, 178, 0.3) !important; color: #fff; }
-.desc-back-pink { background: linear-gradient(135deg, #35021e, #831843, #35021e) !important; background-size: 200% 200% !important; animation: descGradient 5s ease infinite !important; border: 1px solid #db2777 !important; box-shadow: inset 0 0 12px rgba(219, 39, 119, 0.3) !important; color: #fff; }
+
+.desc-back-purple { 
+    background: linear-gradient(135deg, #130026, #2a085c, #130026) !important; 
+    background-size: 200% 200% !important; 
+    animation: descGradient 5s ease infinite !important; 
+    border: 1px solid #7c3aed !important; 
+    box-shadow: inset 0 0 12px rgba(124, 58, 237, 0.3) !important; 
+    color: #fff; 
+}
+
+.desc-back-green { 
+    background: linear-gradient(135deg, #022c16, #064e3b, #022c16) !important; 
+    background-size: 200% 200% !important; 
+    animation: descGradient 5s ease infinite !important; 
+    border: 1px solid #059669 !important; 
+    box-shadow: inset 0 0 12px rgba(5, 150, 105, 0.3) !important; 
+    color: #fff; 
+}
+
+.desc-back-gold { 
+    background: linear-gradient(135deg, #2e1a05, #78350f, #2e1a05) !important; 
+    background-size: 200% 200% !important; 
+    animation: descGradient 5s ease infinite !important; 
+    border: 1px solid #d97706 !important; 
+    box-shadow: inset 0 0 12px rgba(217, 119, 70, 0.3) !important; 
+    color: #fff; 
+}
+
+.desc-back-red { 
+    background: linear-gradient(135deg, #2d0000, #7f1d1d, #2d0000) !important; 
+    background-size: 200% 200% !important; 
+    animation: descGradient 5s ease infinite !important; 
+    border: 1px solid #dc2626 !important; 
+    box-shadow: inset 0 0 12px rgba(220, 38, 38, 0.3) !important; 
+    color: #fff; 
+}
+
+.desc-back-blue { 
+    background: linear-gradient(135deg, #031b4e, #1e3a8a, #031b4e) !important; 
+    background-size: 200% 200% !important; 
+    animation: descGradient 5s ease infinite !important; 
+    border: 1px solid #2563eb !important; 
+    box-shadow: inset 0 0 12px rgba(37, 99, 235, 0.3) !important; 
+    color: #fff; 
+}
+
+.desc-back-cyan { 
+    background: linear-gradient(135deg, #042f44, #164e63, #042f44) !important; 
+    background-size: 200% 200% !important; 
+    animation: descGradient 5s ease infinite !important; 
+    border: 1px solid #0891b2 !important; 
+    box-shadow: inset 0 0 12px rgba(8, 145, 178, 0.3) !important; 
+    color: #fff; 
+}
+
+.desc-back-pink { 
+    background: linear-gradient(135deg, #35021e, #831843, #35021e) !important; 
+    background-size: 200% 200% !important; 
+    animation: descGradient 5s ease infinite !important; 
+    border: 1px solid #db2777 !important; 
+    box-shadow: inset 0 0 12px rgba(219, 39, 119, 0.3) !important; 
+    color: #fff; 
+}
+
+
+/* ⚪ Серый фон описания */
+
+.desc-back-gray { 
+    background: linear-gradient(135deg, #171717, #3f3f46, #171717) !important; 
+    background-size: 200% 200% !important; 
+    animation: descGradient 5s ease infinite !important; 
+    border: 1px solid #737373 !important; 
+    box-shadow: inset 0 0 12px rgba(163, 163, 163, 0.3) !important; 
+    color: #fff; 
+}
+
+
+/* 🟠 Оранжевый фон описания */
+
+.desc-back-orange { 
+    background: linear-gradient(135deg, #2a1003, #7c2d12, #2a1003) !important; 
+    background-size: 200% 200% !important; 
+    animation: descGradient 5s ease infinite !important; 
+    border: 1px solid #ea580c !important; 
+    box-shadow: inset 0 0 12px rgba(234, 88, 12, 0.3) !important; 
+    color: #fff; 
+}
+
 
 /* Фиксы для кнопок закрытия, если на них вешается градиентный фон */
-.back-btn.desc-back-purple:hover { box-shadow: 0 0 15px rgba(124, 58, 237, 0.6) !important; }
-.back-btn.desc-back-green:hover { box-shadow: 0 0 15px rgba(5, 150, 105, 0.6) !important; }
-.back-btn.desc-back-gold:hover { box-shadow: 0 0 15px rgba(217, 119, 70, 0.6) !important; }
-.back-btn.desc-back-red:hover { box-shadow: 0 0 15px rgba(220, 38, 26, 0.6) !important; }
-.back-btn.desc-back-blue:hover { box-shadow: 0 0 15px rgba(37, 99, 235, 0.6) !important; }
-.back-btn.desc-back-cyan:hover { box-shadow: 0 0 15px rgba(8, 145, 178, 0.6) !important; }
-.back-btn.desc-back-pink:hover { box-shadow: 0 0 15px rgba(219, 39, 119, 0.6) !important; }
+
+.back-btn.desc-back-purple:hover { 
+    box-shadow: 0 0 15px rgba(124, 58, 237, 0.6) !important; 
+}
+
+.back-btn.desc-back-green:hover { 
+    box-shadow: 0 0 15px rgba(5, 150, 105, 0.6) !important; 
+}
+
+.back-btn.desc-back-gold:hover { 
+    box-shadow: 0 0 15px rgba(217, 119, 70, 0.6) !important; 
+}
+
+.back-btn.desc-back-red:hover { 
+    box-shadow: 0 0 15px rgba(220, 38, 26, 0.6) !important; 
+}
+
+.back-btn.desc-back-blue:hover { 
+    box-shadow: 0 0 15px rgba(37, 99, 235, 0.6) !important; 
+}
+
+.back-btn.desc-back-cyan:hover { 
+    box-shadow: 0 0 15px rgba(8, 145, 178, 0.6) !important; 
+}
+
+.back-btn.desc-back-pink:hover { 
+    box-shadow: 0 0 15px rgba(219, 39, 119, 0.6) !important; 
+}
+
+.back-btn.desc-back-gray:hover { 
+    box-shadow: 0 0 15px rgba(163, 163, 163, 0.6) !important; 
+}
+
+.back-btn.desc-back-orange:hover { 
+    box-shadow: 0 0 15px rgba(249, 115, 22, 0.6) !important; 
+}
