@@ -407,50 +407,43 @@
         });
     }
     async function sendPost() {
-        const text = document.getElementById('post-text').value.trim();
-        const tags = document.getElementById('post-tags').value.trim();
-        if(!text) return;
-        
-        try {
-            await fetch(WORKER_URL + '/api/posts', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ username: currentUsername, password: currentPassword, text: text, tags: tags })
-            });
-            document.getElementById('post-text').value = "";
-            document.getElementById('post-tags').value = "";
-            loadPosts();
-        } catch(e) { alert("Ошибка публикации."); }
+    const text = document.getElementById('post-text').value.trim();
+    const tags = document.getElementById('post-tags').value.trim();
+
+    if (!text) return;
+
+    const btn = document.getElementById('send-btn');
+    btn.disabled = true;
+
+    try {
+        const res = await fetch(WORKER_URL + '/api/posts', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                username: currentUsername,
+                password: currentPassword,
+                text: text,
+                tags: tags
+            })
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) {
+            return alert(data.error || "Ошибка публикации.");
+        }
+
+        document.getElementById('post-text').value = "";
+        document.getElementById('post-tags').value = "";
+
+        await loadPosts();
+
+    } catch (e) {
+        alert("Ошибка публикации.");
+    } finally {
+        btn.disabled = false;
     }
-
-    async function sendComment(postId) {
-        const inputEl = document.getElementById('comm-input-' + postId);
-        if (!inputEl || !inputEl.value.trim()) return;
-        const text = inputEl.value.trim();
-        try {
-            const res = await fetch(WORKER_URL + '/api/comments', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ username: currentUsername, password: currentPassword, postId: postId, text: text })
-            });
-            const data = await res.json();
-            if (data.error) return alert(data.error);
-
-            const postIndex = allPosts.findIndex(p => p.id === postId);
-            if (postIndex !== -1) {
-                if (!allPosts[postIndex].comments) allPosts[postIndex].comments = [];
-                allPosts[postIndex].comments.push({
-                    id: Date.now(),
-                    username: currentUsername,
-                    text: text,
-                    time: new Date().toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' })
-                });
-            }
-            inputEl.value = "";
-            renderPosts();
-        } catch (e) { alert("Ошибка отправки комментария."); }
-    }
-
+}
     async function deletePost(postId) {
         if(!confirm("Удалить пост?")) return;
         try {
