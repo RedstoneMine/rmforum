@@ -174,16 +174,16 @@ button.secondary:hover { background: #34d399; box-shadow: 0 0 15px rgba(52, 211,
 }
 
 /* 🟢 Зелёный (Чистый, сочный салатовый неон без голубизны!) */
-.desc-text-green {
-    font-weight: 800 !important;
-    color: #adff2f !important;
-    background: linear-gradient(90deg, #7fff00 0%, #adff2f 20%, #ccff33 40%, #99ff00 60%, #bfff00 80%, #7fff00 100%) !important;
-    background-size: 400% 100% !important;
-    background-position: 0% 50% !important;
-    -webkit-background-clip: text !important;
-    background-clip: text !important;
-    -webkit-text-fill-color: transparent !important;
-    animation: descGradient 2.5s linear infinite !important;
+.desc-text-green { 
+  font-weight: 800 !important; 
+  color: #1e4620 !important;
+  background: linear-gradient(90deg, #134e4a 0%, #166534 20%, #15803d 40%, #166534 60%, #14532d 80%, #134e4a 100%) !important; /* Новая палитра */
+  background-size: 400% 100% !important; 
+  background-position: 0% 50% !important; 
+  -webkit-background-clip: text !important; 
+  background-clip: text !important; 
+  -webkit-text-fill-color: transparent !important; 
+  animation: descGradient 2.5s linear infinite !important; 
 }
 
 /* 🟡 Жёлтый (Однородное золото Создателя) */
