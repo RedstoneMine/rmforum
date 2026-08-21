@@ -727,3 +727,13 @@ textarea.desc-text {
 .back-btn.desc-back-orange:hover { 
     box-shadow: 0 0 15px rgba(249, 115, 22, 0.6) !important; 
 }
+.post-body {
+    flex: 1;
+    min-width: 0;
+}
+
+.comment-text, 
+.post-body {
+    overflow-wrap: break-word;
+    word-break: break-word;
+}
