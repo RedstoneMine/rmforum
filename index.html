@@ -1,102 +1,227 @@
-
 <!DOCTYPE html>
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#111113">
+<meta name="description" content="RedstoneMine Forum — форум игрового проекта RedstoneMine.">
 <title>Redstone Mine — Форум</title>
-<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="./style.css">
+
 <style>
-.system-unread-dot{position:absolute;top:5px;right:5px;width:10px;height:10px;background:#ef4444;border-radius:50%;box-shadow:0 0 10px #ef4444aa}
-.system-unread-dot.hidden{display:none!important}
-.system-message{transition:border-color .2s,box-shadow .2s}
-.system-message:hover{border-color:#3f3f46!important;box-shadow:0 0 12px #ef444414}
-#system-box{margin-bottom:25px}
-#system-box textarea{margin-bottom:10px}
-.agreement-link{color:#ef4444;text-decoration:underline;font-weight:bold}
-.agreement-link:hover{color:#f43f5e;text-shadow:0 0 12px #f43f5ecc}
-button:disabled{opacity:.55;cursor:not-allowed}
-#ratelimit-modal .modal-content{animation:rateLimitAppear .2s ease-out}
-@keyframes rateLimitAppear{from{transform:scale(.95);opacity:0}to{transform:scale(1);opacity:1}}
-.verified-badge{display:inline-flex;position:relative;align-items:center;vertical-align:middle;cursor:pointer;margin-left:3px}
-.verified-badge img{width:17px;height:17px;object-fit:contain;display:block}
-.verified-badge::after{content:attr(data-tooltip);position:absolute;bottom:calc(100% + 9px);left:50%;transform:translateX(-50%) translateY(4px);background:#18181b;border:1px solid #3f3f46;border-radius:8px;color:#f4f4f5;padding:8px 11px;font-size:12px;font-weight:500;white-space:nowrap;box-shadow:0 8px 24px #0008;opacity:0;pointer-events:none;transition:.18s;z-index:20}
-.verified-badge:hover::after,.verified-badge:focus-visible::after{opacity:1;transform:translateX(-50%) translateY(0)}
-#toast-container{position:fixed;top:18px;right:18px;z-index:10000;display:flex;flex-direction:column;gap:10px;width:min(380px,calc(100vw - 36px));pointer-events:none}
-.toast{display:flex;align-items:flex-start;gap:10px;padding:14px 16px;border:1px solid #3f3f46;border-radius:13px;background:#18181b;color:#f4f4f5;box-shadow:0 12px 35px #0008;animation:toastIn .2s ease-out;pointer-events:auto;overflow-wrap:anywhere}
-.toast.success{border-color:#15803d}.toast.error{border-color:#b91c1c}.toast.warning{border-color:#b45309}
-.toast-icon{font-size:18px;line-height:1.2}.toast-message{font-size:14px;line-height:1.5;flex:1}
-.toast-close{background:none!important;color:#a1a1aa!important;padding:0!important;margin:0!important;font-size:18px!important;line-height:1!important}
-@keyframes toastIn{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
-#confirm-modal{z-index:9000}
-#confirm-modal .modal-content{max-width:420px}
-.confirm-actions{display:flex;gap:10px;margin-top:22px}
-.confirm-actions button{flex:1}
-#confirm-description{color:#d4d4d8;line-height:1.6;overflow-wrap:anywhere}
-#system-btn{position:relative}
-#posts-container.hidden{display:none}
-#toast-container button{min-width:0}
-@media(max-width:600px){
- #forum-actions{align-items:stretch!important}
- .post{padding:14px}
- .system-message .avatar{width:48px;height:48px}
- #toast-container{top:10px;right:10px;width:calc(100vw - 20px)}
- .confirm-actions{flex-direction:column}
- .admin-tool-row{flex-wrap:wrap}
- .admin-tool-row input,.admin-tool-row select,.admin-tool-row button{width:100%;min-width:0}
+.system-unread-dot {
+  position:absolute;
+  top:5px;
+  right:5px;
+  width:10px;
+  height:10px;
+  background:#ef4444;
+  border-radius:50%;
+  box-shadow:0 0 10px #ef4444aa;
+}
+.system-unread-dot.hidden {display:none!important}
+.system-message {transition:border-color .2s,box-shadow .2s}
+.system-message:hover {
+  border-color:#3f3f46!important;
+  box-shadow:0 0 12px #ef444414;
+}
+#system-box {margin-bottom:25px}
+#system-box textarea {margin-bottom:10px}
+.agreement-link {
+  color:#ef4444;
+  text-decoration:underline;
+  font-weight:bold;
+}
+.agreement-link:hover {
+  color:#f43f5e;
+  text-shadow:0 0 12px #f43f5ecc;
+}
+button:disabled {opacity:.55;cursor:not-allowed}
+#ratelimit-modal .modal-content {animation:rateLimitAppear .2s ease-out}
+@keyframes rateLimitAppear {
+  from {transform:scale(.95);opacity:0}
+  to {transform:scale(1);opacity:1}
+}
+.verified-badge {
+  display:inline-flex;
+  position:relative;
+  align-items:center;
+  vertical-align:middle;
+  cursor:pointer;
+  margin-left:3px;
+}
+.verified-badge img {
+  width:17px;
+  height:17px;
+  object-fit:contain;
+  display:block;
+}
+.verified-badge::after {
+  content:attr(data-tooltip);
+  position:absolute;
+  bottom:calc(100% + 9px);
+  left:50%;
+  transform:translateX(-50%) translateY(4px);
+  background:#18181b;
+  border:1px solid #3f3f46;
+  border-radius:8px;
+  color:#f4f4f5;
+  padding:8px 11px;
+  font-size:12px;
+  font-weight:500;
+  white-space:nowrap;
+  box-shadow:0 8px 24px #0008;
+  opacity:0;
+  pointer-events:none;
+  transition:.18s;
+  z-index:20;
+}
+.verified-badge:hover::after,
+.verified-badge:focus-visible::after {
+  opacity:1;
+  transform:translateX(-50%) translateY(0);
+}
+#toast-container {
+  position:fixed;
+  top:18px;
+  right:18px;
+  z-index:10000;
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+  width:min(380px,calc(100vw - 36px));
+  pointer-events:none;
+}
+.toast {
+  display:flex;
+  align-items:flex-start;
+  gap:10px;
+  padding:14px 16px;
+  border:1px solid #3f3f46;
+  border-radius:13px;
+  background:#18181b;
+  color:#f4f4f5;
+  box-shadow:0 12px 35px #0008;
+  animation:toastIn .2s ease-out;
+  pointer-events:auto;
+  overflow-wrap:anywhere;
+}
+.toast.success {border-color:#15803d}
+.toast.error {border-color:#b91c1c}
+.toast.warning {border-color:#b45309}
+.toast-icon {font-size:18px;line-height:1.2}
+.toast-message {font-size:14px;line-height:1.5;flex:1}
+.toast-close {
+  background:none!important;
+  color:#a1a1aa!important;
+  padding:0!important;
+  margin:0!important;
+  font-size:18px!important;
+  line-height:1!important;
+}
+@keyframes toastIn {
+  from {opacity:0;transform:translateY(-8px)}
+  to {opacity:1;transform:translateY(0)}
+}
+#confirm-modal {z-index:9000}
+#confirm-modal .modal-content {max-width:420px}
+.confirm-actions {display:flex;gap:10px;margin-top:22px}
+.confirm-actions button {flex:1}
+#confirm-description {
+  color:#d4d4d8;
+  line-height:1.6;
+  overflow-wrap:anywhere;
+}
+#system-btn {position:relative}
+#posts-container.hidden {display:none}
+#toast-container button {min-width:0}
+
+@media(max-width:600px) {
+  #forum-actions {align-items:stretch!important}
+  .post {padding:14px}
+  .system-message .avatar {width:48px;height:48px}
+  #toast-container {
+    top:10px;
+    right:10px;
+    width:calc(100vw - 20px);
+  }
+  .confirm-actions {flex-direction:column}
+  .admin-tool-row {flex-wrap:wrap}
+  .admin-tool-row input,
+  .admin-tool-row select,
+  .admin-tool-row button {
+    width:100%;
+    min-width:0;
+  }
 }
 </style>
 </head>
-<body>
 
+<body>
 <div id="toast-container" aria-live="polite" aria-atomic="false"></div>
 
-<div id="confirm-modal" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="confirm-title">
+<div id="confirm-modal" class="modal-overlay hidden" role="dialog"
+     aria-modal="true" aria-labelledby="confirm-title">
   <div class="modal-content">
     <h2 id="confirm-title">Подтверждение действия</h2>
     <p id="confirm-description">Ты уверен?</p>
     <div class="confirm-actions">
-      <button type="button" class="secondary" onclick="resolveConfirmation(false)">Отмена</button>
-      <button type="button" id="confirm-accept" class="primary" onclick="resolveConfirmation(true)">Подтвердить</button>
+      <button type="button" class="secondary"
+              onclick="resolveConfirmation(false)">Отмена</button>
+      <button type="button" id="confirm-accept" class="primary"
+              onclick="resolveConfirmation(true)">Подтвердить</button>
     </div>
   </div>
 </div>
 
-<div id="block-modal" class="modal-overlay hidden">
+<div id="block-modal" class="modal-overlay hidden" role="dialog"
+     aria-modal="true">
   <div class="modal-content" style="border-color:#ef4444">
     <h2 id="block-title" style="color:#ef4444">🚫 ДОСТУП ОГРАНИЧЕН</h2>
     <p id="block-text" style="color:#d4d4d8;line-height:1.5"></p>
   </div>
 </div>
 
-<div id="ratelimit-modal" class="modal-overlay hidden">
+<div id="ratelimit-modal" class="modal-overlay hidden" role="dialog"
+     aria-modal="true">
   <div class="modal-content" style="border-color:#f59e0b">
     <h2 style="color:#f59e0b">⚠️ НЕ СПАМИМ</h2>
-    <p id="ratelimit-text" style="color:#d4d4d8;line-height:1.6;text-align:center">Слишком много запросов.</p>
-    <div id="ratelimit-timer" style="font-size:2rem;font-weight:bold;color:#f59e0b;text-align:center;margin:15px 0">--</div>
-    <button class="secondary" style="width:100%" onclick="closeRateLimitModal()">ПОНЯТНО</button>
+    <p id="ratelimit-text"
+       style="color:#d4d4d8;line-height:1.6;text-align:center">
+      Слишком много запросов.
+    </p>
+    <div id="ratelimit-timer"
+         style="font-size:2rem;font-weight:bold;color:#f59e0b;text-align:center;margin:15px 0">
+      --
+    </div>
+    <button class="secondary" style="width:100%"
+            onclick="closeRateLimitModal()">ПОНЯТНО</button>
   </div>
 </div>
 
-<div id="notice-modal" class="modal-overlay">
+<div id="notice-modal" class="modal-overlay" role="dialog"
+     aria-modal="true" aria-labelledby="agreement-title">
   <div class="modal-content">
-    <h2>ПОЛЬЗОВАТЕЛЬСКОЕ СОГЛАШЕНИЕ</h2>
+    <h2 id="agreement-title">ПОЛЬЗОВАТЕЛЬСКОЕ СОГЛАШЕНИЕ</h2>
     <p style="color:#d4d4d8;line-height:1.6;text-align:justify;font-size:.95rem;margin-bottom:20px">
       Для входа на форум проекта RedstoneMine необходимо подтвердить согласие с правилами форума.
     </p>
     <p style="color:#a1a1aa;line-height:1.6;text-align:center;font-size:.9rem;margin-bottom:20px">
       Нажимая «Принимаю», вы соглашаетесь с
-      <a href="./agreement.html" target="_blank" rel="noopener noreferrer" class="agreement-link">условиями использования форума</a>.
+      <a href="./agreement.html" target="_blank" rel="noopener noreferrer"
+         class="agreement-link">условиями использования форума</a>.
     </p>
-    <button style="width:100%;letter-spacing:1px" onclick="acceptTerms()">ПРИНИМАЮ</button>
+    <button style="width:100%;letter-spacing:1px"
+            onclick="acceptTerms()">ПРИНИМАЮ</button>
   </div>
 </div>
 
-<div id="my-profile-modal" class="modal-overlay hidden">
+<div id="my-profile-modal" class="modal-overlay hidden" role="dialog"
+     aria-modal="true" aria-labelledby="my-profile-title">
   <div class="modal-content profile-card" id="my-profile-card">
-    <h2>МОЙ ПРОФИЛЬ</h2>
-    <img id="my-prof-avatar" class="profile-big-avatar" src="./robot.png" alt="Аватар">
+    <h2 id="my-profile-title">МОЙ ПРОФИЛЬ</h2>
+    <img id="my-prof-avatar" class="profile-big-avatar"
+         src="./robot.png" alt="Аватар">
     <div id="avatar-user-controls" class="avatar-controls hidden">
       <p class="avatar-hint">Для обычных пользователей используется стандартная аватарка.</p>
     </div>
@@ -104,28 +229,34 @@ button:disabled{opacity:.55;cursor:not-allowed}
       <h4>🛡️ Аватар администрации</h4>
       <p class="avatar-hint">Выбери одну из доступных аватарок.</p>
       <select id="admin-avatar-select" aria-label="Аватар администрации"></select>
-      <button type="button" onclick="saveSelectedAdminAvatar()" class="avatar-action-btn">Установить аватар</button>
+      <button type="button" onclick="saveSelectedAdminAvatar()"
+              class="avatar-action-btn">Установить аватар</button>
       <p id="admin-avatar-status" class="avatar-status" aria-live="polite"></p>
     </div>
     <div id="my-prof-username" class="profile-username" style="color:#fff">@User</div>
-    <textarea id="my-prof-bio-input" placeholder="Расскажи о себе..." rows="4" maxlength="200"></textarea>
+    <textarea id="my-prof-bio-input" placeholder="Расскажи о себе..."
+              rows="4" maxlength="200"></textarea>
     <p style="color:#71717a;font-size:.8rem;margin-top:0;margin-bottom:20px;text-align:left">
       Лимит: 200 символов. Изменять текст можно раз в 3 часа.
     </p>
     <div style="display:flex;gap:10px">
       <button class="secondary" style="flex:1" onclick="saveMyProfile()">Сохранить текст</button>
-      <button class="back-btn" style="margin:0;flex:1" onclick="closeModal('my-profile-modal')">Закрыть</button>
+      <button class="back-btn" style="margin:0;flex:1"
+              onclick="closeModal('my-profile-modal')">Закрыть</button>
     </div>
   </div>
 </div>
 
-<div id="view-profile-modal" class="modal-overlay hidden">
+<div id="view-profile-modal" class="modal-overlay hidden" role="dialog"
+     aria-modal="true" aria-labelledby="view-profile-title">
   <div class="modal-content profile-card" id="view-profile-card">
-    <h2>ПРОФИЛЬ ИГРОКА</h2>
-    <img id="view-prof-avatar" class="profile-big-avatar" src="./robot.png" alt="Аватар">
+    <h2 id="view-profile-title">ПРОФИЛЬ ИГРОКА</h2>
+    <img id="view-prof-avatar" class="profile-big-avatar"
+         src="./robot.png" alt="Аватар">
     <div id="view-prof-username" class="profile-username">@User</div>
     <div id="view-prof-bio" class="profile-bio-text">Загрузка информации...</div>
-    <button class="back-btn" style="width:100%;margin:0" onclick="closeModal('view-profile-modal')">ЗАКРЫТЬ</button>
+    <button class="back-btn" style="width:100%;margin:0"
+            onclick="closeModal('view-profile-modal')">ЗАКРЫТЬ</button>
   </div>
 </div>
 
@@ -134,18 +265,25 @@ button:disabled{opacity:.55;cursor:not-allowed}
     <h2>⛏️ ДОБРО ПОЖАЛОВАТЬ НА REDSTONE MINE</h2>
     <p style="color:#a1a1aa">Выберите действие для входа на форум сервера:</p>
     <div class="menu-choice">
-      <button class="primary menu-btn" onclick="showAuthForm('login')">🔑 Войти в существующий аккаунт</button>
-      <button class="secondary menu-btn" onclick="showAuthForm('register')">📝 Зарегистрировать новый ник</button>
+      <button class="primary menu-btn" onclick="showAuthForm('login')">
+        🔑 Войти в существующий аккаунт
+      </button>
+      <button class="secondary menu-btn" onclick="showAuthForm('register')">
+        📝 Зарегистрировать новый ник
+      </button>
     </div>
   </div>
 
   <div id="login-box" class="hidden">
     <h2>АВТОРИЗАЦИЯ</h2>
     <p id="auth-desc" style="color:#a1a1aa;font-size:.9rem;margin-bottom:20px"></p>
-    <input type="text" id="username-input" maxlength="32" autocomplete="username" placeholder="Твой ник (например: Stepan)">
-    <input type="password" id="password-input" maxlength="128" autocomplete="current-password" placeholder="Пароль от аккаунта...">
+    <input type="text" id="username-input" maxlength="32"
+           autocomplete="username" placeholder="Твой ник (например: Stepan)">
+    <input type="password" id="password-input" maxlength="128"
+           autocomplete="current-password" placeholder="Пароль от аккаунта...">
     <div class="auth-buttons">
-      <button class="primary" id="auth-action-btn" onclick="submitAuth('login')">ПОДТВЕРДИТЬ</button>
+      <button class="primary" id="auth-action-btn"
+              onclick="submitAuth('login')">ПОДТВЕРДИТЬ</button>
       <button class="back-btn" onclick="hideAuthForm()">НАЗАД</button>
     </div>
   </div>
@@ -153,14 +291,17 @@ button:disabled{opacity:.55;cursor:not-allowed}
   <div id="forum-box" class="hidden">
     <div id="admin-panel" class="box hidden" style="border-color:#f43f5e">
       <h4 style="margin:0 0 12px;color:#f43f5e">🛡️ УПРАВЛЕНИЕ СЕРВЕРОМ</h4>
+
       <div style="display:flex;gap:10px;margin-bottom:10px">
         <input type="text" id="ban-username" placeholder="@ник для бана" style="margin:0">
         <button onclick="banUser()">БАН</button>
       </div>
+
       <div style="display:flex;gap:10px">
         <input type="text" id="unban-username" placeholder="@ник для разбана" style="margin:0">
         <button onclick="unbanUser()" style="background:#10b981">РАЗБАН</button>
       </div>
+
       <div class="admin-tool-divider"></div>
       <h4>🎨 Цвет ника пользователя</h4>
       <div class="admin-tool-row">
@@ -184,10 +325,21 @@ button:disabled{opacity:.55;cursor:not-allowed}
     <div style="display:flex;justify-content:space-between;align-items:center;gap:15px;margin-bottom:20px;background:#121214;padding:15px;border-radius:12px;border:1px solid #27272a">
       <h3 id="welcome-msg" style="margin:0;font-size:1.1rem;color:#fff;text-shadow:none">⛏️ Лента</h3>
       <div id="forum-actions" style="display:flex;flex-direction:column;gap:8px;align-items:flex-end">
-        <button id="admin-panel-btn" class="admin-btn hidden" style="padding:8px 16px;font-size:.85rem;margin:0" onclick="toggleAdminPanel()">🛡️ Панель администрации</button>
-        <button id="admin-system-btn" class="primary hidden" style="padding:8px 16px;font-size:.85rem;background:#2563eb" onclick="openSystemComposer()">✍️ Написать систем. сообщение</button>
-        <button id="system-btn" class="secondary" style="padding:8px 16px;font-size:.85rem;position:relative" onclick="openSystemMessages()">🔔 Системные сообщения<span id="system-unread-dot" class="system-unread-dot hidden"></span></button>
-        <button id="profile-btn" class="secondary" style="padding:8px 16px;font-size:.85rem" onclick="openMyProfile()">📝 Мой профиль</button>
+        <button id="admin-panel-btn" class="admin-btn hidden"
+                style="padding:8px 16px;font-size:.85rem;margin:0"
+                onclick="toggleAdminPanel()">🛡️ Панель администрации</button>
+        <button id="admin-system-btn" class="primary hidden"
+                style="padding:8px 16px;font-size:.85rem;background:#2563eb"
+                onclick="openSystemComposer()">✍️ Написать систем. сообщение</button>
+        <button id="system-btn" class="secondary"
+                style="padding:8px 16px;font-size:.85rem;position:relative"
+                onclick="openSystemMessages()">
+          🔔 Системные сообщения
+          <span id="system-unread-dot" class="system-unread-dot hidden"></span>
+        </button>
+        <button id="profile-btn" class="secondary"
+                style="padding:8px 16px;font-size:.85rem"
+                onclick="openMyProfile()">📝 Мой профиль</button>
       </div>
     </div>
 
@@ -197,22 +349,28 @@ button:disabled{opacity:.55;cursor:not-allowed}
         <button class="back-btn" onclick="returnToFeed()">Вернуться на ленту</button>
       </div>
       <div id="system-compose" class="hidden" style="margin-bottom:20px">
-        <textarea id="system-text" rows="4" maxlength="5000" placeholder="Текст системного уведомления..."></textarea>
-        <button class="primary" style="background:#2563eb" onclick="sendSystemMessage()">Отправить</button>
+        <textarea id="system-text" rows="4" maxlength="5000"
+                  placeholder="Текст системного уведомления..."></textarea>
+        <button class="primary" style="background:#2563eb"
+                onclick="sendSystemMessage()">Отправить</button>
       </div>
       <div id="system-container">Загрузка системных сообщений...</div>
     </div>
 
     <div id="feed-controls">
       <div class="search-box">
-        <input type="text" id="search-input" placeholder="Поиск по хэштегу (например: #дом)..." style="margin:0">
+        <input type="text" id="search-input"
+               placeholder="Поиск по хэштегу (например: #дом)..." style="margin:0">
         <button class="primary" onclick="filterByTag()">Искать / Обновить</button>
         <button onclick="resetFilter()" style="background:#27272a">Сброс</button>
       </div>
+
       <div class="box">
         <h3>💬 НОВЫЙ ПОСТ</h3>
-        <textarea id="post-text" placeholder="Текст сообщения..." rows="3" maxlength="5000"></textarea>
-        <input type="text" id="post-tags" maxlength="1000" placeholder="Хэштеги через пробел (например: дом торговля спавн)">
+        <textarea id="post-text" placeholder="Текст сообщения..."
+                  rows="3" maxlength="5000"></textarea>
+        <input type="text" id="post-tags" maxlength="1000"
+               placeholder="Хэштеги через пробел (например: дом торговля спавн)">
         <button class="primary" id="send-btn" onclick="sendPost()">Опубликовать</button>
       </div>
     </div>
@@ -225,6 +383,7 @@ button:disabled{opacity:.55;cursor:not-allowed}
 'use strict';
 
 const WORKER_URL = 'https://restless-hill-dd2a.redstonemineforum.workers.dev';
+
 const ADMIN_WHITELIST = [
   'redstonemine', 'krutoi', 'rm_emperor', 'on404',
   'egor4ik', 'ava', 'redstonemine_community', 'palka'
@@ -280,6 +439,7 @@ let systemViewOpen = false;
 let systemPoll = null;
 let adminPanelOpen = false;
 let confirmationResolver = null;
+
 const profileCache = Object.create(null);
 
 function normalizeUsername(username) {
@@ -316,19 +476,33 @@ function safeColor(color) {
   return /^#[0-9a-f]{6}$/i.test(value) ? value : '';
 }
 
+/*
+ * Поддерживаются локальные изображения и URL изображений сайта
+ * redstonemine.github.io/rmforum/.
+ */
 function safeImageUrl(url) {
-  const value = String(url || '');
-  if (/^https:\/\/redstonemine\.github\.io\/[a-z0-9_.-]+$/i.test(value)) {
+  const value = String(url || '').trim();
+
+  if (
+    /^https:\/\/redstonemine\.github\.io\/(?:rmforum\/)?[a-z0-9_.-]+$/i.test(value)
+  ) {
     return value;
   }
+
   if (/^\.\/[a-z0-9_.-]+$/i.test(value)) return value;
   if (value === '/robot.png') return value;
+
   return './robot.png';
 }
 
 function verifiedBadge(username) {
   if (!isAdminUsername(username)) return '';
-  return `<span class="verified-badge" tabindex="0" role="img" aria-label="Аккаунт администрации RedstoneMine Форум" data-tooltip="Аккаунт администрации RedstoneMine Форум"><img src="./check.png" alt=""></span>`;
+
+  return `<span class="verified-badge" tabindex="0" role="img"
+    aria-label="Аккаунт администрации RedstoneMine Форум"
+    data-tooltip="Аккаунт администрации RedstoneMine Форум">
+    <img src="./check.png" alt="">
+  </span>`;
 }
 
 /* Уведомления */
@@ -376,11 +550,17 @@ function showToast(message, type = 'info', duration = 3600) {
   }
 }
 
-function confirmAction(message, title = 'Подтверждение действия', acceptText = 'Подтвердить') {
+function confirmAction(
+  message,
+  title = 'Подтверждение действия',
+  acceptText = 'Подтвердить'
+) {
   const modal = document.getElementById('confirm-modal');
+
   document.getElementById('confirm-title').textContent = title;
   document.getElementById('confirm-description').textContent = message;
   document.getElementById('confirm-accept').textContent = acceptText;
+
   modal.classList.remove('hidden');
 
   return new Promise(resolve => {
@@ -400,13 +580,18 @@ function resolveConfirmation(result) {
 }
 
 document.getElementById('confirm-modal').addEventListener('click', event => {
-  if (event.target.id === 'confirm-modal') resolveConfirmation(false);
+  if (event.target.id === 'confirm-modal') {
+    resolveConfirmation(false);
+  }
 });
 
 document.addEventListener('keydown', event => {
   if (event.key === 'Escape') {
     const modal = document.getElementById('confirm-modal');
-    if (!modal.classList.contains('hidden')) resolveConfirmation(false);
+
+    if (!modal.classList.contains('hidden')) {
+      resolveConfirmation(false);
+    }
   }
 });
 
@@ -421,6 +606,7 @@ function closeModal(id) {
 
 async function parseWorkerResponse(res) {
   let data = {};
+
   try {
     data = await res.json();
   } catch (_) {}
@@ -435,6 +621,7 @@ async function apiPost(path, body) {
     headers: {'Content-Type': 'application/json'},
     body: JSON.stringify(body)
   });
+
   const data = await parseWorkerResponse(res);
   return {res, data};
 }
@@ -444,10 +631,12 @@ async function apiPost(path, body) {
 function getRetrySeconds(data) {
   for (const key of ['remaining', 'retryAfter', 'retry_after']) {
     const value = Number(data?.[key]);
+
     if (Number.isFinite(value) && value > 0) {
       return Math.max(1, Math.ceil(value));
     }
   }
+
   return 60;
 }
 
@@ -457,13 +646,16 @@ function showRateLimit(data) {
 
   document.getElementById('ratelimit-text').textContent =
     data?.error || 'Слишком много запросов. Немного подожди.';
+
   document.getElementById('ratelimit-modal').classList.remove('hidden');
 
   updateRateLimitTimer();
+
   if (rateLimitInterval) clearInterval(rateLimitInterval);
 
   rateLimitInterval = setInterval(() => {
     updateRateLimitTimer();
+
     if (Date.now() >= rateLimitUntil) {
       clearInterval(rateLimitInterval);
       rateLimitInterval = null;
@@ -476,13 +668,17 @@ function showRateLimit(data) {
 
 function updateRateLimitTimer() {
   const timer = document.getElementById('ratelimit-timer');
-  const remaining = Math.max(0, Math.ceil((rateLimitUntil - Date.now()) / 1000));
+  const remaining = Math.max(
+    0,
+    Math.ceil((rateLimitUntil - Date.now()) / 1000)
+  );
 
   if (!remaining) {
     timer.textContent = 'Можно продолжать 👍';
   } else {
     const minutes = Math.floor(remaining / 60);
     const seconds = remaining % 60;
+
     timer.textContent = minutes
       ? `${minutes}:${String(seconds).padStart(2, '0')}`
       : `${seconds} сек.`;
@@ -492,9 +688,11 @@ function updateRateLimitTimer() {
 function lockForumButtons(seconds) {
   document.querySelectorAll('#send-btn,.comment-btn').forEach(button => {
     button.disabled = true;
+
     if (!button.dataset.originalText) {
       button.dataset.originalText = button.textContent;
     }
+
     button.textContent = `⏳ Подождите ${seconds}с`;
   });
 }
@@ -502,6 +700,7 @@ function lockForumButtons(seconds) {
 function unlockForumButtons() {
   document.querySelectorAll('#send-btn,.comment-btn').forEach(button => {
     button.disabled = false;
+
     if (button.dataset.originalText) {
       button.textContent = button.dataset.originalText;
     }
@@ -510,15 +709,22 @@ function unlockForumButtons() {
 
 function closeRateLimitModal() {
   document.getElementById('ratelimit-modal').classList.add('hidden');
-  if (Date.now() >= rateLimitUntil) unlockForumButtons();
+
+  if (Date.now() >= rateLimitUntil) {
+    unlockForumButtons();
+  }
 }
 
 /* Защита от слишком частых перезагрузок */
 
 (function checkGlobalBlocks() {
   const now = Date.now();
-  const passwordBanUntil = Number(sessionStorage.getItem('password_ban_until') || 0);
-  const spamBanUntil = Number(sessionStorage.getItem('spam_ban_until') || 0);
+  const passwordBanUntil = Number(
+    sessionStorage.getItem('password_ban_until') || 0
+  );
+  const spamBanUntil = Number(
+    sessionStorage.getItem('spam_ban_until') || 0
+  );
 
   if (passwordBanUntil > now || spamBanUntil > now) {
     window.addEventListener('DOMContentLoaded', () => {
@@ -535,16 +741,19 @@ function closeRateLimitModal() {
       document.getElementById('block-modal').classList.remove('hidden');
       document.body.classList.add('banned-screen');
     });
+
     return;
   }
 
   let history = [];
+
   try {
     history = JSON.parse(sessionStorage.getItem('reload_history') || '[]');
   } catch (_) {}
 
   history = history.filter(time => now - time < 60000);
   history.push(now);
+
   sessionStorage.setItem('reload_history', JSON.stringify(history));
 
   if (history.length > 5) {
@@ -620,25 +829,30 @@ async function submitAuth(authType) {
           String(Date.now() + 5400000)
         );
       }
+
       return;
     }
 
     currentUsername = displayUsername(data.username || username);
     currentPassword = password;
 
-    // Не доверяем локальному списку: админские функции включаются
-    // только если Worker явно подтвердил admin: true.
+    // Права администратора подтверждаются сервером.
     isAdmin = data.admin === true;
 
     document.getElementById('login-box').classList.add('hidden');
     document.getElementById('menu-box').classList.add('hidden');
     document.getElementById('forum-box').classList.remove('hidden');
 
-    document.getElementById('admin-panel-btn').classList.toggle('hidden', !isAdmin);
-    document.getElementById('admin-system-btn').classList.toggle('hidden', !isAdmin);
+    document.getElementById('admin-panel-btn')
+      .classList.toggle('hidden', !isAdmin);
+
+    document.getElementById('admin-system-btn')
+      .classList.toggle('hidden', !isAdmin);
+
     document.getElementById('admin-panel').classList.add('hidden');
 
-    document.getElementById('welcome-msg').textContent = '⛏️ Лента — ' + currentUsername;
+    document.getElementById('welcome-msg').textContent =
+      '⛏️ Лента — ' + currentUsername;
 
     await loadMyProfileCache();
     await loadPosts();
@@ -646,7 +860,9 @@ async function submitAuth(authType) {
     await loadSystemMessages(false);
 
     showToast(
-      authType === 'register' ? 'Аккаунт создан. Добро пожаловать!' : 'Вход выполнен!',
+      authType === 'register'
+        ? 'Аккаунт создан. Добро пожаловать!'
+        : 'Вход выполнен!',
       'success'
     );
   } catch (_) {
@@ -663,7 +879,10 @@ async function fetchProfile(username) {
   if (!clean) return null;
 
   try {
-    const {res, data} = await apiPost('/api/profile/get', {username: clean});
+    const {res, data} = await apiPost('/api/profile/get', {
+      username: clean
+    });
+
     if (!res.ok || !data.success) return null;
 
     profileCache[clean] = {
@@ -689,8 +908,11 @@ async function loadPostProfiles() {
 
   allPosts.forEach(post => {
     if (post.username) names.add(normalizeUsername(post.username));
+
     (post.comments || []).forEach(comment => {
-      if (comment.username) names.add(normalizeUsername(comment.username));
+      if (comment.username) {
+        names.add(normalizeUsername(comment.username));
+      }
     });
   });
 
@@ -702,12 +924,15 @@ function getAvatar(username) {
   const clean = normalizeUsername(username);
   const cached = profileCache[clean];
 
-  if (cached?.avatarUrl) return safeImageUrl(cached.avatarUrl);
+  if (cached?.avatarUrl) {
+    return safeImageUrl(cached.avatarUrl);
+  }
 
   if (isAdminUsername(username)) {
     const key = Object.keys(ADMIN_AVATARS).find(
       item => normalizeUsername(item) === clean
     );
+
     if (key) return ADMIN_AVATARS[key];
   }
 
@@ -736,6 +961,7 @@ async function loadPosts() {
         document.getElementById('posts-container').textContent =
           data.error || 'Ошибка загрузки ленты.';
       }
+
       return;
     }
 
@@ -743,7 +969,8 @@ async function loadPosts() {
     await loadPostProfiles();
     renderPosts();
   } catch (_) {
-    document.getElementById('posts-container').textContent = 'Ошибка загрузки ленты.';
+    document.getElementById('posts-container').textContent =
+      'Ошибка загрузки ленты.';
   }
 }
 
@@ -794,7 +1021,9 @@ function renderPosts() {
     const author = document.createElement('span');
     author.className = 'author ' + styleClass;
     author.style.cursor = 'pointer';
+
     if (color) author.style.color = color;
+
     author.append(document.createTextNode(displayUsername(username) + ' '));
     author.insertAdjacentHTML('beforeend', verifiedBadge(username));
     author.addEventListener('click', () => viewUserProfile(username));
@@ -802,6 +1031,7 @@ function renderPosts() {
     const time = document.createElement('span');
     time.className = 'time';
     time.textContent = post.time || '';
+
     header.append(author, time);
 
     const text = document.createElement('div');
@@ -819,10 +1049,16 @@ function renderPosts() {
         tagEl.className = 'tag';
         tagEl.textContent = tag;
         tagEl.tabIndex = 0;
+
         tagEl.addEventListener('click', () => setSearchTag(tag));
+
         tagEl.addEventListener('keydown', event => {
-          if (event.key === 'Enter' || event.key === ' ') setSearchTag(tag);
+          if (event.key === 'Enter' || event.key === ' ') {
+            event.preventDefault();
+            setSearchTag(tag);
+          }
         });
+
         tags.appendChild(tagEl);
       });
 
@@ -853,7 +1089,10 @@ function renderPosts() {
       commentAvatar.src = safeImageUrl(getAvatar(commentUsername));
       commentAvatar.alt = 'Аватар';
       commentAvatar.loading = 'lazy';
-      commentAvatar.addEventListener('click', () => viewUserProfile(commentUsername));
+      commentAvatar.addEventListener(
+        'click',
+        () => viewUserProfile(commentUsername)
+      );
 
       const commentBody = document.createElement('div');
       commentBody.className = 'comment-body';
@@ -864,14 +1103,25 @@ function renderPosts() {
       const commentAuthor = document.createElement('span');
       commentAuthor.className =
         'author ' + (!commentColor && commentAdmin ? 'admin-style' : '');
+
       commentAuthor.style.cursor = 'pointer';
       commentAuthor.style.fontSize = '.95rem';
+
       if (commentColor) commentAuthor.style.color = commentColor;
+
       commentAuthor.append(
         document.createTextNode(displayUsername(commentUsername) + ' ')
       );
-      commentAuthor.insertAdjacentHTML('beforeend', verifiedBadge(commentUsername));
-      commentAuthor.addEventListener('click', () => viewUserProfile(commentUsername));
+
+      commentAuthor.insertAdjacentHTML(
+        'beforeend',
+        verifiedBadge(commentUsername)
+      );
+
+      commentAuthor.addEventListener(
+        'click',
+        () => viewUserProfile(commentUsername)
+      );
 
       const commentTime = document.createElement('span');
       commentTime.className = 'time';
@@ -889,12 +1139,15 @@ function renderPosts() {
       if (isAdmin) {
         const deleteCommentButton = document.createElement('button');
         deleteCommentButton.className = 'admin-btn';
-        deleteCommentButton.style.cssText = 'margin:5px 0 0;padding:3px 8px;font-size:.75rem';
+        deleteCommentButton.style.cssText =
+          'margin:5px 0 0;padding:3px 8px;font-size:.75rem';
         deleteCommentButton.textContent = '❌ Стереть ответ';
+
         deleteCommentButton.addEventListener(
           'click',
           () => deleteComment(post.id, comment.id)
         );
+
         commentBody.appendChild(deleteCommentButton);
       }
 
@@ -916,6 +1169,7 @@ function renderPosts() {
     commentButton.className = 'primary comment-btn';
     commentButton.textContent = 'Ответить';
     commentButton.addEventListener('click', () => sendComment(post.id));
+
     commentInput.addEventListener('keydown', event => {
       if (event.key === 'Enter') sendComment(post.id);
     });
@@ -931,7 +1185,9 @@ function renderPosts() {
   container.appendChild(fragment);
 
   if (Date.now() < rateLimitUntil) {
-    lockForumButtons(Math.ceil((rateLimitUntil - Date.now()) / 1000));
+    lockForumButtons(
+      Math.ceil((rateLimitUntil - Date.now()) / 1000)
+    );
   }
 }
 
@@ -944,7 +1200,10 @@ function toggleAdminPanel() {
   }
 
   adminPanelOpen = !adminPanelOpen;
-  document.getElementById('admin-panel').classList.toggle('hidden', !adminPanelOpen);
+
+  document.getElementById('admin-panel')
+    .classList.toggle('hidden', !adminPanelOpen);
+
   document.getElementById('admin-panel-btn').textContent = adminPanelOpen
     ? '✖️ Скрыть панель администрации'
     : '🛡️ Панель администрации';
@@ -969,8 +1228,17 @@ function renderSystemMessages() {
   const fragment = document.createDocumentFragment();
 
   systemMessages.forEach(message => {
-    const sender = String(message.from || 'Система');
-    const senderAdmin = isAdminUsername(sender);
+    /*
+     * Системные уведомления отображаются от реального аккаунта.
+     * Не используем message.username: в API это поле может обозначать
+     * получателя сообщения, а не его автора.
+     */
+    const sender = String(
+      message.from ||
+      message.authorUsername ||
+      'redstonemine_community'
+    );
+
     const visual = getAdminVisuals(sender);
     const color = getNameColor(sender);
 
@@ -993,7 +1261,9 @@ function renderSystemMessages() {
     const author = document.createElement('span');
     author.className = 'author';
     author.style.cursor = 'pointer';
+
     if (color) author.style.color = color;
+
     author.append(document.createTextNode(displayUsername(sender) + ' '));
     author.insertAdjacentHTML('beforeend', verifiedBadge(sender));
     author.addEventListener('click', () => viewUserProfile(sender));
@@ -1015,10 +1285,12 @@ function renderSystemMessages() {
       deleteButton.className = 'admin-btn';
       deleteButton.style.marginTop = '10px';
       deleteButton.textContent = '❌ Удалить глобально';
+
       deleteButton.addEventListener(
         'click',
         () => deleteSystemMessage(message.id)
       );
+
       body.appendChild(deleteButton);
     }
 
@@ -1034,12 +1306,15 @@ async function loadSystemMessages(markRead = false) {
 
   try {
     const res = await fetch(
-      WORKER_URL + '/api/system?username=' + encodeURIComponent(normalizeUsername(currentUsername))
+      WORKER_URL + '/api/system?username=' +
+      encodeURIComponent(normalizeUsername(currentUsername))
     );
+
     const data = await parseWorkerResponse(res);
     if (!res.ok) return;
 
     systemMessages = Array.isArray(data.messages) ? data.messages : [];
+
     updateSystemUnread(Number(data.unread || 0) > 0);
 
     if (systemViewOpen) renderSystemMessages();
@@ -1051,13 +1326,18 @@ async function loadSystemMessages(markRead = false) {
         .filter(Boolean);
 
       if (messageIds.length) {
-        const {res: readRes, data: readData} = await apiPost('/api/system/read', {
-          username: normalizeUsername(currentUsername),
-          password: currentPassword,
-          messageIds
-        });
+        const {res: readRes, data: readData} = await apiPost(
+          '/api/system/read',
+          {
+            username: normalizeUsername(currentUsername),
+            password: currentPassword,
+            messageIds
+          }
+        );
 
-        if (readRes.ok && readData.success) updateSystemUnread(false);
+        if (readRes.ok && readData.success) {
+          updateSystemUnread(false);
+        }
       }
     }
   } catch (_) {}
@@ -1070,16 +1350,22 @@ function updateSystemUnread(unread) {
 
 function showSystemView(composer) {
   systemViewOpen = true;
+
   document.getElementById('feed-controls').classList.add('hidden');
   document.getElementById('posts-container').classList.add('hidden');
   document.getElementById('system-box').classList.remove('hidden');
-  document.getElementById('system-compose').classList.toggle('hidden', !composer);
+  document.getElementById('system-compose')
+    .classList.toggle('hidden', !composer);
 
-  document.getElementById('system-btn').textContent = '↩️ Вернуться на ленту';
+  document.getElementById('system-btn').textContent =
+    '↩️ Вернуться на ленту';
+
   document.getElementById('system-btn').onclick = returnToFeed;
 
   if (isAdmin) {
-    document.getElementById('admin-system-btn').textContent = '↩️ Вернуться на ленту';
+    document.getElementById('admin-system-btn').textContent =
+      '↩️ Вернуться на ленту';
+
     document.getElementById('admin-system-btn').onclick = returnToFeed;
   }
 
@@ -1091,24 +1377,31 @@ function openSystemMessages() {
 }
 
 function openSystemComposer() {
-  if (!isAdmin) return showToast('Недостаточно прав.', 'error');
+  if (!isAdmin) {
+    return showToast('Недостаточно прав.', 'error');
+  }
+
   showSystemView(true);
 }
 
 function returnToFeed() {
   systemViewOpen = false;
+
   document.getElementById('system-box').classList.add('hidden');
   document.getElementById('feed-controls').classList.remove('hidden');
   document.getElementById('posts-container').classList.remove('hidden');
 
   document.getElementById('system-btn').innerHTML =
     '🔔 Системные сообщения<span id="system-unread-dot" class="system-unread-dot hidden"></span>';
+
   document.getElementById('system-btn').onclick = openSystemMessages;
 
   if (isAdmin) {
     document.getElementById('admin-system-btn').textContent =
       '✍️ Написать систем. сообщение';
-    document.getElementById('admin-system-btn').onclick = openSystemComposer;
+
+    document.getElementById('admin-system-btn').onclick =
+      openSystemComposer;
   }
 
   if (!adminPanelOpen) {
@@ -1120,12 +1413,16 @@ function returnToFeed() {
 }
 
 async function sendSystemMessage() {
-  if (!isAdmin) return showToast('Недостаточно прав.', 'error');
+  if (!isAdmin) {
+    return showToast('Недостаточно прав.', 'error');
+  }
 
   const input = document.getElementById('system-text');
   const text = input.value.trim();
 
-  if (!text) return showToast('Введи текст системного уведомления.', 'warning');
+  if (!text) {
+    return showToast('Введи текст системного уведомления.', 'warning');
+  }
 
   try {
     const {res, data} = await apiPost('/api/admin/system', {
@@ -1142,6 +1439,7 @@ async function sendSystemMessage() {
     input.value = '';
     await loadSystemMessages(false);
     renderSystemMessages();
+
     showToast('Системное уведомление отправлено!', 'success');
   } catch (_) {
     showToast('Ошибка сервера.', 'error');
@@ -1156,6 +1454,7 @@ async function deleteSystemMessage(messageId) {
     'Удалить системное сообщение',
     'Удалить'
   );
+
   if (!confirmed) return;
 
   try {
@@ -1172,6 +1471,7 @@ async function deleteSystemMessage(messageId) {
 
     await loadSystemMessages(false);
     renderSystemMessages();
+
     showToast('Системное сообщение удалено.', 'success');
   } catch (_) {
     showToast('Ошибка сервера.', 'error');
@@ -1180,21 +1480,28 @@ async function deleteSystemMessage(messageId) {
 
 function startSystemPolling() {
   if (systemPoll) clearInterval(systemPoll);
-  systemPoll = setInterval(() => loadSystemMessages(false), 5000);
+
+  systemPoll = setInterval(() => {
+    loadSystemMessages(false);
+  }, 5000);
 }
 
 /* Публикация поста */
 
 async function sendPost() {
   if (Date.now() < rateLimitUntil) {
-    showRateLimit({error:'Подожди немного перед следующей публикацией.'});
+    showRateLimit({
+      error:'Подожди немного перед следующей публикацией.'
+    });
     return;
   }
 
   const text = document.getElementById('post-text').value.trim();
   const tags = document.getElementById('post-tags').value.trim();
 
-  if (!text) return showToast('Введи текст поста.', 'warning');
+  if (!text) {
+    return showToast('Введи текст поста.', 'warning');
+  }
 
   const button = document.getElementById('send-btn');
   button.disabled = true;
@@ -1211,17 +1518,21 @@ async function sendPost() {
       if (res.status !== 429) {
         showToast(data.error || 'Ошибка публикации.', 'error');
       }
+
       return;
     }
 
     document.getElementById('post-text').value = '';
     document.getElementById('post-tags').value = '';
+
     showToast('Пост опубликован!', 'success');
     await loadPosts();
   } catch (_) {
     showToast('Ошибка публикации.', 'error');
   } finally {
-    if (Date.now() >= rateLimitUntil) button.disabled = false;
+    if (Date.now() >= rateLimitUntil) {
+      button.disabled = false;
+    }
   }
 }
 
@@ -1229,7 +1540,9 @@ async function sendPost() {
 
 async function sendComment(postId) {
   if (Date.now() < rateLimitUntil) {
-    showRateLimit({error:'Подожди немного перед следующим комментарием.'});
+    showRateLimit({
+      error:'Подожди немного перед следующим комментарием.'
+    });
     return;
   }
 
@@ -1237,7 +1550,10 @@ async function sendComment(postId) {
   if (!input) return;
 
   const text = input.value.trim();
-  if (!text) return showToast('Напиши текст комментария.', 'warning');
+
+  if (!text) {
+    return showToast('Напиши текст комментария.', 'warning');
+  }
 
   const button = input.parentElement.querySelector('.comment-btn');
   if (button) button.disabled = true;
@@ -1254,6 +1570,7 @@ async function sendComment(postId) {
       if (res.status !== 429) {
         showToast(data.error || 'Ошибка отправки ответа.', 'error');
       }
+
       return;
     }
 
@@ -1263,20 +1580,25 @@ async function sendComment(postId) {
   } catch (_) {
     showToast('Ошибка отправки ответа.', 'error');
   } finally {
-    if (button && Date.now() >= rateLimitUntil) button.disabled = false;
+    if (button && Date.now() >= rateLimitUntil) {
+      button.disabled = false;
+    }
   }
 }
 
 /* Удаление поста */
 
 async function deletePost(postId) {
-  if (!isAdmin) return showToast('Недостаточно прав.', 'error');
+  if (!isAdmin) {
+    return showToast('Недостаточно прав.', 'error');
+  }
 
   const confirmed = await confirmAction(
     'Пост и все его комментарии будут удалены. Это действие нельзя отменить.',
     'Удалить пост',
     'Удалить пост'
   );
+
   if (!confirmed) return;
 
   try {
@@ -1291,7 +1613,10 @@ async function deletePost(postId) {
       return;
     }
 
-    allPosts = allPosts.filter(post => String(post.id) !== String(postId));
+    allPosts = allPosts.filter(
+      post => String(post.id) !== String(postId)
+    );
+
     renderPosts();
     showToast('Пост удалён.', 'success');
   } catch (_) {
@@ -1302,13 +1627,16 @@ async function deletePost(postId) {
 /* Удаление комментария */
 
 async function deleteComment(postId, commentId) {
-  if (!isAdmin) return showToast('Недостаточно прав.', 'error');
+  if (!isAdmin) {
+    return showToast('Недостаточно прав.', 'error');
+  }
 
   const confirmed = await confirmAction(
     'Этот комментарий будет удалён из ветки.',
     'Удалить комментарий',
     'Удалить'
   );
+
   if (!confirmed) return;
 
   try {
@@ -1324,7 +1652,10 @@ async function deleteComment(postId, commentId) {
       return;
     }
 
-    const post = allPosts.find(item => String(item.id) === String(postId));
+    const post = allPosts.find(
+      item => String(item.id) === String(postId)
+    );
+
     if (post && Array.isArray(post.comments)) {
       post.comments = post.comments.filter(
         comment => String(comment.id) !== String(commentId)
@@ -1348,20 +1679,31 @@ async function openMyProfile() {
 
   usernameEl.textContent = displayUsername(currentUsername);
   usernameEl.style.color = safeColor(profile?.nameColor) || '';
-  avatarEl.src = safeImageUrl(profile?.avatarUrl || getAvatar(currentUsername));
+
+  avatarEl.src = safeImageUrl(
+    profile?.avatarUrl || getAvatar(currentUsername)
+  );
 
   const cardTheme = getAdminStyle(currentUsername, ADMIN_CARDS);
+
   document.getElementById('my-profile-card').className =
     'modal-content profile-card ' +
     (cardTheme !== 'none' ? 'theme-' + cardTheme : '');
 
   bioInput.value = profile?.bio || '';
-  document.getElementById('avatar-user-controls').classList.toggle('hidden', isAdmin);
-  document.getElementById('admin-avatar-controls').classList.toggle('hidden', !isAdmin);
 
-  if (isAdmin) await loadAdminAvatarOptions();
+  document.getElementById('avatar-user-controls')
+    .classList.toggle('hidden', isAdmin);
 
-  document.getElementById('my-profile-modal').classList.remove('hidden');
+  document.getElementById('admin-avatar-controls')
+    .classList.toggle('hidden', !isAdmin);
+
+  if (isAdmin) {
+    await loadAdminAvatarOptions();
+  }
+
+  document.getElementById('my-profile-modal')
+    .classList.remove('hidden');
 }
 
 /* Аватарки администрации */
@@ -1369,6 +1711,7 @@ async function openMyProfile() {
 async function loadAdminAvatarOptions() {
   const select = document.getElementById('admin-avatar-select');
   const status = document.getElementById('admin-avatar-status');
+
   if (!select || !isAdmin) return;
 
   status.textContent = 'Загрузка списка...';
@@ -1383,31 +1726,43 @@ async function loadAdminAvatarOptions() {
     ]);
 
     const {res, data} = result;
+
     if (!res.ok || !data.success) {
-      status.textContent = data.error || 'Не удалось получить список.';
+      status.textContent =
+        data.error || 'Не удалось получить список.';
       return;
     }
 
     select.innerHTML = '';
+
     const options = Array.isArray(data.options) ? data.options : [];
     const currentAvatar = String(profile?.avatarUrl || '');
 
     options.forEach(option => {
       const element = document.createElement('option');
+
       element.value = String(option.id);
       element.textContent = option.label || option.id;
-      if (option.url && option.url === currentAvatar) element.selected = true;
+
+      if (option.url && option.url === currentAvatar) {
+        element.selected = true;
+      }
+
       select.appendChild(element);
     });
 
-    status.textContent = options.length ? '' : 'Список аватарок пуст.';
+    status.textContent = options.length
+      ? ''
+      : 'Список аватарок пуст.';
   } catch (_) {
     status.textContent = 'Ошибка соединения с сервером.';
   }
 }
 
 async function saveSelectedAdminAvatar() {
-  if (!isAdmin) return showToast('Недостаточно прав.', 'error');
+  if (!isAdmin) {
+    return showToast('Недостаточно прав.', 'error');
+  }
 
   const select = document.getElementById('admin-avatar-select');
   const status = document.getElementById('admin-avatar-status');
@@ -1425,17 +1780,20 @@ async function saveSelectedAdminAvatar() {
     });
 
     if (!res.ok || !data.success) {
-      status.textContent = data.error || 'Не удалось сменить аватар.';
+      status.textContent =
+        data.error || 'Не удалось сменить аватар.';
       return;
     }
 
     const avatarUrl = safeImageUrl(data.avatarUrl || data.avatar);
+
     document.getElementById('my-prof-avatar').src = avatarUrl;
 
     const cached = profileCache[normalizeUsername(currentUsername)];
     if (cached) cached.avatarUrl = avatarUrl;
 
     status.textContent = 'Аватар администрации установлен.';
+
     showToast('Аватар изменён.', 'success');
     await loadPosts();
   } catch (_) {
@@ -1446,12 +1804,16 @@ async function saveSelectedAdminAvatar() {
 /* Цвет ника */
 
 async function setUserNameColor() {
-  if (!isAdmin) return showToast('Недостаточно прав.', 'error');
+  if (!isAdmin) {
+    return showToast('Недостаточно прав.', 'error');
+  }
 
   const target = document.getElementById('namecolor-username').value.trim();
   const color = document.getElementById('namecolor-value').value;
 
-  if (!target) return showToast('Укажи ник пользователя.', 'warning');
+  if (!target) {
+    return showToast('Укажи ник пользователя.', 'warning');
+  }
 
   try {
     const {res, data} = await apiPost('/api/admin/name-color', {
@@ -1467,8 +1829,10 @@ async function setUserNameColor() {
     }
 
     delete profileCache[normalizeUsername(target)];
+
     await fetchProfile(target);
     await loadPosts();
+
     showToast('Цвет ника обновлён.', 'success');
   } catch (_) {
     showToast('Ошибка соединения с сервером.', 'error');
@@ -1517,19 +1881,25 @@ async function viewUserProfile(targetNick) {
   bioEl.textContent = 'Загрузка информации...';
 
   const cardTheme = getAdminStyle(username, ADMIN_CARDS);
+
   document.getElementById('view-profile-card').className =
     'modal-content profile-card ' +
     (cardTheme !== 'none' ? 'theme-' + cardTheme : '');
 
-  document.getElementById('view-profile-modal').classList.remove('hidden');
+  document.getElementById('view-profile-modal')
+    .classList.remove('hidden');
 
   const profile = await fetchProfile(username);
+
   if (!profile) {
     bioEl.textContent = 'Не удалось загрузить профиль.';
     return;
   }
 
-  if (profile.avatarUrl) avatarEl.src = safeImageUrl(profile.avatarUrl);
+  if (profile.avatarUrl) {
+    avatarEl.src = safeImageUrl(profile.avatarUrl);
+  }
+
   nameEl.style.color = safeColor(profile.nameColor) || '';
   bioEl.textContent = profile.bio || 'Нет описания.';
 }
@@ -1537,16 +1907,22 @@ async function viewUserProfile(targetNick) {
 /* Бан */
 
 async function banUser() {
-  if (!isAdmin) return showToast('Недостаточно прав.', 'error');
+  if (!isAdmin) {
+    return showToast('Недостаточно прав.', 'error');
+  }
 
   const target = document.getElementById('ban-username').value.trim();
-  if (!target) return showToast('Укажи ник для бана.', 'warning');
+
+  if (!target) {
+    return showToast('Укажи ник для бана.', 'warning');
+  }
 
   const confirmed = await confirmAction(
     `Заблокировать пользователя ${displayUsername(target)}?`,
     'Подтверждение бана',
     'Заблокировать'
   );
+
   if (!confirmed) return;
 
   try {
@@ -1557,12 +1933,19 @@ async function banUser() {
     });
 
     if (!res.ok || !data.success) {
-      showToast(data.error || 'Не удалось заблокировать пользователя.', 'error');
+      showToast(
+        data.error || 'Не удалось заблокировать пользователя.',
+        'error'
+      );
       return;
     }
 
     document.getElementById('ban-username').value = '';
-    showToast(`Пользователь ${displayUsername(data.username || target)} заблокирован.`, 'success');
+
+    showToast(
+      `Пользователь ${displayUsername(data.username || target)} заблокирован.`,
+      'success'
+    );
   } catch (_) {
     showToast('Ошибка сервера.', 'error');
   }
@@ -1571,16 +1954,22 @@ async function banUser() {
 /* Разбан */
 
 async function unbanUser() {
-  if (!isAdmin) return showToast('Недостаточно прав.', 'error');
+  if (!isAdmin) {
+    return showToast('Недостаточно прав.', 'error');
+  }
 
   const target = document.getElementById('unban-username').value.trim();
-  if (!target) return showToast('Укажи ник для разбана.', 'warning');
+
+  if (!target) {
+    return showToast('Укажи ник для разбана.', 'warning');
+  }
 
   const confirmed = await confirmAction(
     `Разблокировать пользователя ${displayUsername(target)}?`,
     'Подтверждение разбана',
     'Разблокировать'
   );
+
   if (!confirmed) return;
 
   try {
@@ -1591,12 +1980,19 @@ async function unbanUser() {
     });
 
     if (!res.ok || !data.success) {
-      showToast(data.error || 'Не удалось разблокировать пользователя.', 'error');
+      showToast(
+        data.error || 'Не удалось разблокировать пользователя.',
+        'error'
+      );
       return;
     }
 
     document.getElementById('unban-username').value = '';
-    showToast(`Пользователь ${displayUsername(data.username || target)} разблокирован.`, 'success');
+
+    showToast(
+      `Пользователь ${displayUsername(data.username || target)} разблокирован.`,
+      'success'
+    );
   } catch (_) {
     showToast('Ошибка сервера.', 'error');
   }
@@ -1626,7 +2022,9 @@ document.getElementById('search-input').addEventListener('keydown', event => {
 });
 
 document.getElementById('post-text').addEventListener('keydown', event => {
-  if ((event.ctrlKey || event.metaKey) && event.key === 'Enter') sendPost();
+  if ((event.ctrlKey || event.metaKey) && event.key === 'Enter') {
+    sendPost();
+  }
 });
 
 document.getElementById('password-input').addEventListener('keydown', event => {
