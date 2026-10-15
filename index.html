@@ -1,0 +1,3290 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Redstone Mine - Форум</title>
+    <link rel="stylesheet" href="style.css">
+
+<style>
+.system-unread-dot{position:absolute;top:5px;right:5px;width:10px;height:10px;background:#ef4444;border-radius:50%;box-shadow:0 0 10px rgba(239,68,68,.75);display:block}.system-unread-dot.hidden{display:none!important}.system-message{transition:border-color .2s,box-shadow .2s}.system-message:hover{border-color:#3f3f46!important;box-shadow:0 0 12px rgba(239,68,68,.08)}#system-box{margin-bottom:25px}#system-box textarea{margin-bottom:10px}@media(max-width:600px){#forum-actions{align-items:stretch!important}.post{padding:14px}.system-message .avatar{width:48px;height:48px}}
+</style>
+</head>
+
+<body>
+
+<!-- =========================================================
+     ЭКРАН БЛОКИРОВКИ
+========================================================= -->
+<div id="block-modal" class="modal-overlay hidden">
+    <div class="modal-content" style="border-color: #ef4444;">
+        <h2 id="block-title" style="color: #ef4444;">🚫 ДОСТУП ОГРАНИЧЕН</h2>
+        <p id="block-text" style="color: #d4d4d8; line-height: 1.5;"></p>
+    </div>
+</div>
+
+<!-- =========================================================
+     ОКНО АНТИСПАМА
+========================================================= -->
+<div id="ratelimit-modal" class="modal-overlay hidden">
+    <div class="modal-content" style="border-color: #f59e0b;">
+
+        <h2 style="color:#f59e0b;">
+            ⚠️ НЕ СПАМИМ
+        </h2>
+
+        <p id="ratelimit-text"
+           style="color:#d4d4d8; line-height:1.6; text-align:center;">
+            Слишком много запросов.
+        </p>
+
+        <div id="ratelimit-timer"
+             style="
+                font-size:2rem;
+                font-weight:bold;
+                color:#f59e0b;
+                text-align:center;
+                margin:15px 0;
+             ">
+            --
+        </div>
+
+        <button
+            id="ratelimit-close-btn"
+            class="secondary"
+            style="width:100%;"
+            onclick="closeRateLimitModal()">
+            ПОНЯТНО
+        </button>
+
+    </div>
+</div>
+
+<!-- =========================================================
+     ОФИЦИАЛЬНОЕ СОГЛАШЕНИЕ
+========================================================= -->
+<div id="notice-modal" class="modal-overlay">
+
+    <div class="modal-content">
+
+        <h2>ПОЛЬЗОВАТЕЛЬСКОЕ СОГЛАШЕНИЕ</h2>
+
+        <p style="
+            color:#d4d4d8;
+            line-height:1.6;
+            text-align:justify;
+            font-size:0.95rem;
+            margin-bottom:20px;
+        ">
+            Для входа на форум проекта RedstoneMine вам необходимо
+            подтвердить свое согласие с официальными правилами нашего форума.
+        </p>
+
+        <p style="
+            color:#a1a1aa;
+            line-height:1.6;
+            text-align:center;
+            font-size:0.9rem;
+            margin-bottom:20px;
+        ">
+            Нажимая на кнопку принимаю вы соглашаетесь с
+            <a
+                href="./agreement.html"
+                target="_blank"
+                class="agreement-link">
+                условием использования форума
+            </a>
+        </p>
+
+        <button
+            style="width:100%; letter-spacing:1px;"
+            onclick="acceptTerms()">
+            ПРИНИМАЮ
+        </button>
+
+    </div>
+</div>
+
+<style>
+    .agreement-link {
+        color:#ef4444;
+        text-decoration:underline;
+        font-weight:bold;
+        transition:all 0.2s ease-in-out;
+    }
+
+    .agreement-link:hover {
+        color:#f43f5e;
+        text-shadow:0 0 12px rgba(244,63,94,0.8);
+    }
+
+    /* Индикатор блокировки кнопки */
+    button:disabled {
+        opacity:0.55;
+        cursor:not-allowed;
+    }
+
+    /* Небольшая анимация антиспам-окна */
+    #ratelimit-modal .modal-content {
+        animation: rateLimitAppear 0.2s ease-out;
+    }
+
+    @keyframes rateLimitAppear {
+        from {
+            transform:scale(0.95);
+            opacity:0;
+        }
+
+        to {
+            transform:scale(1);
+            opacity:1;
+        }
+    }
+</style>
+
+<!-- =========================================================
+     МОЙ ПРОФИЛЬ
+========================================================= -->
+<div id="my-profile-modal" class="modal-overlay hidden">
+
+    <div class="modal-content profile-card" id="my-profile-card">
+
+        <h2>МОЙ ПРОФИЛЬ</h2>
+
+        <img
+            id="my-prof-avatar"
+            class="profile-big-avatar"
+            src="./robot.png"
+            alt="Аватар">
+
+        <div id="avatar-user-controls" class="avatar-controls">
+            <label for="my-avatar-file" class="avatar-file-label">Выбрать изображение</label>
+            <input id="my-avatar-file" type="file" accept="image/png,image/jpeg,image/webp" class="avatar-file-input">
+            <p class="avatar-hint">PNG, JPG или WebP · максимум 2 МБ · смена раз в 24 часа</p>
+            <button type="button" onclick="uploadMyAvatar()" class="avatar-action-btn">Загрузить аватарку</button>
+            <p id="avatar-status" class="avatar-status" aria-live="polite"></p>
+        </div>
+
+        <div id="admin-avatar-controls" class="avatar-controls hidden">
+            <h4>🛡️ Аватар администрации</h4>
+            <p class="avatar-hint">Администраторы выбирают только из аватарок, загруженных в Cloudflare.</p>
+            <select id="admin-avatar-select" aria-label="Аватар администрации"></select>
+            <button type="button" onclick="saveSelectedAdminAvatar()" class="avatar-action-btn">Установить аватар</button>
+            <p id="admin-avatar-status" class="avatar-status" aria-live="polite"></p>
+        </div>
+
+        <div
+            id="my-prof-username"
+            class="profile-username"
+            style="color:#fff;">
+            @User
+        </div>
+
+        <textarea
+            id="my-prof-bio-input"
+            placeholder="Расскажи о себе..."
+            rows="4"
+            maxlength="200"></textarea>
+
+        <p style="
+            color:#71717a;
+            font-size:0.8rem;
+            margin-top:0;
+            margin-bottom:20px;
+            text-align:left;
+        ">
+            Лимит: 200 символов. Изменять текст можно раз в 3 часа.
+        </p>
+
+        <div style="display:flex;gap:10px;">
+
+            <button
+                class="secondary"
+                style="flex:1;"
+                onclick="saveMyProfile()">
+                Сохранить текст
+            </button>
+
+            <button
+                class="back-btn"
+                style="margin:0;flex:1;"
+                onclick="closeModal('my-profile-modal')">
+                Закрыть
+            </button>
+
+        </div>
+
+    </div>
+</div>
+
+<!-- =========================================================
+     ПРОСМОТР ЧУЖОГО ПРОФИЛЯ
+========================================================= -->
+<div id="view-profile-modal" class="modal-overlay hidden">
+
+    <div class="modal-content profile-card" id="view-profile-card">
+
+        <h2>ПРОФИЛЬ ИГРОКА</h2>
+
+        <img
+            id="view-prof-avatar"
+            class="profile-big-avatar"
+            src="./robot.png"
+            alt="Аватар">
+
+        <div
+            id="view-prof-username"
+            class="profile-username">
+            @User
+        </div>
+
+        <div
+            id="view-prof-bio"
+            class="profile-bio-text">
+            Загрузка информации...
+        </div>
+
+        <button
+            class="back-btn"
+            style="width:100%;margin:0;"
+            onclick="closeModal('view-profile-modal')">
+            ЗАКРЫТЬ
+        </button>
+
+    </div>
+</div>
+
+<!-- =========================================================
+     ОСНОВНОЙ КОНТЕНТ
+========================================================= -->
+<div class="container hidden" id="main-content">
+
+    <!-- =====================================================
+         МЕНЮ
+    ====================================================== -->
+    <div id="menu-box" class="box">
+
+        <h2>⛏️ ДОБРО ПОЖАЛОВАТЬ НА REDSTONE MINE</h2>
+
+        <p style="color:#a1a1aa">
+            Выберите действие для входа на форум сервера:
+        </p>
+
+        <div class="menu-choice">
+
+            <button
+                class="primary menu-btn"
+                onclick="showAuthForm('login')">
+                🔑 Войти в существующий аккаунт
+            </button>
+
+            <button
+                class="secondary menu-btn"
+                onclick="showAuthForm('register')">
+                📝 Зарегистрировать новый ник
+            </button>
+
+        </div>
+
+    </div>
+
+    <!-- =====================================================
+         АВТОРИЗАЦИЯ
+    ====================================================== -->
+    <div id="login-box" class="hidden">
+
+        <h2>АВТОРИЗАЦИЯ</h2>
+
+        <p
+            id="auth-desc"
+            style="
+                color:#a1a1aa;
+                font-size:0.9rem;
+                margin-bottom:20px;
+            ">
+        </p>
+
+        <input
+            type="text"
+            id="username-input"
+            placeholder="Твой ник (например: Stepan)">
+
+        <input
+            type="password"
+            id="password-input"
+            placeholder="Пароль от аккаунта...">
+
+        <div class="auth-buttons">
+
+            <button
+                class="primary"
+                id="auth-action-btn"
+                onclick="submitAuth('login')">
+                ПОДТВЕРДИТЬ
+            </button>
+
+            <button
+                class="back-btn"
+                onclick="hideAuthForm()">
+                НАЗАД
+            </button>
+
+        </div>
+
+    </div>
+
+    <!-- =====================================================
+         ФОРУМ
+    ====================================================== -->
+    <div id="forum-box" class="hidden">
+
+        <!-- =================================================
+             АДМИНКА
+        ================================================== -->
+        <div
+            id="admin-panel"
+            class="box hidden"
+            style="border-color:#f43f5e;">
+
+            <h4 style="
+                margin:0 0 12px 0;
+                color:#f43f5e;
+            ">
+                🛡️ УПРАВЛЕНИЕ СЕРВЕРОМ СДЕЛАННОЕ @REDSTONEMINE
+            </h4>
+
+            <div style="
+                display:flex;
+                gap:10px;
+                margin-bottom:10px;
+            ">
+
+                <input
+                    type="text"
+                    id="ban-username"
+                    placeholder="@ник для бана"
+                    style="margin:0;">
+
+                <button onclick="banUser()">
+                    БАН
+                </button>
+
+            </div>
+
+            <div style="
+                display:flex;
+                gap:10px;
+            ">
+
+                <input
+                    type="text"
+                    id="unban-username"
+                    placeholder="@ник для разбана"
+                    style="margin:0;">
+
+                <button
+                    onclick="unbanUser()"
+                    style="background:#10b981;">
+                    РАЗБАН
+                </button>
+
+            </div>
+
+            <div class="admin-tool-divider"></div>
+            <h4>🎨 Цвет ника пользователя</h4>
+            <div class="admin-tool-row">
+                <input type="text" id="namecolor-username" placeholder="@ник пользователя" style="margin:0;">
+                <select id="namecolor-value" style="margin:0;">
+                    <option value="none">Обычный</option>
+                    <option value="red">Красный</option>
+                    <option value="gold">Золотой</option>
+                    <option value="purple">Фиолетовый</option>
+                    <option value="green">Зелёный</option>
+                    <option value="blue">Синий</option>
+                    <option value="cyan">Голубой</option>
+                    <option value="pink">Розовый</option>
+                    <option value="gray">Серый</option>
+                    <option value="orange">Оранжевый</option>
+                </select>
+                <button onclick="setUserNameColor()">ПРИМЕНИТЬ</button>
+            </div>
+
+        </div>
+
+        <!-- =================================================
+             ШАПКА
+        ================================================== -->
+        <div style="
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            margin-bottom:20px;
+            background:#121214;
+            padding:15px;
+            border-radius:12px;
+            border:1px solid #27272a;
+        ">
+
+            <h3
+                id="welcome-msg"
+                style="
+                    margin:0;
+                    font-size:1.1rem;
+                    color:#fff;
+                    text-shadow:none;
+                ">
+                ⛏️ Лента
+            </h3>
+
+            <div id="forum-actions" style="display:flex;flex-direction:column;gap:8px;align-items:flex-end;">
+                <button id="admin-panel-btn" class="admin-btn hidden" style="padding:8px 16px;font-size:0.85rem;margin:0;" onclick="toggleAdminPanel()">🛡️ Панель администрации</button>
+                <button id="admin-system-btn" class="primary hidden" style="padding:8px 16px;font-size:0.85rem;background:#2563eb;" onclick="openSystemComposer()">
+                    ✍️ Написать систем. сообщение
+                </button>
+                <button id="system-btn" class="secondary" style="padding:8px 16px;font-size:0.85rem;position:relative;" onclick="openSystemMessages()">
+                    🔔 Системные сообщения
+                    <span id="system-unread-dot" class="system-unread-dot hidden"></span>
+                </button>
+                <button id="profile-btn" class="secondary" style="padding:8px 16px;font-size:0.85rem;" onclick="openMyProfile()">
+                    📝 Мой Профиль
+                </button>
+            </div>
+
+        </div>
+
+        <!-- =================================================
+             СИСТЕМНЫЕ СООБЩЕНИЯ
+        ================================================== -->
+        <div id="system-box" class="box hidden" style="border-color:#10b981;">
+            <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:15px;">
+                <h3 style="margin:0;color:#10b981;">🔔 Системные сообщения</h3>
+                <button class="back-btn" onclick="returnToFeed()">Вернуться на Ленту</button>
+            </div>
+            <div id="system-compose" class="hidden" style="margin-bottom:20px;">
+                <textarea id="system-text" rows="4" maxlength="5000" placeholder="Текст системного уведомления..."></textarea>
+                <button class="primary" style="background:#2563eb;" onclick="sendSystemMessage()">Отправить</button>
+            </div>
+            <div id="system-container">Загрузка системных сообщений...</div>
+        </div>
+
+        <!-- =================================================
+             ПОИСК
+        ================================================== -->
+        <div class="search-box">
+
+            <input
+                type="text"
+                id="search-input"
+                placeholder="Поиск по хэштегу (например: #дом)..."
+                style="margin:0;">
+
+            <button
+                class="primary"
+                onclick="filterByTag()">
+                Искать / Обновить
+            </button>
+
+            <button
+                onclick="resetFilter()"
+                style="background:#27272a;">
+                Сброс
+            </button>
+
+        </div>
+
+        <!-- =================================================
+             НОВЫЙ ПОСТ
+        ================================================== -->
+        <div class="box">
+
+            <h3>💬 НОВЫЙ ПОСТ</h3>
+
+            <textarea
+                id="post-text"
+                placeholder="Текст сообщения..."
+                rows="3"></textarea>
+
+            <input
+                type="text"
+                id="post-tags"
+                placeholder="Хэштеги через пробел (например: дом торговля спавн)">
+
+            <button
+                class="primary"
+                id="send-btn"
+                onclick="sendPost()">
+                Опубликовать
+            </button>
+
+        </div>
+
+        <!-- =================================================
+             ПОСТЫ
+        ================================================== -->
+        <div id="posts-container">
+            Загрузка архивов...
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+/* =========================================================
+   ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ
+========================================================= */
+
+const WORKER_URL =
+    'https://restless-hill-dd2a.redstonemineforum.workers.dev';
+
+const ADMIN_WHITELIST = [
+    "@redstonemine",
+    "@krutoi",
+    "@RM_Emperor",
+    "@on404",
+    "@egor4ik",
+    "@ava",
+    "@redstonemine_community",
+    "@palka"
+];
+
+let allPosts = [];
+let currentFilterTag = "";
+let currentUsername = "";
+let currentPassword = "";
+let isAdmin = false;
+
+/* =========================================================
+   АНТИСПАМ
+========================================================= */
+
+let rateLimitUntil = 0;
+let rateLimitInterval = null;
+
+function getRetrySeconds(data) {
+
+    if (!data) return 60;
+
+    if (typeof data.retryAfter === "number") {
+        return Math.max(1, Math.ceil(data.retryAfter));
+    }
+
+    if (typeof data.retry_after === "number") {
+        return Math.max(1, Math.ceil(data.retry_after));
+    }
+
+    return 60;
+}
+
+
+/*
+ * Показывает красивое окно вместо обычного:
+ * "Ошибка публикации"
+ */
+function showRateLimit(data) {
+
+    const seconds = getRetrySeconds(data);
+
+    rateLimitUntil = Date.now() + (seconds * 1000);
+
+    const modal =
+        document.getElementById("ratelimit-modal");
+
+    const text =
+        document.getElementById("ratelimit-text");
+
+    const timer =
+        document.getElementById("ratelimit-timer");
+
+    if (!modal || !text || !timer) return;
+
+    let message =
+        data && data.error
+            ? data.error
+            : "Слишком много запросов. Пожалуйста, немного подожди.";
+
+    text.innerText = message;
+
+    modal.classList.remove("hidden");
+
+    updateRateLimitTimer();
+
+    if (rateLimitInterval) {
+        clearInterval(rateLimitInterval);
+    }
+
+    rateLimitInterval = setInterval(() => {
+
+        updateRateLimitTimer();
+
+        if (Date.now() >= rateLimitUntil) {
+
+            clearInterval(rateLimitInterval);
+            rateLimitInterval = null;
+
+            unlockForumButtons();
+
+        }
+
+    }, 1000);
+
+    lockForumButtons(seconds);
+}
+
+
+/*
+ * Таймер
+ */
+function updateRateLimitTimer() {
+
+    const timer =
+        document.getElementById("ratelimit-timer");
+
+    if (!timer) return;
+
+    const remaining =
+        Math.max(
+            0,
+            Math.ceil(
+                (rateLimitUntil - Date.now()) / 1000
+            )
+        );
+
+    if (remaining <= 0) {
+        timer.innerText = "Можно продолжать 👍";
+    } else {
+
+        const minutes =
+            Math.floor(remaining / 60);
+
+        const seconds =
+            remaining % 60;
+
+        timer.innerText =
+            minutes > 0
+                ? `${minutes}:${String(seconds).padStart(2, "0")}`
+                : `${seconds} сек.`;
+    }
+}
+
+
+/*
+ * Блокируем действия форума
+ */
+function lockForumButtons(seconds) {
+
+    const buttons = [
+        document.getElementById("send-btn"),
+        ...document.querySelectorAll(".comment-btn")
+    ];
+
+    buttons.forEach(btn => {
+
+        if (!btn) return;
+
+        btn.disabled = true;
+
+        if (!btn.dataset.originalText) {
+            btn.dataset.originalText = btn.innerText;
+        }
+
+        btn.innerText =
+            `⏳ Подождите ${seconds}с`;
+    });
+}
+
+
+/*
+ * Возвращаем кнопки
+ */
+function unlockForumButtons() {
+
+    const buttons = [
+        document.getElementById("send-btn"),
+        ...document.querySelectorAll(".comment-btn")
+    ];
+
+    buttons.forEach(btn => {
+
+        if (!btn) return;
+
+        btn.disabled = false;
+
+        if (btn.dataset.originalText) {
+            btn.innerText =
+                btn.dataset.originalText;
+        }
+
+    });
+}
+
+
+/*
+ * Закрытие окна
+ */
+function closeRateLimitModal() {
+
+    const modal =
+        document.getElementById("ratelimit-modal");
+
+    if (modal) {
+        modal.classList.add("hidden");
+    }
+
+    if (Date.now() < rateLimitUntil) {
+        return;
+    }
+
+    unlockForumButtons();
+}
+
+
+/*
+ * Универсальная обработка ответа Worker.
+ *
+ * Если Worker вернул 429 —
+ * автоматически показываем антиспам.
+ */
+async function parseWorkerResponse(res) {
+
+    let data = {};
+
+    try {
+        data = await res.json();
+    } catch (e) {
+        data = {};
+    }
+
+    if (res.status === 429) {
+        showRateLimit(data);
+    }
+
+    return data;
+}
+
+
+/* =========================================================
+   ЗАЩИТА ОТ F5 / БРУТФОРСА
+========================================================= */
+
+(function checkGlobalBlocks() {
+
+    const now = Date.now();
+
+    const passwordBanUntil =
+        sessionStorage.getItem("password_ban_until");
+
+    if (
+        passwordBanUntil &&
+        now < parseInt(passwordBanUntil)
+    ) {
+
+        window.addEventListener(
+            "DOMContentLoaded",
+            () => {
+
+                document.getElementById(
+                    'block-title'
+                ).innerText =
+                    "🚫 ПОДОЗРИТЕЛЬНАЯ АКТИВНОСТЬ";
+
+                document.getElementById(
+                    'block-text'
+                ).innerHTML =
+                    "Ваш аккаунт ограничен на <b>1 час и 30 минут</b> " +
+                    "из-за подозрений в подборе пароля! " +
+                    "<br><br>Доступ заблокирован.";
+
+                document.getElementById(
+                    'block-modal'
+                ).classList.remove('hidden');
+
+                document.body.classList.add(
+                    'banned-screen'
+                );
+
+            }
+        );
+
+        return;
+    }
+
+
+    const spamBanUntil =
+        sessionStorage.getItem("spam_ban_until");
+
+    if (
+        spamBanUntil &&
+        now < parseInt(spamBanUntil)
+    ) {
+
+        window.addEventListener(
+            "DOMContentLoaded",
+            () => {
+
+                document.getElementById(
+                    'block-title'
+                ).innerText =
+                    "🚫 ДОСТУП ОГРАНИЧЕН";
+
+                document.getElementById(
+                    'block-text'
+                ).innerHTML =
+                    "Ваш аккаунт временно ограничен на <b>1 час</b> " +
+                    "за спам обновлениями страницы! " +
+                    "<br><br>Хватит терзать редстоун-схемы форума.";
+
+                document.getElementById(
+                    'block-modal'
+                ).classList.remove('hidden');
+
+                document.body.classList.add(
+                    'banned-screen'
+                );
+
+            }
+        );
+
+        return;
+    }
+
+
+    let history =
+        JSON.parse(
+            sessionStorage.getItem(
+                "reload_history"
+            ) || "[]"
+        );
+
+    history =
+        history.filter(
+            time => now - time < 60000
+        );
+
+    history.push(now);
+
+    sessionStorage.setItem(
+        "reload_history",
+        JSON.stringify(history)
+    );
+
+    if (history.length > 5) {
+
+        sessionStorage.setItem(
+            "spam_ban_until",
+            (now + 3600000).toString()
+        );
+
+        window.location.reload();
+    }
+
+})();
+ /* =========================================================
+    👑 НАСТРОЙКА АДМИНОВ
+    ---------------------------------------------------------
+    Здесь можно менять аватарки, цвета имени и оформления.
+
+    ДОСТУПНЫЕ ЦВЕТА / ТЕМЫ:
+    none   — обычный стиль
+    gold   — золото 🟨
+    purple — аметист / фиолетовый 🟪
+    green  — изумруд / зелёный 🟩
+    red    — рубиновый / красный 🟥
+    blue   — сапфировый / синий 🟦
+    cyan   — бирюзовый / голубой 🩵
+    pink   — розовый кварц / розовый 🩷
+    gray   — серебро / серый 🩶
+    orange — янтарь / оранжевый 🟧
+
+   АВАТАР:
+   Указывай путь к файлу, например:
+   "./admin_cube.png"
+
+   ВАЖНО:
+   Ник должен начинаться с @.
+========================================================= */
+
+
+/* =========================================================
+   🖼️ АВАТАРКИ АДМИНОВ
+========================================================= */
+
+const ADMIN_AVATARS = {
+
+    "@redstonemine": "./admin_cube.png",
+    "@krutoi": "./popcat.jpg",
+    "@RM_Emperor": "./RM_Emperor.png",
+    "@on404": "./on404.png",
+    "@egor4ik": "./floppa.jpg",
+    "@Paganets52": "./Paganets52.jpg"
+};
+
+
+/* =========================================================
+   🪪 ФОН КАРТОЧКИ ПРОФИЛЯ
+   Используй: none / gold / purple / green / red /
+   blue / cyan / pink
+========================================================= */
+
+const ADMIN_CARDS = {
+
+    "@redstonemine": "red",
+    "@krutoi": "none",
+    "@RM_Emperor": "purple",
+    "@on404": "pink",
+    "@egor4ik": "gold",
+    "@Paganets52": "gray"
+};
+
+
+/* =========================================================
+   ✨ ЦВЕТ ИМЕНИ
+   Используй: none / gold / purple / green / red /
+   blue / cyan / pink
+========================================================= */
+
+const ADMIN_NAMES = {
+
+    "@redstonemine": "red",
+    "@krutoi": "gold",
+    "@RM_Emperor": "purple",
+    "@on404": "green",
+    "@egor4ik": "gold",
+    "@Paganets52": "gray"
+};
+
+
+/* =========================================================
+   📝 ЦВЕТ ТЕКСТА ОПИСАНИЯ ПРОФИЛЯ
+   Используй: none / gold / purple / green / red /
+   blue / cyan / pink
+========================================================= */
+
+const ADMIN_DESCRIPTION = {
+
+    "@redstonemine": "gold",
+    "@krutoi": "gold",
+    "@on404": "green",
+    "@RM_Emperor": "blue",
+    "@Paganets52": "gray"
+};
+
+
+/* =========================================================
+   🎨 ФОН ПЛАШКИ ОПИСАНИЯ ПРОФИЛЯ
+   Используй: none / gold / purple / green / red /
+   blue / cyan / pink
+========================================================= */
+
+const ADMIN_DESCBACK = {
+
+    "@redstonemine": "red",
+    "@krutoi": "gold",
+    "@on404": "pink",
+    "@RM_Emperor": "purple",
+    "@Paganets52": "gray"
+};
+
+
+/* =========================================================
+   ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ
+========================================================= */
+
+function getAdminStyle(username, list) {
+
+    if (!list) return "none";
+
+    const lowerUser =
+        username.trim().toLowerCase();
+
+    const foundKey =
+        Object.keys(list).find(
+            key =>
+                key.toLowerCase() === lowerUser
+        );
+
+    return foundKey
+        ? list[foundKey]
+        : "none";
+}
+
+
+function acceptTerms() {
+
+    const modal =
+        document.getElementById('notice-modal');
+
+    if (modal) {
+        modal.classList.add('hidden');
+    }
+
+    const mainContent =
+        document.getElementById('main-content');
+
+    if (mainContent) {
+        mainContent.classList.remove('hidden');
+    }
+}
+
+
+function closeModal(modalId) {
+
+    const modal =
+        document.getElementById(modalId);
+
+    if (modal) {
+        modal.classList.add('hidden');
+    }
+}
+
+
+/* =========================================================
+   АВТОРИЗАЦИЯ
+========================================================= */
+
+function showAuthForm(type) {
+
+    document.getElementById(
+        'menu-box'
+    ).classList.add('hidden');
+
+    const loginBox =
+        document.getElementById('login-box');
+
+    loginBox.classList.remove('hidden');
+
+    const title =
+        document.querySelector(
+            '#login-box h2'
+        );
+
+    const desc =
+        document.getElementById(
+            'auth-desc'
+        );
+
+    const actionBtn =
+        document.getElementById(
+            'auth-action-btn'
+        );
+
+
+    if (type === 'login') {
+
+        if (title)
+            title.innerText =
+                "АВТОРИЗАЦИЯ";
+
+        if (desc)
+            desc.innerText =
+                "Введите свой ник и пароль для входа на форум:";
+
+        if (actionBtn) {
+
+            actionBtn.innerText =
+                "ВОЙТИ";
+
+            actionBtn.setAttribute(
+                'onclick',
+                "submitAuth('login')"
+            );
+        }
+
+    } else {
+
+        if (title)
+            title.innerText =
+                "РЕГИСТРАЦИЯ";
+
+        if (desc)
+            desc.innerText =
+                "Придумайте игровой ник и пароль для создания аккаунта:";
+
+        if (actionBtn) {
+
+            actionBtn.innerText =
+                "СОЗДАТЬ";
+
+            actionBtn.setAttribute(
+                'onclick',
+                "submitAuth('register')"
+            );
+        }
+    }
+}
+
+
+function hideAuthForm() {
+
+    document.getElementById(
+        'login-box'
+    ).classList.add('hidden');
+
+    document.getElementById(
+        'menu-box'
+    ).classList.remove('hidden');
+
+    document.getElementById(
+        'username-input'
+    ).value = "";
+
+    document.getElementById(
+        'password-input'
+    ).value = "";
+}
+
+
+/* =========================================================
+   ВХОД / РЕГИСТРАЦИЯ
+========================================================= */
+
+async function submitAuth(authType) {
+
+    const userIn =
+        document.getElementById(
+            'username-input'
+        ).value.trim();
+
+    const passIn =
+        document.getElementById(
+            'password-input'
+        ).value.trim();
+
+
+    if (!userIn || !passIn) {
+
+        alert(
+            "Заполните все поля формы!"
+        );
+
+        return;
+    }
+
+
+    const actionBtn =
+        document.getElementById(
+            'auth-action-btn'
+        );
+
+    actionBtn.disabled = true;
+
+
+    try {
+
+        const res =
+            await fetch(
+                WORKER_URL + '/api/auth',
+                {
+                    method:'POST',
+
+                    headers:{
+                        'Content-Type':
+                            'application/json'
+                    },
+
+                    body:JSON.stringify({
+                        username:userIn,
+                        password:passIn,
+                        type:authType
+                    })
+                }
+            );
+
+
+        const data =
+            await parseWorkerResponse(res);
+
+
+        if (!res.ok) {
+
+            if (res.status !== 429) {
+
+                alert(
+                    data.error ||
+                    "Ошибка авторизации"
+                );
+            }
+
+            actionBtn.disabled = false;
+
+
+            /*
+             * Старый локальный антибрутфорс
+             */
+            if (
+                data.error &&
+                data.error.includes(
+                    "Неверный пароль"
+                )
+            ) {
+
+                const banTime =
+                    Date.now() + 5400000;
+
+                sessionStorage.setItem(
+                    "password_ban_until",
+                    banTime.toString()
+                );
+
+                window.location.reload();
+            }
+
+            return;
+        }
+
+
+        currentUsername =
+            userIn.startsWith('@')
+                ? userIn
+                : '@' + userIn;
+
+        currentPassword =
+            passIn;
+
+
+        const cleanUser =
+            userIn
+                .toLowerCase()
+                .replace('@','');
+
+
+        isAdmin =
+            ADMIN_WHITELIST
+                .map(
+                    v =>
+                        v.toLowerCase()
+                         .replace('@','')
+                )
+                .includes(cleanUser);
+
+
+        document.getElementById(
+            'login-box'
+        ).classList.add('hidden');
+
+        document.getElementById(
+            'forum-box'
+        ).classList.remove('hidden');
+
+
+        if (isAdmin) {
+            document.getElementById('admin-panel-btn').classList.remove('hidden');
+            document.getElementById('admin-system-btn').classList.remove('hidden');
+            document.getElementById('admin-panel').classList.add('hidden');
+        }
+
+
+        document.getElementById(
+            'welcome-msg'
+        ).innerText =
+            "⛏️ Лента — " +
+            currentUsername;
+
+
+        loadPosts();
+        startSystemPolling();
+        loadSystemMessages(false);
+
+
+    } catch(e) {
+
+        alert(
+            "Не удалось связаться с сервером."
+        );
+
+        actionBtn.disabled = false;
+    }
+}
+
+
+/* =========================================================
+   ЗАГРУЗКА ПОСТОВ
+========================================================= */
+
+async function loadPosts() {
+
+    try {
+
+        const res =
+            await fetch(
+                WORKER_URL + '/api/posts'
+            );
+
+
+        const data =
+            await parseWorkerResponse(res);
+
+
+        if (!res.ok) {
+
+            if (res.status !== 429) {
+
+                document.getElementById(
+                    'posts-container'
+                ).innerText =
+                    data.error ||
+                    "Ошибка загрузки ленты.";
+            }
+
+            return;
+        }
+
+
+        allPosts =
+            Array.isArray(data)
+                ? data
+                : [];
+
+
+        renderPosts();
+
+
+    } catch(e) {
+
+        document.getElementById(
+            'posts-container'
+        ).innerText =
+            "Ошибка загрузки ленты.";
+    }
+}
+
+
+/* =========================================================
+   ОТРИСОВКА ПОСТОВ
+========================================================= */
+
+function renderPosts() {
+
+    const container =
+        document.getElementById(
+            'posts-container'
+        );
+
+    container.innerHTML = "";
+
+
+    const filtered =
+        currentFilterTag
+
+            ? allPosts.filter(
+                p =>
+                    p.tags &&
+                    p.tags
+                        .map(
+                            t =>
+                                t.toLowerCase()
+                        )
+                        .includes(
+                            currentFilterTag
+                                .toLowerCase()
+                        )
+            )
+
+            : allPosts;
+
+
+    if (filtered.length === 0) {
+
+        container.innerHTML =
+            "<p style='color:#71717a;text-align:center;'>" +
+            "Записей по такому тегу не найдено." +
+            "</p>";
+
+        return;
+    }
+
+
+    filtered.forEach(post => {
+
+        const lowerUser =
+            post.username.toLowerCase();
+
+
+        const isPostAdmin =
+            ADMIN_WHITELIST
+                .map(
+                    v => v.toLowerCase()
+                )
+                .includes(lowerUser);
+
+
+        let avaSrc =
+            './robot.png';
+
+
+        if (isPostAdmin) {
+
+            const customAva =
+                Object.keys(
+                    ADMIN_AVATARS
+                ).find(
+                    key =>
+                        key.toLowerCase() ===
+                        lowerUser
+                );
+
+            avaSrc =
+                customAva
+                    ? ADMIN_AVATARS[customAva]
+                    : './robot.png';
+        }
+
+
+        const badge =
+            isPostAdmin
+                ? '<span class="verified-badge" title="Аккаунт администрации форума">✓</span>'
+                : '';
+
+
+        const postNameTheme =
+            post.nameColor || (isPostAdmin
+                ? getAdminStyle(post.username, ADMIN_NAMES)
+                : "none");
+
+        if (post.avatarUrl) avaSrc = post.avatarUrl;
+
+
+        const styleClass =
+            postNameTheme !== "none"
+
+                ? "name-theme-" +
+                    postNameTheme
+
+                : (
+                    isPostAdmin
+                        ? "admin-style"
+                        : ""
+                );
+
+
+        const deleteBtn =
+            isAdmin
+
+                ? '<br><button class="admin-btn" onclick="deletePost(' +
+                    post.id +
+                    ')">❌ Стереть пост</button>'
+
+                : '';
+
+
+        /* =========================
+           ТЕГИ
+        ========================== */
+
+        let tagsHTML = "";
+
+
+        if (
+            post.tags &&
+            post.tags.length > 0
+        ) {
+
+            tagsHTML =
+                '<div class="tags-container">';
+
+
+            post.tags.forEach(t => {
+
+                tagsHTML +=
+                    '<span class="tag" onclick="setSearchTag(\'' +
+                    escapeAttribute(t) +
+                    '\')">' +
+                    escapeHTML(t) +
+                    '</span>';
+
+            });
+
+
+            tagsHTML +=
+                '</div>';
+        }
+
+
+        /* =========================
+           КОММЕНТАРИИ
+        ========================== */
+
+        let commentsHTML =
+            '<div class="comments-section">';
+
+
+        if (
+            post.comments &&
+            post.comments.length > 0
+        ) {
+
+            post.comments.forEach(comm => {
+
+                const lowerCommUser =
+                    comm.username.toLowerCase();
+
+
+                const isCommAdmin =
+                    ADMIN_WHITELIST
+                        .map(
+                            v => v.toLowerCase()
+                        )
+                        .includes(
+                            lowerCommUser
+                        );
+
+
+                let commAva =
+                    './robot.png';
+
+
+                if (isCommAdmin) {
+
+                    const customCommAva =
+                        Object.keys(
+                            ADMIN_AVATARS
+                        ).find(
+                            key =>
+                                key.toLowerCase() ===
+                                lowerCommUser
+                        );
+
+
+                    commAva =
+                        customCommAva
+                            ? ADMIN_AVATARS[
+                                customCommAva
+                            ]
+                            : './robot.png';
+                }
+
+
+                const commNameTheme =
+                    comm.nameColor || (isCommAdmin
+                        ? getAdminStyle(comm.username, ADMIN_NAMES)
+                        : "none");
+
+                if (comm.avatarUrl) commAva = comm.avatarUrl;
+
+
+                const commStyle =
+                    commNameTheme !== "none"
+
+                        ? "name-theme-" +
+                            commNameTheme
+
+                        : (
+                            isCommAdmin
+                                ? "admin-style"
+                                : ""
+                        );
+
+
+                const commBadge =
+                    isCommAdmin
+                        ? '<span class="verified-badge" title="Аккаунт администрации форума">✓</span>'
+                        : '';
+
+
+                const commDeleteBtn =
+                    isAdmin
+
+                        ? '<button class="admin-btn" style="margin:5px 0 0 0;padding:3px 8px;font-size:0.75rem;" onclick="deleteComment(' +
+                            post.id +
+                            ',' +
+                            comm.id +
+                            ')">❌ Стереть ответ</button>'
+
+                        : '';
+
+
+                commentsHTML +=
+
+                    '<div class="comment">' +
+
+                        '<img class="comment-avatar" src="' +
+                        commAva +
+                        '" alt="ava" onclick="viewUserProfile(\'' +
+                        escapeAttribute(comm.username) +
+                        '\')">' +
+
+                        '<div class="comment-body">' +
+
+                            '<div class="comment-header">' +
+
+                                '<span class="author ' +
+                                commStyle +
+                                '" style="font-size:0.95rem;" onclick="viewUserProfile(\'' +
+                                escapeAttribute(comm.username) +
+                                '\')">' +
+
+                                    escapeHTML(comm.username) +
+                                    ' ' +
+                                    commBadge +
+
+                                '</span>' +
+
+                                '<span class="time" style="font-size:0.75rem;">' +
+                                    escapeHTML(comm.time || '') +
+                                '</span>' +
+
+                            '</div>' +
+
+                            '<div class="comment-text">' +
+                                escapeHTML(comm.text || '') +
+                            '</div>' +
+
+                            commDeleteBtn +
+
+                        '</div>' +
+
+                    '</div>';
+            });
+        }
+
+
+        commentsHTML +=
+
+            '<div class="comment-form">' +
+
+                '<input type="text" ' +
+                'id="comm-input-' +
+                post.id +
+                '" ' +
+                'class="comment-input" ' +
+                'placeholder="Написать ответ в ветку...">' +
+
+                '<button ' +
+                'class="primary comment-btn" ' +
+                'onclick="sendComment(' +
+                post.id +
+                ')">' +
+                'Ответить' +
+                '</button>' +
+
+            '</div>' +
+
+            '</div>';
+
+
+        /* =========================
+           САМ ПОСТ
+        ========================== */
+
+        container.innerHTML +=
+
+            '<div class="post">' +
+
+                '<img class="avatar" src="' +
+                    avaSrc +
+                    '" alt="ava" onclick="viewUserProfile(\'' +
+                    escapeAttribute(post.username) +
+                    '\')">' +
+
+                '<div class="post-body">' +
+
+                    '<div class="post-header">' +
+
+                        '<span class="author ' +
+                            styleClass +
+                            '" onclick="viewUserProfile(\'' +
+                            escapeAttribute(post.username) +
+                            '\')">' +
+
+                            escapeHTML(post.username) +
+                            ' ' +
+                            badge +
+
+                        '</span>' +
+
+                        '<span class="time">' +
+                            escapeHTML(post.time || '') +
+                        '</span>' +
+
+                    '</div>' +
+
+                    '<div class="text">' +
+                        escapeHTML(post.text || '') +
+                    '</div>' +
+
+                    tagsHTML +
+
+                    deleteBtn +
+
+                    commentsHTML +
+
+                '</div>' +
+
+            '</div>';
+
+    });
+
+
+    /*
+     * Если пользователь уже находится
+     * под антиспамом — новые кнопки тоже блокируем.
+     */
+    if (Date.now() < rateLimitUntil) {
+
+        const seconds =
+            Math.ceil(
+                (rateLimitUntil - Date.now()) /
+                1000
+            );
+
+        lockForumButtons(seconds);
+    }
+}
+
+
+let adminPanelOpen = false;
+function toggleAdminPanel() {
+    if (!isAdmin) return;
+    adminPanelOpen = !adminPanelOpen;
+    const panel = document.getElementById('admin-panel');
+    if (panel) panel.classList.toggle('hidden', !adminPanelOpen);
+    const button = document.getElementById('admin-panel-btn');
+    if (button) button.textContent = adminPanelOpen ? '✖️ Скрыть панель администрации' : '🛡️ Панель администрации';
+}
+
+/* =========================================================
+   СИСТЕМНЫЕ СООБЩЕНИЯ
+========================================================= */
+
+let systemMessages = [];
+let systemViewOpen = false;
+let systemPoll = null;
+
+function getAdminVisuals(username) {
+    const lower = String(username || '').toLowerCase();
+    const key = Object.keys(ADMIN_AVATARS).find(k => k.toLowerCase() === lower);
+    const nameTheme = getAdminStyle(username, ADMIN_NAMES);
+    return {
+        avatar: key ? ADMIN_AVATARS[key] : './robot.png',
+        nameClass: nameTheme !== 'none' ? 'name-theme-' + nameTheme : ''
+    };
+}
+
+function renderSystemMessages() {
+    const container = document.getElementById('system-container');
+    if (!container) return;
+    container.innerHTML = '';
+
+    if (!systemMessages.length) {
+        container.innerHTML = '<p style="color:#71717a;text-align:center;">Системных сообщений пока нет.</p>';
+        return;
+    }
+
+    systemMessages.forEach(message => {
+        const visual = getAdminVisuals(message.username);
+        const canDelete = isAdmin
+            ? '<button class="admin-btn" style="margin:10px 0 0 0;" onclick="deleteSystemMessage(' + Number(message.id) + ')">❌ Удалить глобально</button>'
+            : '';
+
+        container.innerHTML +=
+            '<div class="post system-message" style="border-color:#27272a;">' +
+                '<img class="avatar" src="' + escapeAttribute(visual.avatar) + '" alt="ava" onclick="viewUserProfile(\'' + escapeAttribute(message.username) + '\')">' +
+                '<div class="post-body">' +
+                    '<div class="post-header">' +
+                        '<span class="author ' + (ADMIN_WHITELIST.map(v => v.toLowerCase()).includes(String(message.username).toLowerCase()) ? visual.nameClass : '') + '" onclick="viewUserProfile(\'' + escapeAttribute(message.username) + '\')">' +
+                            escapeHTML(message.username) + (ADMIN_WHITELIST.map(v => v.toLowerCase()).includes(String(message.username).toLowerCase()) ? ' <span class="verified-badge" title="Аккаунт администрации форума">✓</span>' : '') +
+                        '</span>' +
+                        '<span class="time">' + escapeHTML(message.time || '') + '</span>' +
+                    '</div>' +
+                    '<div class="text">' + escapeHTML(message.text || '') + '</div>' +
+                    canDelete +
+                '</div>' +
+            '</div>';
+    });
+}
+
+async function loadSystemMessages(markRead = false) {
+    if (!currentUsername) return;
+    try {
+        const res = await fetch(WORKER_URL + '/api/system?username=' + encodeURIComponent(currentUsername));
+        const data = await parseWorkerResponse(res);
+        if (!res.ok) return;
+        systemMessages = Array.isArray(data.messages) ? data.messages : [];
+        updateSystemUnread(!!data.unread);
+        if (systemViewOpen) renderSystemMessages();
+
+        if (markRead && data.unread) {
+            await fetch(WORKER_URL + '/api/system/read', {
+                method:'POST', headers:{'Content-Type':'application/json'},
+                body:JSON.stringify({username:currentUsername,password:currentPassword})
+            });
+            updateSystemUnread(false);
+        }
+    } catch(e) {}
+}
+
+function updateSystemUnread(unread) {
+    const dot = document.getElementById('system-unread-dot');
+    if (dot) dot.classList.toggle('hidden', !unread);
+}
+
+function openSystemMessages() {
+    systemViewOpen = true;
+    document.getElementById('posts-container').classList.add('hidden');
+    document.querySelectorAll('#forum-box > .box').forEach(el => {
+        if (el.id !== 'admin-panel' && el.id !== 'system-box') el.classList.add('hidden');
+    });
+    document.getElementById('system-box').classList.remove('hidden');
+    document.getElementById('system-compose').classList.add('hidden');
+    document.getElementById('system-btn').innerHTML = '↩️ Вернуться на Ленту';
+    document.getElementById('system-btn').onclick = returnToFeed;
+    if (isAdmin) {
+        document.getElementById('admin-system-btn').innerText = '↩️ Вернуться на Ленту';
+        document.getElementById('admin-system-btn').onclick = returnToFeed;
+    }
+    loadSystemMessages(true);
+}
+
+function openSystemComposer() {
+    systemViewOpen = true;
+    document.getElementById('posts-container').classList.add('hidden');
+    document.querySelectorAll('#forum-box > .box').forEach(el => {
+        if (el.id !== 'admin-panel' && el.id !== 'system-box') el.classList.add('hidden');
+    });
+    document.getElementById('system-box').classList.remove('hidden');
+    document.getElementById('system-compose').classList.remove('hidden');
+    document.getElementById('admin-system-btn').innerText = '↩️ Вернуться на Ленту';
+    document.getElementById('admin-system-btn').onclick = returnToFeed;
+    loadSystemMessages(true);
+}
+
+function returnToFeed() {
+    systemViewOpen = false;
+    document.getElementById('system-box').classList.add('hidden');
+    document.querySelectorAll('#forum-box > .box').forEach(el => {
+        if (el.id !== 'admin-panel') el.classList.remove('hidden');
+    });
+    if (!adminPanelOpen) document.getElementById('admin-panel').classList.add('hidden');
+    document.getElementById('posts-container').classList.remove('hidden');
+    document.getElementById('system-btn').innerHTML = '🔔 Системные сообщения <span id="system-unread-dot" class="system-unread-dot hidden"></span>';
+    document.getElementById('system-btn').onclick = openSystemMessages;
+    if (isAdmin) {
+        document.getElementById('admin-system-btn').innerText = '✍️ Написать систем. сообщение';
+        document.getElementById('admin-system-btn').onclick = openSystemComposer;
+    }
+    loadPosts();
+    loadSystemMessages(false);
+}
+
+async function sendSystemMessage() {
+    const input = document.getElementById('system-text');
+    const text = input.value.trim();
+    if (!text) return alert('Введите текст системного уведомления.');
+
+    try {
+        const res = await fetch(WORKER_URL + '/api/admin/system', {
+            method:'POST', headers:{'Content-Type':'application/json'},
+            body:JSON.stringify({username:currentUsername,password:currentPassword,text})
+        });
+        const data = await parseWorkerResponse(res);
+        if (!res.ok) return alert(data.error || 'Ошибка отправки.');
+        input.value = '';
+        await loadSystemMessages(false);
+        renderSystemMessages();
+        alert('Системное уведомление отправлено!');
+    } catch(e) { alert('Ошибка сервера.'); }
+}
+
+async function deleteSystemMessage(messageId) {
+    if (!confirm('Удалить это системное уведомление глобально?')) return;
+    try {
+        const res = await fetch(WORKER_URL + '/api/admin/system-delete', {
+            method:'POST', headers:{'Content-Type':'application/json'},
+            body:JSON.stringify({username:currentUsername,password:currentPassword,messageId})
+        });
+        const data = await parseWorkerResponse(res);
+        if (!res.ok) return alert(data.error || 'Ошибка удаления.');
+        await loadSystemMessages(false);
+        renderSystemMessages();
+    } catch(e) { alert('Ошибка сервера.'); }
+}
+
+function startSystemPolling() {
+    if (systemPoll) clearInterval(systemPoll);
+    systemPoll = setInterval(() => loadSystemMessages(false), 5000);
+}
+
+/* =========================================================
+   ОТПРАВКА ПОСТА
+========================================================= */
+
+async function sendPost() {
+
+    /*
+     * Локальная проверка:
+     * если Worker уже сообщил нам о лимите,
+     * даже не отправляем запрос.
+     */
+
+    if (Date.now() < rateLimitUntil) {
+
+        showRateLimit({
+            error:
+                "Подожди немного — антиспам уже ограничил отправку."
+        });
+
+        return;
+    }
+
+
+    const text =
+        document.getElementById(
+            'post-text'
+        ).value.trim();
+
+
+    const tags =
+        document.getElementById(
+            'post-tags'
+        ).value.trim();
+
+
+    if (!text) {
+
+        alert(
+            "Введите текст сообщения."
+        );
+
+        return;
+    }
+
+
+    const btn =
+        document.getElementById(
+            'send-btn'
+        );
+
+
+    btn.disabled = true;
+
+
+    try {
+
+        const res =
+            await fetch(
+                WORKER_URL + '/api/posts',
+                {
+                    method:'POST',
+
+                    headers:{
+                        'Content-Type':
+                            'application/json'
+                    },
+
+                    body:JSON.stringify({
+
+                        username:
+                            currentUsername,
+
+                        password:
+                            currentPassword,
+
+                        text:text,
+
+                        tags:tags
+
+                    })
+                }
+            );
+
+
+        const data =
+            await parseWorkerResponse(res);
+
+
+        if (!res.ok) {
+
+            if (res.status !== 429) {
+
+                alert(
+                    data.error ||
+                    "Ошибка публикации."
+                );
+            }
+
+            return;
+        }
+
+
+        document.getElementById(
+            'post-text'
+        ).value = "";
+
+
+        document.getElementById(
+            'post-tags'
+        ).value = "";
+
+
+        await loadPosts();
+
+
+    } catch(e) {
+
+        alert(
+            "Ошибка публикации."
+        );
+
+    } finally {
+
+        /*
+         * Не включаем кнопку обратно,
+         * если Worker поставил rate limit.
+         */
+
+        if (Date.now() >= rateLimitUntil) {
+            btn.disabled = false;
+        }
+    }
+}
+
+
+/* =========================================================
+   КОММЕНТАРИЙ
+========================================================= */
+
+async function sendComment(postId) {
+
+    if (Date.now() < rateLimitUntil) {
+
+        showRateLimit({
+            error:
+                "Не спамь 😭 Подожди немного перед следующим действием."
+        });
+
+        return;
+    }
+
+
+    const input =
+        document.getElementById(
+            'comm-input-' + postId
+        );
+
+
+    if (!input) return;
+
+
+    const text =
+        input.value.trim();
+
+
+    if (!text) return;
+
+
+    const button =
+        input.parentElement
+            .querySelector(
+                '.comment-btn'
+            );
+
+
+    if (button) {
+        button.disabled = true;
+    }
+
+
+    try {
+
+        const res =
+            await fetch(
+                WORKER_URL +
+                '/api/comments',
+                {
+                    method:'POST',
+
+                    headers:{
+                        'Content-Type':
+                            'application/json'
+                    },
+
+                    body:JSON.stringify({
+
+                        username:
+                            currentUsername,
+
+                        password:
+                            currentPassword,
+
+                        postId:
+                            postId,
+
+                        text:
+                            text
+
+                    })
+                }
+            );
+
+
+        const data =
+            await parseWorkerResponse(res);
+
+
+        if (!res.ok) {
+
+            if (res.status !== 429) {
+
+                alert(
+                    data.error ||
+                    "Ошибка отправки ответа."
+                );
+            }
+
+            return;
+        }
+
+
+        input.value = "";
+
+
+        await loadPosts();
+
+
+    } catch(e) {
+
+        alert(
+            "Ошибка отправки ответа."
+        );
+
+    } finally {
+
+        if (
+            button &&
+            Date.now() >= rateLimitUntil
+        ) {
+            button.disabled = false;
+        }
+    }
+}
+
+
+/* =========================================================
+   УДАЛЕНИЕ ПОСТА
+========================================================= */
+
+async function deletePost(postId) {
+
+    if (!confirm("Удалить пост?"))
+        return;
+
+
+    try {
+
+        const res =
+            await fetch(
+                WORKER_URL +
+                '/api/admin/delete',
+                {
+                    method:'POST',
+
+                    headers:{
+                        'Content-Type':
+                            'application/json'
+                    },
+
+                    body:JSON.stringify({
+
+                        username:
+                            currentUsername,
+
+                        password:
+                            currentPassword,
+
+                        postId:
+                            postId
+
+                    })
+                }
+            );
+
+
+        const data =
+            await parseWorkerResponse(res);
+
+
+        if (!res.ok) {
+
+            alert(
+                data.error ||
+                "Ошибка удаления."
+            );
+
+            return;
+        }
+
+
+        allPosts =
+            allPosts.filter(
+                p => p.id !== postId
+            );
+
+
+        renderPosts();
+
+
+    } catch(e) {
+
+        alert(
+            "Ошибка сервера."
+        );
+    }
+}
+
+
+/* =========================================================
+   УДАЛЕНИЕ КОММЕНТАРИЯ
+========================================================= */
+
+async function deleteComment(
+    postId,
+    commentId
+) {
+
+    if (
+        !confirm(
+            "Удалить этот ответ из ветки?"
+        )
+    ) return;
+
+
+    try {
+
+        const res =
+            await fetch(
+                WORKER_URL +
+                '/api/admin/delete-comment',
+                {
+                    method:'POST',
+
+                    headers:{
+                        'Content-Type':
+                            'application/json'
+                    },
+
+                    body:JSON.stringify({
+
+                        username:
+                            currentUsername,
+
+                        password:
+                            currentPassword,
+
+                        postId:
+                            postId,
+
+                        commentId:
+                            commentId
+
+                    })
+                }
+            );
+
+
+        const data =
+            await parseWorkerResponse(res);
+
+
+        if (!res.ok) {
+
+            alert(
+                data.error ||
+                "Ошибка удаления ответа."
+            );
+
+            return;
+        }
+
+
+        const postIndex =
+            allPosts.findIndex(
+                p => p.id === postId
+            );
+
+
+        if (
+            postIndex !== -1 &&
+            allPosts[postIndex].comments
+        ) {
+
+            allPosts[
+                postIndex
+            ].comments =
+                allPosts[
+                    postIndex
+                ].comments.filter(
+                    c =>
+                        c.id !== commentId
+                );
+        }
+
+
+        renderPosts();
+
+
+    } catch(e) {
+
+        alert(
+            "Ошибка удаления ответа."
+        );
+    }
+}
+
+
+/* =========================================================
+   МОЙ ПРОФИЛЬ
+========================================================= */
+
+async function openMyProfile() {
+
+    const lowerUser =
+        currentUsername.toLowerCase();
+
+
+    document.getElementById(
+        'my-prof-username'
+    ).innerText =
+        currentUsername;
+
+
+    let avaSrc =
+        './robot.png';
+
+
+    const customAva =
+        Object.keys(
+            ADMIN_AVATARS
+        ).find(
+            key =>
+                key.toLowerCase() ===
+                lowerUser
+        );
+
+
+    if (customAva) {
+        avaSrc =
+            ADMIN_AVATARS[
+                customAva
+            ];
+    }
+
+
+    document.getElementById(
+        'my-prof-avatar'
+    ).src =
+        avaSrc;
+
+
+    /* Фон карточки */
+
+    const cardTheme =
+        getAdminStyle(
+            currentUsername,
+            ADMIN_CARDS
+        );
+
+
+    const myCard =
+        document.getElementById(
+            'my-profile-card'
+        );
+
+
+    if (myCard) {
+
+        myCard.className =
+            "modal-content profile-card " +
+
+            (
+                cardTheme !== "none"
+                    ? "theme-" + cardTheme
+                    : ""
+            );
+    }
+
+
+    /* Цвет имени */
+
+    const nameTheme =
+        getAdminStyle(
+            currentUsername,
+            ADMIN_NAMES
+        );
+
+
+    const myName =
+        document.getElementById(
+            'my-prof-username'
+        );
+
+
+    if (myName) {
+
+        myName.className =
+            "profile-username " +
+
+            (
+                nameTheme !== "none"
+                    ? "name-theme-" + nameTheme
+                    : ""
+            );
+    }
+
+
+    /* Цвет текста */
+
+    const descTextTheme =
+        getAdminStyle(
+            currentUsername,
+            ADMIN_DESCRIPTION
+        );
+
+
+    const myBioInput =
+        document.getElementById(
+            'my-prof-bio-input'
+        );
+
+
+    if (myBioInput) {
+
+        myBioInput.className =
+            descTextTheme !== "none"
+                ? "desc-text-" +
+                    descTextTheme
+                : "";
+    }
+
+
+    /* Фон описания */
+
+    const descBackTheme =
+        getAdminStyle(
+            currentUsername,
+            ADMIN_DESCBACK
+        );
+
+
+    if (myBioInput) {
+
+        myBioInput.className =
+            descTextTheme !== "none"
+                ? "desc-text-" +
+                    descTextTheme
+                : "";
+
+
+        if (
+            descBackTheme !== "none"
+        ) {
+
+            myBioInput.classList.add(
+                "desc-back-" +
+                descBackTheme
+            );
+
+        } else {
+
+            myBioInput.style.background =
+                "#1a1a1e";
+
+            myBioInput.style.border =
+                "1px solid #27272a";
+        }
+    }
+
+
+    /* Кнопка закрытия */
+
+    const myCloseBtn =
+        document.querySelector(
+            '#my-profile-modal button.back-btn'
+        );
+
+
+    if (myCloseBtn) {
+
+        myCloseBtn.className =
+            "back-btn " +
+
+            (
+                descBackTheme !== "none"
+                    ? "desc-back-" +
+                        descBackTheme
+                    : ""
+            );
+    }
+
+
+    try {
+
+        const res =
+            await fetch(
+                WORKER_URL +
+                '/api/profile/get',
+                {
+                    method:'POST',
+
+                    headers:{
+                        'Content-Type':
+                            'application/json'
+                    },
+
+                    body:JSON.stringify({
+                        targetUser:
+                            currentUsername
+                    })
+                }
+            );
+
+
+        const data =
+            await parseWorkerResponse(res);
+
+
+        if (!res.ok) {
+
+            if (res.status !== 429) {
+
+                console.error(
+                    data.error
+                );
+            }
+
+            return;
+        }
+
+
+        if (data.avatarUrl) {
+            document.getElementById('my-prof-avatar').src = data.avatarUrl;
+        }
+
+        const bio =
+            typeof data.bio === "string"
+                ? data.bio
+                : "";
+
+
+        document.getElementById(
+            'my-prof-bio-input'
+        ).value =
+
+            (
+                bio.includes(
+                    "написал о себе"
+                ) ||
+                bio.includes(
+                    "hasn't written"
+                )
+            )
+                ? ""
+                : bio;
+
+
+    } catch(e) {
+
+        console.error(e);
+    }
+
+
+    const userAvatarControls = document.getElementById('avatar-user-controls');
+    const adminAvatarControls = document.getElementById('admin-avatar-controls');
+    if (userAvatarControls) userAvatarControls.classList.toggle('hidden', !!isAdmin);
+    if (adminAvatarControls) adminAvatarControls.classList.toggle('hidden', !isAdmin);
+    if (isAdmin) loadAdminAvatarOptions();
+
+    document.getElementById(
+        'my-profile-modal'
+    ).classList.remove('hidden');
+}
+
+
+/* =========================================================
+   АВАТАРКИ: загрузка пользователя и выбор администрации
+========================================================= */
+
+async function uploadMyAvatar() {
+    const input = document.getElementById('my-avatar-file');
+    const status = document.getElementById('avatar-status');
+    const file = input && input.files ? input.files[0] : null;
+    if (!file) { if (status) status.textContent = 'Сначала выбери изображение.'; return; }
+    if (file.size > 2 * 1024 * 1024) { if (status) status.textContent = 'Файл больше 2 МБ.'; return; }
+    const form = new FormData();
+    form.append('username', currentUsername);
+    form.append('password', currentPassword);
+    form.append('file', file, file.name);
+    if (status) status.textContent = 'Проверяем и загружаем изображение…';
+    try {
+        const res = await fetch(WORKER_URL + '/api/avatar/upload', { method: 'POST', body: form });
+        const data = await parseWorkerResponse(res);
+        if (!res.ok) { if (status) status.textContent = data.error || 'Не удалось загрузить аватар.'; return; }
+        const avatarUrl = data.avatarUrl + (data.avatarUrl.includes('?') ? '&' : '?') + 'v=' + Date.now();
+        document.getElementById('my-prof-avatar').src = avatarUrl;
+        if (status) status.textContent = 'Аватарка обновлена!';
+        input.value = '';
+        await loadPosts();
+    } catch (e) { if (status) status.textContent = 'Ошибка соединения с сервером.'; }
+}
+
+async function loadAdminAvatarOptions() {
+    const select = document.getElementById('admin-avatar-select');
+    const status = document.getElementById('admin-avatar-status');
+    if (!select) return;
+    try {
+        const res = await fetch(WORKER_URL + '/api/avatar/options', {
+            method: 'POST', headers: {'Content-Type':'application/json'},
+            body: JSON.stringify({username: currentUsername, password: currentPassword})
+        });
+        const data = await parseWorkerResponse(res);
+        if (!res.ok) { if (status) status.textContent = data.error || 'Не удалось получить список.'; return; }
+        select.innerHTML = '';
+        (data.options || []).forEach(option => {
+            const el = document.createElement('option');
+            el.value = option.id;
+            el.textContent = option.label;
+            if (option.id === data.selected) el.selected = true;
+            select.appendChild(el);
+        });
+        if (!(data.options || []).length && status) status.textContent = 'Список пуст: настрой ADMIN_AVATAR_OPTIONS в Cloudflare.';
+    } catch (e) { if (status) status.textContent = 'Ошибка соединения с сервером.'; }
+}
+
+async function saveSelectedAdminAvatar() {
+    const select = document.getElementById('admin-avatar-select');
+    const status = document.getElementById('admin-avatar-status');
+    if (!select || !select.value) { if (status) status.textContent = 'Нет доступных аватарок.'; return; }
+    try {
+        const res = await fetch(WORKER_URL + '/api/avatar/select', {
+            method: 'POST', headers: {'Content-Type':'application/json'},
+            body: JSON.stringify({username: currentUsername, password: currentPassword, avatarId: select.value})
+        });
+        const data = await parseWorkerResponse(res);
+        if (!res.ok) { if (status) status.textContent = data.error || 'Не удалось сменить аватар.'; return; }
+        document.getElementById('my-prof-avatar').src = data.avatarUrl + '?v=' + Date.now();
+        if (status) status.textContent = 'Аватар администрации установлен.';
+        await loadPosts();
+    } catch (e) { if (status) status.textContent = 'Ошибка соединения с сервером.'; }
+}
+
+async function setUserNameColor() {
+    const username = document.getElementById('namecolor-username').value.trim();
+    const color = document.getElementById('namecolor-value').value;
+    if (!username) { alert('Укажи ник пользователя.'); return; }
+    try {
+        const res = await fetch(WORKER_URL + '/api/admin/name-color', {
+            method: 'POST', headers: {'Content-Type':'application/json'},
+            body: JSON.stringify({username: currentUsername, password: currentPassword, target: username, color})
+        });
+        const data = await parseWorkerResponse(res);
+        if (!res.ok) { alert(data.error || 'Не удалось изменить цвет ника.'); return; }
+        alert('Цвет ника обновлён.');
+        await loadPosts();
+    } catch (e) { alert('Ошибка соединения с сервером.'); }
+}
+
+/* =========================================================
+   СОХРАНЕНИЕ ПРОФИЛЯ
+========================================================= */
+
+async function saveMyProfile() {
+
+    const bioText =
+        document.getElementById(
+            'my-prof-bio-input'
+        ).value.trim();
+
+
+    try {
+
+        const res =
+            await fetch(
+                WORKER_URL +
+                '/api/profile/save',
+                {
+                    method:'POST',
+
+                    headers:{
+                        'Content-Type':
+                            'application/json'
+                    },
+
+                    body:JSON.stringify({
+
+                        username:
+                            currentUsername,
+
+                        password:
+                            currentPassword,
+
+                        bio:
+                            bioText
+
+                    })
+                }
+            );
+
+
+        const data =
+            await parseWorkerResponse(res);
+
+
+        if (!res.ok) {
+
+            alert(
+                data.error ||
+                "Ошибка сохранения профиля."
+            );
+
+            return;
+        }
+
+
+        alert(
+            "Описание профиля успешно изменено!"
+        );
+
+
+        closeModal(
+            'my-profile-modal'
+        );
+
+
+    } catch(e) {
+
+        alert(
+            "Ошибка сохранения профиля."
+        );
+    }
+}
+
+
+/* =========================================================
+   ПРОСМОТР ПРОФИЛЯ
+========================================================= */
+
+async function viewUserProfile(
+    targetNick
+) {
+
+    document.getElementById(
+        'view-prof-username'
+    ).innerText =
+        targetNick;
+
+
+    document.getElementById(
+        'view-prof-bio'
+    ).innerText =
+        "Загрузка информации...";
+
+
+    let avaSrc =
+        './robot.png';
+
+
+    const lowerTarget =
+        targetNick.toLowerCase();
+
+
+    const customAva =
+        Object.keys(
+            ADMIN_AVATARS
+        ).find(
+            key =>
+                key.toLowerCase() ===
+                lowerTarget
+        );
+
+
+    if (customAva) {
+
+        avaSrc =
+            ADMIN_AVATARS[
+                customAva
+            ];
+    }
+
+
+    document.getElementById(
+        'view-prof-avatar'
+    ).src =
+        avaSrc;
+
+
+    /* Фон карточки */
+
+    const cardTheme =
+        getAdminStyle(
+            targetNick,
+            ADMIN_CARDS
+        );
+
+
+    const cardEl =
+        document.getElementById(
+            'view-profile-card'
+        );
+
+
+    if (cardEl) {
+
+        cardEl.className =
+            "modal-content profile-card " +
+
+            (
+                cardTheme !== "none"
+                    ? "theme-" +
+                        cardTheme
+                    : ""
+            );
+    }
+
+
+    /* Цвет имени */
+
+    const nameTheme =
+        getAdminStyle(
+            targetNick,
+            ADMIN_NAMES
+        );
+
+
+    const nameEl =
+        document.getElementById(
+            'view-prof-username'
+        );
+
+
+    if (nameEl) {
+
+        nameEl.className =
+            "profile-username " +
+
+            (
+                nameTheme !== "none"
+                    ? "name-theme-" +
+                        nameTheme
+                    : ""
+            );
+    }
+
+
+    /* Описание */
+
+    const descTextTheme =
+        getAdminStyle(
+            targetNick,
+            ADMIN_DESCRIPTION
+        );
+
+
+    const descBackTheme =
+        getAdminStyle(
+            targetNick,
+            ADMIN_DESCBACK
+        );
+
+
+    const viewBioBlock =
+        document.getElementById(
+            'view-prof-bio'
+        );
+
+
+    if (viewBioBlock) {
+
+        viewBioBlock.className =
+            "profile-bio-text";
+
+
+        if (
+            descTextTheme !== "none"
+        ) {
+
+            viewBioBlock.classList.add(
+                "desc-text-" +
+                descTextTheme
+            );
+        }
+
+
+        if (
+            descBackTheme !== "none"
+        ) {
+
+            viewBioBlock.classList.add(
+                "desc-back-" +
+                descBackTheme
+            );
+
+        } else {
+
+            viewBioBlock.style.background =
+                "#1a1a1e";
+
+            viewBioBlock.style.border =
+                "1px solid #27272a";
+        }
+    }
+
+
+    /* Кнопка закрытия */
+
+    const viewCloseBtn =
+        document.querySelector(
+            '#view-profile-modal button.back-btn'
+        );
+
+
+    if (viewCloseBtn) {
+
+        viewCloseBtn.className =
+            "back-btn " +
+
+            (
+                descBackTheme !== "none"
+                    ? "desc-back-" +
+                        descBackTheme
+                    : ""
+            );
+    }
+
+
+    try {
+
+        const res =
+            await fetch(
+                WORKER_URL +
+                '/api/profile/get',
+                {
+                    method:'POST',
+
+                    headers:{
+                        'Content-Type':
+                            'application/json'
+                    },
+
+                    body:JSON.stringify({
+                        targetUser:
+                            targetNick
+                    })
+                }
+            );
+
+
+        const data =
+            await parseWorkerResponse(res);
+
+
+        if (!res.ok) {
+
+            if (res.status !== 429) {
+
+                viewBioBlock.innerText =
+                    data.error ||
+                    "Ошибка загрузки профиля.";
+            }
+
+            return;
+        }
+
+
+        if (data.avatarUrl) {
+            document.getElementById('view-prof-avatar').src = data.avatarUrl;
+        }
+        if (data.nameColor && data.nameColor !== 'none') {
+            const profileName = document.getElementById('view-prof-username');
+            profileName.className = 'profile-username name-theme-' + data.nameColor;
+        }
+
+        const bio =
+            typeof data.bio === "string"
+                ? data.bio
+                : "Нет описания.";
+
+
+        if (
+            descTextTheme !== "none"
+        ) {
+
+            viewBioBlock.innerHTML =
+                '<span class="desc-text-' +
+                descTextTheme +
+                '">' +
+                escapeHTML(bio) +
+                '</span>';
+
+        } else {
+
+            viewBioBlock.innerText =
+                bio;
+        }
+
+
+    } catch(e) {
+
+        viewBioBlock.innerText =
+            "Ошибка загрузки профиля.";
+    }
+
+
+    document.getElementById(
+        'view-profile-modal'
+    ).classList.remove('hidden');
+}
+
+
+/* =========================================================
+   БАН
+========================================================= */
+
+async function banUser() {
+
+    const target =
+        document.getElementById(
+            'ban-username'
+        ).value.trim();
+
+
+    if (!target) return;
+
+
+    try {
+
+        const res =
+            await fetch(
+                WORKER_URL +
+                '/api/admin/ban',
+                {
+                    method:'POST',
+
+                    headers:{
+                        'Content-Type':
+                            'application/json'
+                    },
+
+                    body:JSON.stringify({
+
+                        username:
+                            currentUsername,
+
+                        password:
+                            currentPassword,
+
+                        userToBan:
+                            target
+
+                    })
+                }
+            );
+
+
+        const data =
+            await parseWorkerResponse(res);
+
+
+        if (res.ok) {
+
+            alert(
+                "Пользователь забанен!"
+            );
+
+            document.getElementById(
+                'ban-username'
+            ).value = "";
+
+        } else {
+
+            alert(
+                data.error ||
+                "Ошибка"
+            );
+        }
+
+
+    } catch(e) {
+
+        alert(
+            "Ошибка сервера."
+        );
+    }
+}
+
+
+/* =========================================================
+   РАЗБАН
+========================================================= */
+
+async function unbanUser() {
+
+    const target =
+        document.getElementById(
+            'unban-username'
+        ).value.trim();
+
+
+    if (!target) return;
+
+
+    try {
+
+        const res =
+            await fetch(
+                WORKER_URL +
+                '/api/admin/unban',
+                {
+                    method:'POST',
+
+                    headers:{
+                        'Content-Type':
+                            'application/json'
+                    },
+
+                    body:JSON.stringify({
+
+                        username:
+                            currentUsername,
+
+                        password:
+                            currentPassword,
+
+                        userToUnban:
+                            target
+
+                    })
+                }
+            );
+
+
+        const data =
+            await parseWorkerResponse(res);
+
+
+        if (res.ok) {
+
+            alert(
+                "Пользователь разбанен!"
+            );
+
+            document.getElementById(
+                'unban-username'
+            ).value = "";
+
+        } else {
+
+            alert(
+                data.error ||
+                "Ошибка разбана."
+            );
+        }
+
+
+    } catch(e) {
+
+        alert(
+            "Ошибка сервера."
+        );
+    }
+}
+
+
+/* =========================================================
+   ПОИСК
+========================================================= */
+
+function setSearchTag(tag) {
+
+    document.getElementById(
+        'search-input'
+    ).value =
+        tag;
+
+
+    currentFilterTag =
+        tag;
+
+
+    renderPosts();
+}
+
+
+function filterByTag() {
+
+    const val =
+        document.getElementById(
+            'search-input'
+        ).value.trim();
+
+
+    currentFilterTag =
+        val;
+
+
+    renderPosts();
+}
+
+
+function resetFilter() {
+
+    document.getElementById(
+        'search-input'
+    ).value =
+        "";
+
+
+    currentFilterTag =
+        "";
+
+
+    renderPosts();
+}
+
+
+/* =========================================================
+   БЕЗОПАСНЫЙ HTML
+========================================================= */
+
+function escapeHTML(str) {
+
+    return String(str ?? "")
+        .replace(
+            /&/g,
+            "&amp;"
+        )
+        .replace(
+            /</g,
+            "&lt;"
+        )
+        .replace(
+            />/g,
+            "&gt;"
+        )
+        .replace(
+            /"/g,
+            "&quot;"
+        )
+        .replace(
+            /'/g,
+            "&#039;"
+        );
+}
+
+
+function escapeAttribute(str) {
+
+    return String(str ?? "")
+        .replace(
+            /\\/g,
+            "\\\\"
+        )
+        .replace(
+            /'/g,
+            "\\'"
+        );
+}
+
+</script>
+
+</body>
+</html>
