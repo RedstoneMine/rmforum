@@ -1,26 +1,67 @@
+
 <!DOCTYPE html>
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Redstone Mine - Форум</title>
+<meta name="theme-color" content="#111113">
+<title>Redstone Mine — Форум</title>
 <link rel="stylesheet" href="style.css">
 <style>
-.system-unread-dot{position:absolute;top:5px;right:5px;width:10px;height:10px;background:#ef4444;border-radius:50%;box-shadow:0 0 10px #ef4444aa;display:block}
+.system-unread-dot{position:absolute;top:5px;right:5px;width:10px;height:10px;background:#ef4444;border-radius:50%;box-shadow:0 0 10px #ef4444aa}
 .system-unread-dot.hidden{display:none!important}
 .system-message{transition:border-color .2s,box-shadow .2s}
 .system-message:hover{border-color:#3f3f46!important;box-shadow:0 0 12px #ef444414}
 #system-box{margin-bottom:25px}
 #system-box textarea{margin-bottom:10px}
-@media(max-width:600px){#forum-actions{align-items:stretch!important}.post{padding:14px}.system-message .avatar{width:48px;height:48px}}
-.agreement-link{color:#ef4444;text-decoration:underline;font-weight:bold;transition:all .2s}
+.agreement-link{color:#ef4444;text-decoration:underline;font-weight:bold}
 .agreement-link:hover{color:#f43f5e;text-shadow:0 0 12px #f43f5ecc}
 button:disabled{opacity:.55;cursor:not-allowed}
 #ratelimit-modal .modal-content{animation:rateLimitAppear .2s ease-out}
 @keyframes rateLimitAppear{from{transform:scale(.95);opacity:0}to{transform:scale(1);opacity:1}}
+.verified-badge{display:inline-flex;position:relative;align-items:center;vertical-align:middle;cursor:pointer;margin-left:3px}
+.verified-badge img{width:17px;height:17px;object-fit:contain;display:block}
+.verified-badge::after{content:attr(data-tooltip);position:absolute;bottom:calc(100% + 9px);left:50%;transform:translateX(-50%) translateY(4px);background:#18181b;border:1px solid #3f3f46;border-radius:8px;color:#f4f4f5;padding:8px 11px;font-size:12px;font-weight:500;white-space:nowrap;box-shadow:0 8px 24px #0008;opacity:0;pointer-events:none;transition:.18s;z-index:20}
+.verified-badge:hover::after,.verified-badge:focus-visible::after{opacity:1;transform:translateX(-50%) translateY(0)}
+#toast-container{position:fixed;top:18px;right:18px;z-index:10000;display:flex;flex-direction:column;gap:10px;width:min(380px,calc(100vw - 36px));pointer-events:none}
+.toast{display:flex;align-items:flex-start;gap:10px;padding:14px 16px;border:1px solid #3f3f46;border-radius:13px;background:#18181b;color:#f4f4f5;box-shadow:0 12px 35px #0008;animation:toastIn .2s ease-out;pointer-events:auto;overflow-wrap:anywhere}
+.toast.success{border-color:#15803d}.toast.error{border-color:#b91c1c}.toast.warning{border-color:#b45309}
+.toast-icon{font-size:18px;line-height:1.2}.toast-message{font-size:14px;line-height:1.5;flex:1}
+.toast-close{background:none!important;color:#a1a1aa!important;padding:0!important;margin:0!important;font-size:18px!important;line-height:1!important}
+@keyframes toastIn{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
+#confirm-modal{z-index:9000}
+#confirm-modal .modal-content{max-width:420px}
+.confirm-actions{display:flex;gap:10px;margin-top:22px}
+.confirm-actions button{flex:1}
+#confirm-description{color:#d4d4d8;line-height:1.6;overflow-wrap:anywhere}
+#system-btn{position:relative}
+#posts-container.hidden{display:none}
+#toast-container button{min-width:0}
+@media(max-width:600px){
+ #forum-actions{align-items:stretch!important}
+ .post{padding:14px}
+ .system-message .avatar{width:48px;height:48px}
+ #toast-container{top:10px;right:10px;width:calc(100vw - 20px)}
+ .confirm-actions{flex-direction:column}
+ .admin-tool-row{flex-wrap:wrap}
+ .admin-tool-row input,.admin-tool-row select,.admin-tool-row button{width:100%;min-width:0}
+}
 </style>
 </head>
 <body>
+
+<div id="toast-container" aria-live="polite" aria-atomic="false"></div>
+
+<div id="confirm-modal" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="confirm-title">
+  <div class="modal-content">
+    <h2 id="confirm-title">Подтверждение действия</h2>
+    <p id="confirm-description">Ты уверен?</p>
+    <div class="confirm-actions">
+      <button type="button" class="secondary" onclick="resolveConfirmation(false)">Отмена</button>
+      <button type="button" id="confirm-accept" class="primary" onclick="resolveConfirmation(true)">Подтвердить</button>
+    </div>
+  </div>
+</div>
 
 <div id="block-modal" class="modal-overlay hidden">
   <div class="modal-content" style="border-color:#ef4444">
@@ -42,11 +83,11 @@ button:disabled{opacity:.55;cursor:not-allowed}
   <div class="modal-content">
     <h2>ПОЛЬЗОВАТЕЛЬСКОЕ СОГЛАШЕНИЕ</h2>
     <p style="color:#d4d4d8;line-height:1.6;text-align:justify;font-size:.95rem;margin-bottom:20px">
-      Для входа на форум проекта RedstoneMine вам необходимо подтвердить своё согласие с официальными правилами нашего форума.
+      Для входа на форум проекта RedstoneMine необходимо подтвердить согласие с правилами форума.
     </p>
     <p style="color:#a1a1aa;line-height:1.6;text-align:center;font-size:.9rem;margin-bottom:20px">
-      Нажимая на кнопку «Принимаю», вы соглашаетесь с
-      <a href="./agreement.html" target="_blank" class="agreement-link">условиями использования форума</a>.
+      Нажимая «Принимаю», вы соглашаетесь с
+      <a href="./agreement.html" target="_blank" rel="noopener noreferrer" class="agreement-link">условиями использования форума</a>.
     </p>
     <button style="width:100%;letter-spacing:1px" onclick="acceptTerms()">ПРИНИМАЮ</button>
   </div>
@@ -56,19 +97,16 @@ button:disabled{opacity:.55;cursor:not-allowed}
   <div class="modal-content profile-card" id="my-profile-card">
     <h2>МОЙ ПРОФИЛЬ</h2>
     <img id="my-prof-avatar" class="profile-big-avatar" src="./robot.png" alt="Аватар">
-
     <div id="avatar-user-controls" class="avatar-controls hidden">
       <p class="avatar-hint">Для обычных пользователей используется стандартная аватарка.</p>
     </div>
-
     <div id="admin-avatar-controls" class="avatar-controls hidden">
       <h4>🛡️ Аватар администрации</h4>
-      <p class="avatar-hint">Выбери одну из доступных аватарок администрации.</p>
+      <p class="avatar-hint">Выбери одну из доступных аватарок.</p>
       <select id="admin-avatar-select" aria-label="Аватар администрации"></select>
       <button type="button" onclick="saveSelectedAdminAvatar()" class="avatar-action-btn">Установить аватар</button>
       <p id="admin-avatar-status" class="avatar-status" aria-live="polite"></p>
     </div>
-
     <div id="my-prof-username" class="profile-username" style="color:#fff">@User</div>
     <textarea id="my-prof-bio-input" placeholder="Расскажи о себе..." rows="4" maxlength="200"></textarea>
     <p style="color:#71717a;font-size:.8rem;margin-top:0;margin-bottom:20px;text-align:left">
@@ -104,8 +142,8 @@ button:disabled{opacity:.55;cursor:not-allowed}
   <div id="login-box" class="hidden">
     <h2>АВТОРИЗАЦИЯ</h2>
     <p id="auth-desc" style="color:#a1a1aa;font-size:.9rem;margin-bottom:20px"></p>
-    <input type="text" id="username-input" placeholder="Твой ник (например: Stepan)">
-    <input type="password" id="password-input" placeholder="Пароль от аккаунта...">
+    <input type="text" id="username-input" maxlength="32" autocomplete="username" placeholder="Твой ник (например: Stepan)">
+    <input type="password" id="password-input" maxlength="128" autocomplete="current-password" placeholder="Пароль от аккаунта...">
     <div class="auth-buttons">
       <button class="primary" id="auth-action-btn" onclick="submitAuth('login')">ПОДТВЕРДИТЬ</button>
       <button class="back-btn" onclick="hideAuthForm()">НАЗАД</button>
@@ -114,7 +152,7 @@ button:disabled{opacity:.55;cursor:not-allowed}
 
   <div id="forum-box" class="hidden">
     <div id="admin-panel" class="box hidden" style="border-color:#f43f5e">
-      <h4 style="margin:0 0 12px;color:#f43f5e">🛡️ УПРАВЛЕНИЕ СЕРВЕРОМ СДЕЛАННОЕ @REDSTONEMINE</h4>
+      <h4 style="margin:0 0 12px;color:#f43f5e">🛡️ УПРАВЛЕНИЕ СЕРВЕРОМ</h4>
       <div style="display:flex;gap:10px;margin-bottom:10px">
         <input type="text" id="ban-username" placeholder="@ник для бана" style="margin:0">
         <button onclick="banUser()">БАН</button>
@@ -143,20 +181,20 @@ button:disabled{opacity:.55;cursor:not-allowed}
       </div>
     </div>
 
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;background:#121214;padding:15px;border-radius:12px;border:1px solid #27272a">
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:15px;margin-bottom:20px;background:#121214;padding:15px;border-radius:12px;border:1px solid #27272a">
       <h3 id="welcome-msg" style="margin:0;font-size:1.1rem;color:#fff;text-shadow:none">⛏️ Лента</h3>
       <div id="forum-actions" style="display:flex;flex-direction:column;gap:8px;align-items:flex-end">
         <button id="admin-panel-btn" class="admin-btn hidden" style="padding:8px 16px;font-size:.85rem;margin:0" onclick="toggleAdminPanel()">🛡️ Панель администрации</button>
         <button id="admin-system-btn" class="primary hidden" style="padding:8px 16px;font-size:.85rem;background:#2563eb" onclick="openSystemComposer()">✍️ Написать систем. сообщение</button>
         <button id="system-btn" class="secondary" style="padding:8px 16px;font-size:.85rem;position:relative" onclick="openSystemMessages()">🔔 Системные сообщения<span id="system-unread-dot" class="system-unread-dot hidden"></span></button>
-        <button id="profile-btn" class="secondary" style="padding:8px 16px;font-size:.85rem" onclick="openMyProfile()">📝 Мой Профиль</button>
+        <button id="profile-btn" class="secondary" style="padding:8px 16px;font-size:.85rem" onclick="openMyProfile()">📝 Мой профиль</button>
       </div>
     </div>
 
     <div id="system-box" class="box hidden" style="border-color:#10b981">
       <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:15px">
         <h3 style="margin:0;color:#10b981">🔔 Системные сообщения</h3>
-        <button class="back-btn" onclick="returnToFeed()">Вернуться на Ленту</button>
+        <button class="back-btn" onclick="returnToFeed()">Вернуться на ленту</button>
       </div>
       <div id="system-compose" class="hidden" style="margin-bottom:20px">
         <textarea id="system-text" rows="4" maxlength="5000" placeholder="Текст системного уведомления..."></textarea>
@@ -165,17 +203,18 @@ button:disabled{opacity:.55;cursor:not-allowed}
       <div id="system-container">Загрузка системных сообщений...</div>
     </div>
 
-    <div class="search-box">
-      <input type="text" id="search-input" placeholder="Поиск по хэштегу (например: #дом)..." style="margin:0">
-      <button class="primary" onclick="filterByTag()">Искать / Обновить</button>
-      <button onclick="resetFilter()" style="background:#27272a">Сброс</button>
-    </div>
-
-    <div class="box">
-      <h3>💬 НОВЫЙ ПОСТ</h3>
-      <textarea id="post-text" placeholder="Текст сообщения..." rows="3"></textarea>
-      <input type="text" id="post-tags" placeholder="Хэштеги через пробел (например: дом торговля спавн)">
-      <button class="primary" id="send-btn" onclick="sendPost()">Опубликовать</button>
+    <div id="feed-controls">
+      <div class="search-box">
+        <input type="text" id="search-input" placeholder="Поиск по хэштегу (например: #дом)..." style="margin:0">
+        <button class="primary" onclick="filterByTag()">Искать / Обновить</button>
+        <button onclick="resetFilter()" style="background:#27272a">Сброс</button>
+      </div>
+      <div class="box">
+        <h3>💬 НОВЫЙ ПОСТ</h3>
+        <textarea id="post-text" placeholder="Текст сообщения..." rows="3" maxlength="5000"></textarea>
+        <input type="text" id="post-tags" maxlength="1000" placeholder="Хэштеги через пробел (например: дом торговля спавн)">
+        <button class="primary" id="send-btn" onclick="sendPost()">Опубликовать</button>
+      </div>
     </div>
 
     <div id="posts-container">Загрузка архивов...</div>
@@ -183,17 +222,12 @@ button:disabled{opacity:.55;cursor:not-allowed}
 </div>
 
 <script>
-const WORKER_URL = 'https://restless-hill-dd2a.redstonemineforum.workers.dev';
+'use strict';
 
+const WORKER_URL = 'https://redstonemineforum.workers.dev';
 const ADMIN_WHITELIST = [
-  'redstonemine',
-  'krutoi',
-  'rm_emperor',
-  'on404',
-  'egor4ik',
-  'ava',
-  'redstonemine_community',
-  'palka'
+  'redstonemine', 'krutoi', 'rm_emperor', 'on404',
+  'egor4ik', 'ava', 'redstonemine_community', 'palka'
 ];
 
 const ADMIN_AVATARS = {
@@ -245,6 +279,7 @@ let systemMessages = [];
 let systemViewOpen = false;
 let systemPoll = null;
 let adminPanelOpen = false;
+let confirmationResolver = null;
 const profileCache = Object.create(null);
 
 function normalizeUsername(username) {
@@ -261,12 +296,14 @@ function isAdminUsername(username) {
 }
 
 function getAdminStyle(username, list) {
-  const key = Object.keys(list || {}).find(k => normalizeUsername(k) === normalizeUsername(username));
+  const key = Object.keys(list || {}).find(
+    k => normalizeUsername(k) === normalizeUsername(username)
+  );
   return key ? list[key] : 'none';
 }
 
-function escapeHTML(str) {
-  return String(str ?? '')
+function escapeHTML(value) {
+  return String(value ?? '')
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')
@@ -274,19 +311,104 @@ function escapeHTML(str) {
     .replace(/'/g, '&#039;');
 }
 
-function escapeAttribute(str) {
-  return escapeHTML(str);
-}
-
 function safeColor(color) {
-  return /^#[0-9a-f]{6}$/i.test(String(color || '')) ? color : '';
+  const value = String(color || '');
+  return /^#[0-9a-f]{6}$/i.test(value) ? value : '';
 }
 
 function safeImageUrl(url) {
   const value = String(url || '');
-  if (/^(https?:\/\/|\.\/|\/)/i.test(value)) return escapeHTML(value);
+  if (/^https:\/\/redstonemine\.github\.io\/[a-z0-9_.-]+$/i.test(value)) {
+    return value;
+  }
+  if (/^\.\/[a-z0-9_.-]+$/i.test(value)) return value;
+  if (value === '/robot.png') return value;
   return './robot.png';
 }
+
+function verifiedBadge(username) {
+  if (!isAdminUsername(username)) return '';
+  return `<span class="verified-badge" tabindex="0" role="img" aria-label="Аккаунт администрации RedstoneMine Форум" data-tooltip="Аккаунт администрации RedstoneMine Форум"><img src="./check.png" alt=""></span>`;
+}
+
+/* Уведомления */
+
+function showToast(message, type = 'info', duration = 3600) {
+  const container = document.getElementById('toast-container');
+  if (!container) return;
+
+  const toast = document.createElement('div');
+  toast.className = 'toast ' + (
+    ['success', 'error', 'warning'].includes(type) ? type : ''
+  );
+
+  const icons = {
+    success: '✓',
+    error: '✕',
+    warning: '⚠',
+    info: 'ℹ'
+  };
+
+  const icon = document.createElement('span');
+  icon.className = 'toast-icon';
+  icon.textContent = icons[type] || icons.info;
+
+  const text = document.createElement('span');
+  text.className = 'toast-message';
+  text.textContent = String(message || 'Готово');
+
+  const close = document.createElement('button');
+  close.className = 'toast-close';
+  close.type = 'button';
+  close.setAttribute('aria-label', 'Закрыть уведомление');
+  close.textContent = '×';
+  close.onclick = () => toast.remove();
+
+  toast.append(icon, text, close);
+  container.appendChild(toast);
+
+  while (container.children.length > 5) {
+    container.firstElementChild.remove();
+  }
+
+  if (duration > 0) {
+    setTimeout(() => toast.remove(), duration);
+  }
+}
+
+function confirmAction(message, title = 'Подтверждение действия', acceptText = 'Подтвердить') {
+  const modal = document.getElementById('confirm-modal');
+  document.getElementById('confirm-title').textContent = title;
+  document.getElementById('confirm-description').textContent = message;
+  document.getElementById('confirm-accept').textContent = acceptText;
+  modal.classList.remove('hidden');
+
+  return new Promise(resolve => {
+    confirmationResolver = resolve;
+  });
+}
+
+function resolveConfirmation(result) {
+  const modal = document.getElementById('confirm-modal');
+  modal.classList.add('hidden');
+
+  if (confirmationResolver) {
+    const resolve = confirmationResolver;
+    confirmationResolver = null;
+    resolve(Boolean(result));
+  }
+}
+
+document.getElementById('confirm-modal').addEventListener('click', event => {
+  if (event.target.id === 'confirm-modal') resolveConfirmation(false);
+});
+
+document.addEventListener('keydown', event => {
+  if (event.key === 'Escape') {
+    const modal = document.getElementById('confirm-modal');
+    if (!modal.classList.contains('hidden')) resolveConfirmation(false);
+  }
+});
 
 function acceptTerms() {
   document.getElementById('notice-modal').classList.add('hidden');
@@ -294,8 +416,7 @@ function acceptTerms() {
 }
 
 function closeModal(id) {
-  const el = document.getElementById(id);
-  if (el) el.classList.add('hidden');
+  document.getElementById(id)?.classList.add('hidden');
 }
 
 async function parseWorkerResponse(res) {
@@ -303,17 +424,29 @@ async function parseWorkerResponse(res) {
   try {
     data = await res.json();
   } catch (_) {}
+
   if (res.status === 429) showRateLimit(data);
   return data;
 }
 
-/* АНТИСПАМ */
+async function apiPost(path, body) {
+  const res = await fetch(WORKER_URL + path, {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify(body)
+  });
+  const data = await parseWorkerResponse(res);
+  return {res, data};
+}
+
+/* Антиспам */
 
 function getRetrySeconds(data) {
-  if (!data) return 60;
   for (const key of ['remaining', 'retryAfter', 'retry_after']) {
-    const value = Number(data[key]);
-    if (Number.isFinite(value) && value > 0) return Math.max(1, Math.ceil(value));
+    const value = Number(data?.[key]);
+    if (Number.isFinite(value) && value > 0) {
+      return Math.max(1, Math.ceil(value));
+    }
   }
   return 60;
 }
@@ -322,10 +455,9 @@ function showRateLimit(data) {
   const seconds = getRetrySeconds(data);
   rateLimitUntil = Math.max(rateLimitUntil, Date.now() + seconds * 1000);
 
-  const modal = document.getElementById('ratelimit-modal');
-  const text = document.getElementById('ratelimit-text');
-  if (text) text.innerText = data?.error || 'Слишком много запросов. Пожалуйста, немного подожди.';
-  if (modal) modal.classList.remove('hidden');
+  document.getElementById('ratelimit-text').textContent =
+    data?.error || 'Слишком много запросов. Немного подожди.';
+  document.getElementById('ratelimit-modal').classList.remove('hidden');
 
   updateRateLimitTimer();
   if (rateLimitInterval) clearInterval(rateLimitInterval);
@@ -344,29 +476,35 @@ function showRateLimit(data) {
 
 function updateRateLimitTimer() {
   const timer = document.getElementById('ratelimit-timer');
-  if (!timer) return;
   const remaining = Math.max(0, Math.ceil((rateLimitUntil - Date.now()) / 1000));
+
   if (!remaining) {
-    timer.innerText = 'Можно продолжать 👍';
+    timer.textContent = 'Можно продолжать 👍';
   } else {
     const minutes = Math.floor(remaining / 60);
     const seconds = remaining % 60;
-    timer.innerText = minutes ? `${minutes}:${String(seconds).padStart(2, '0')}` : `${seconds} сек.`;
+    timer.textContent = minutes
+      ? `${minutes}:${String(seconds).padStart(2, '0')}`
+      : `${seconds} сек.`;
   }
 }
 
 function lockForumButtons(seconds) {
-  document.querySelectorAll('#send-btn,.comment-btn').forEach(btn => {
-    btn.disabled = true;
-    if (!btn.dataset.originalText) btn.dataset.originalText = btn.innerText;
-    btn.innerText = `⏳ Подождите ${seconds}с`;
+  document.querySelectorAll('#send-btn,.comment-btn').forEach(button => {
+    button.disabled = true;
+    if (!button.dataset.originalText) {
+      button.dataset.originalText = button.textContent;
+    }
+    button.textContent = `⏳ Подождите ${seconds}с`;
   });
 }
 
 function unlockForumButtons() {
-  document.querySelectorAll('#send-btn,.comment-btn').forEach(btn => {
-    btn.disabled = false;
-    if (btn.dataset.originalText) btn.innerText = btn.dataset.originalText;
+  document.querySelectorAll('#send-btn,.comment-btn').forEach(button => {
+    button.disabled = false;
+    if (button.dataset.originalText) {
+      button.textContent = button.dataset.originalText;
+    }
   });
 }
 
@@ -375,7 +513,7 @@ function closeRateLimitModal() {
   if (Date.now() >= rateLimitUntil) unlockForumButtons();
 }
 
-/* Старый локальный экран блокировки */
+/* Защита от слишком частых перезагрузок */
 
 (function checkGlobalBlocks() {
   const now = Date.now();
@@ -384,24 +522,26 @@ function closeRateLimitModal() {
 
   if (passwordBanUntil > now || spamBanUntil > now) {
     window.addEventListener('DOMContentLoaded', () => {
-      document.getElementById('block-title').innerText =
-        passwordBanUntil > now ? '🚫 ПОДОЗРИТЕЛЬНАЯ АКТИВНОСТЬ' : '🚫 ДОСТУП ОГРАНИЧЕН';
-      document.getElementById('block-text').innerHTML =
+      document.getElementById('block-title').textContent =
+        passwordBanUntil > now
+          ? '🚫 ПОДОЗРИТЕЛЬНАЯ АКТИВНОСТЬ'
+          : '🚫 ДОСТУП ОГРАНИЧЕН';
+
+      document.getElementById('block-text').textContent =
         passwordBanUntil > now
           ? 'Доступ временно ограничен из-за подозрений в подборе пароля.'
           : 'Доступ временно ограничен из-за слишком частых обновлений страницы.';
+
       document.getElementById('block-modal').classList.remove('hidden');
       document.body.classList.add('banned-screen');
     });
     return;
   }
 
-  let history;
+  let history = [];
   try {
     history = JSON.parse(sessionStorage.getItem('reload_history') || '[]');
-  } catch (_) {
-    history = [];
-  }
+  } catch (_) {}
 
   history = history.filter(time => now - time < 60000);
   history.push(now);
@@ -413,27 +553,31 @@ function closeRateLimitModal() {
   }
 })();
 
-/* АВТОРИЗАЦИЯ */
+/* Авторизация */
 
 function showAuthForm(type) {
   document.getElementById('menu-box').classList.add('hidden');
   document.getElementById('login-box').classList.remove('hidden');
+
+  document.getElementById('password-input').value = '';
+  document.getElementById('password-input').autocomplete =
+    type === 'register' ? 'new-password' : 'current-password';
 
   const title = document.querySelector('#login-box h2');
   const desc = document.getElementById('auth-desc');
   const button = document.getElementById('auth-action-btn');
 
   if (type === 'login') {
-    title.innerText = 'АВТОРИЗАЦИЯ';
-    desc.innerText = 'Введите свой ник и пароль для входа на форум:';
-    button.innerText = 'ВОЙТИ';
-    button.onclick = () => submitAuth('login');
+    title.textContent = 'АВТОРИЗАЦИЯ';
+    desc.textContent = 'Введите свой ник и пароль для входа на форум:';
+    button.textContent = 'ВОЙТИ';
   } else {
-    title.innerText = 'РЕГИСТРАЦИЯ';
-    desc.innerText = 'Придумайте игровой ник и пароль для создания аккаунта:';
-    button.innerText = 'СОЗДАТЬ';
-    button.onclick = () => submitAuth('register');
+    title.textContent = 'РЕГИСТРАЦИЯ';
+    desc.textContent = 'Придумайте игровой ник и пароль для создания аккаунта:';
+    button.textContent = 'СОЗДАТЬ';
   }
+
+  button.onclick = () => submitAuth(type);
 }
 
 function hideAuthForm() {
@@ -444,67 +588,82 @@ function hideAuthForm() {
 }
 
 async function submitAuth(authType) {
-  const userIn = document.getElementById('username-input').value.trim();
-  const passIn = document.getElementById('password-input').value.trim();
-  if (!userIn || !passIn) return alert('Заполните все поля формы!');
+  const username = document.getElementById('username-input').value.trim();
+  const password = document.getElementById('password-input').value;
+
+  if (!username || !password) {
+    showToast('Заполни все поля формы.', 'warning');
+    return;
+  }
 
   const button = document.getElementById('auth-action-btn');
   button.disabled = true;
 
   try {
-    const res = await fetch(WORKER_URL + '/api/auth', {
-      method: 'POST',
-      headers: {'Content-Type':'application/json'},
-      body: JSON.stringify({username:userIn, password:passIn, type:authType})
+    const {res, data} = await apiPost('/api/auth', {
+      username,
+      password,
+      type: authType
     });
 
-    const data = await parseWorkerResponse(res);
-
     if (!res.ok || !data.success) {
-      if (res.status !== 429) alert(data.error || 'Ошибка авторизации');
-      if (data.error && /неправильный ник или пароль|неверный пароль/i.test(data.error)) {
-        sessionStorage.setItem('password_ban_until', String(Date.now() + 5400000));
+      if (res.status !== 429) {
+        showToast(data.error || 'Ошибка авторизации.', 'error');
       }
-      button.disabled = false;
+
+      if (
+        authType === 'login' &&
+        /неправильный ник или пароль|неверный пароль/i.test(data.error || '')
+      ) {
+        sessionStorage.setItem(
+          'password_ban_until',
+          String(Date.now() + 5400000)
+        );
+      }
       return;
     }
 
-    currentUsername = displayUsername(data.username || userIn);
-    currentPassword = passIn;
-    isAdmin = typeof data.admin === 'boolean' ? data.admin : isAdminUsername(currentUsername);
+    currentUsername = displayUsername(data.username || username);
+    currentPassword = password;
+
+    // Не доверяем локальному списку: админские функции включаются
+    // только если Worker явно подтвердил admin: true.
+    isAdmin = data.admin === true;
 
     document.getElementById('login-box').classList.add('hidden');
+    document.getElementById('menu-box').classList.add('hidden');
     document.getElementById('forum-box').classList.remove('hidden');
 
     document.getElementById('admin-panel-btn').classList.toggle('hidden', !isAdmin);
     document.getElementById('admin-system-btn').classList.toggle('hidden', !isAdmin);
     document.getElementById('admin-panel').classList.add('hidden');
 
-    document.getElementById('welcome-msg').innerText = '⛏️ Лента — ' + currentUsername;
+    document.getElementById('welcome-msg').textContent = '⛏️ Лента — ' + currentUsername;
 
     await loadMyProfileCache();
     await loadPosts();
     startSystemPolling();
     await loadSystemMessages(false);
-  } catch (e) {
-    alert('Не удалось связаться с сервером.');
+
+    showToast(
+      authType === 'register' ? 'Аккаунт создан. Добро пожаловать!' : 'Вход выполнен!',
+      'success'
+    );
+  } catch (_) {
+    showToast('Не удалось связаться с сервером.', 'error');
+  } finally {
     button.disabled = false;
   }
 }
 
-/* ПРОФИЛИ И КЕШ АВАТАРОК/ЦВЕТОВ */
+/* Профили */
 
 async function fetchProfile(username) {
   const clean = normalizeUsername(username);
   if (!clean) return null;
 
   try {
-    const res = await fetch(WORKER_URL + '/api/profile/get', {
-      method: 'POST',
-      headers: {'Content-Type':'application/json'},
-      body: JSON.stringify({username: clean})
-    });
-    const data = await parseWorkerResponse(res);
+    const {res, data} = await apiPost('/api/profile/get', {username: clean});
     if (!res.ok || !data.success) return null;
 
     profileCache[clean] = {
@@ -512,8 +671,9 @@ async function fetchProfile(username) {
       bio: typeof data.bio === 'string' ? data.bio : '',
       avatarUrl: data.avatarUrl || data.avatar || '',
       nameColor: safeColor(data.nameColor || data.namecolor),
-      admin: !!data.admin
+      admin: data.admin === true
     };
+
     return profileCache[clean];
   } catch (_) {
     return null;
@@ -539,11 +699,15 @@ async function loadPostProfiles() {
 }
 
 function getAvatar(username) {
-  const cached = profileCache[normalizeUsername(username)];
-  if (cached?.avatarUrl) return cached.avatarUrl;
+  const clean = normalizeUsername(username);
+  const cached = profileCache[clean];
+
+  if (cached?.avatarUrl) return safeImageUrl(cached.avatarUrl);
 
   if (isAdminUsername(username)) {
-    const key = Object.keys(ADMIN_AVATARS).find(k => normalizeUsername(k) === normalizeUsername(username));
+    const key = Object.keys(ADMIN_AVATARS).find(
+      item => normalizeUsername(item) === clean
+    );
     if (key) return ADMIN_AVATARS[key];
   }
 
@@ -560,7 +724,7 @@ function authorStyle(username, suppliedColor) {
   return color ? ` style="color:${color}"` : '';
 }
 
-/* ЗАГРУЗКА ПОСТОВ */
+/* Лента */
 
 async function loadPosts() {
   try {
@@ -569,7 +733,8 @@ async function loadPosts() {
 
     if (!res.ok) {
       if (res.status !== 429) {
-        document.getElementById('posts-container').innerText = data.error || 'Ошибка загрузки ленты.';
+        document.getElementById('posts-container').textContent =
+          data.error || 'Ошибка загрузки ленты.';
       }
       return;
     }
@@ -578,7 +743,7 @@ async function loadPosts() {
     await loadPostProfiles();
     renderPosts();
   } catch (_) {
-    document.getElementById('posts-container').innerText = 'Ошибка загрузки ленты.';
+    document.getElementById('posts-container').textContent = 'Ошибка загрузки ленты.';
   }
 }
 
@@ -587,92 +752,197 @@ function renderPosts() {
   container.innerHTML = '';
 
   const filtered = currentFilterTag
-    ? allPosts.filter(post => Array.isArray(post.tags) &&
-        post.tags.some(tag => String(tag).toLowerCase() === currentFilterTag.toLowerCase()))
+    ? allPosts.filter(post =>
+        Array.isArray(post.tags) &&
+        post.tags.some(tag =>
+          String(tag).toLowerCase() === currentFilterTag.toLowerCase()
+        )
+      )
     : allPosts;
 
   if (!filtered.length) {
-    container.innerHTML = '<p style="color:#71717a;text-align:center">Записей по такому тегу не найдено.</p>';
+    container.innerHTML =
+      '<p style="color:#71717a;text-align:center">Записей по такому тегу не найдено.</p>';
     return;
   }
+
+  const fragment = document.createDocumentFragment();
 
   filtered.forEach(post => {
     const username = String(post.username || '');
     const postAdmin = isAdminUsername(username);
     const avatar = safeImageUrl(getAvatar(username));
-    const badge = postAdmin ? '<span class="verified-badge" title="Аккаунт администрации форума">✓</span>' : '';
     const color = getNameColor(username, post.nameColor);
     const styleClass = !color && postAdmin ? 'admin-style' : '';
 
-    const deleteButton = isAdmin
-      ? `<br><button class="admin-btn" onclick="deletePost('${escapeAttribute(post.id)}')">❌ Стереть пост</button>`
-      : '';
+    const card = document.createElement('div');
+    card.className = 'post';
 
-    let tagsHTML = '';
+    const avatarImg = document.createElement('img');
+    avatarImg.className = 'avatar';
+    avatarImg.src = avatar;
+    avatarImg.alt = 'Аватар';
+    avatarImg.loading = 'lazy';
+    avatarImg.addEventListener('click', () => viewUserProfile(username));
+
+    const body = document.createElement('div');
+    body.className = 'post-body';
+
+    const header = document.createElement('div');
+    header.className = 'post-header';
+
+    const author = document.createElement('span');
+    author.className = 'author ' + styleClass;
+    author.style.cursor = 'pointer';
+    if (color) author.style.color = color;
+    author.append(document.createTextNode(displayUsername(username) + ' '));
+    author.insertAdjacentHTML('beforeend', verifiedBadge(username));
+    author.addEventListener('click', () => viewUserProfile(username));
+
+    const time = document.createElement('span');
+    time.className = 'time';
+    time.textContent = post.time || '';
+    header.append(author, time);
+
+    const text = document.createElement('div');
+    text.className = 'text';
+    text.textContent = post.text || '';
+
+    body.append(header, text);
+
     if (Array.isArray(post.tags) && post.tags.length) {
-      tagsHTML = '<div class="tags-container">' + post.tags.map(tag =>
-        `<span class="tag" onclick="setSearchTag('${escapeAttribute(tag)}')">${escapeHTML(tag)}</span>`
-      ).join('') + '</div>';
+      const tags = document.createElement('div');
+      tags.className = 'tags-container';
+
+      post.tags.forEach(tag => {
+        const tagEl = document.createElement('span');
+        tagEl.className = 'tag';
+        tagEl.textContent = tag;
+        tagEl.tabIndex = 0;
+        tagEl.addEventListener('click', () => setSearchTag(tag));
+        tagEl.addEventListener('keydown', event => {
+          if (event.key === 'Enter' || event.key === ' ') setSearchTag(tag);
+        });
+        tags.appendChild(tagEl);
+      });
+
+      body.appendChild(tags);
     }
 
-    let commentsHTML = '<div class="comments-section">';
+    if (isAdmin) {
+      const deletePostButton = document.createElement('button');
+      deletePostButton.className = 'admin-btn';
+      deletePostButton.textContent = '❌ Стереть пост';
+      deletePostButton.addEventListener('click', () => deletePost(post.id));
+      body.appendChild(deletePostButton);
+    }
+
+    const comments = document.createElement('div');
+    comments.className = 'comments-section';
 
     (Array.isArray(post.comments) ? post.comments : []).forEach(comment => {
-      const commUsername = String(comment.username || '');
-      const commAdmin = isAdminUsername(commUsername);
-      const commBadge = commAdmin ? '<span class="verified-badge" title="Аккаунт администрации форума">✓</span>' : '';
-      const commColor = getNameColor(commUsername, comment.nameColor);
-      const commClass = !commColor && commAdmin ? 'admin-style' : '';
-      const deleteCommentButton = isAdmin
-        ? `<button class="admin-btn" style="margin:5px 0 0;padding:3px 8px;font-size:.75rem" onclick="deleteComment('${escapeAttribute(post.id)}','${escapeAttribute(comment.id)}')">❌ Стереть ответ</button>`
-        : '';
+      const commentUsername = String(comment.username || '');
+      const commentAdmin = isAdminUsername(commentUsername);
+      const commentColor = getNameColor(commentUsername, comment.nameColor);
 
-      commentsHTML += `
-        <div class="comment">
-          <img class="comment-avatar" src="${safeImageUrl(getAvatar(commUsername))}" alt="ava" onclick="viewUserProfile('${escapeAttribute(commUsername)}')">
-          <div class="comment-body">
-            <div class="comment-header">
-              <span class="author ${commClass}"${commColor ? ` style="color:${commColor};font-size:.95rem"` : ' style="font-size:.95rem"'} onclick="viewUserProfile('${escapeAttribute(commUsername)}')">${escapeHTML(commUsername)} ${commBadge}</span>
-              <span class="time" style="font-size:.75rem">${escapeHTML(comment.time || '')}</span>
-            </div>
-            <div class="comment-text">${escapeHTML(comment.text || '')}</div>
-            ${deleteCommentButton}
-          </div>
-        </div>`;
+      const commentEl = document.createElement('div');
+      commentEl.className = 'comment';
+
+      const commentAvatar = document.createElement('img');
+      commentAvatar.className = 'comment-avatar';
+      commentAvatar.src = safeImageUrl(getAvatar(commentUsername));
+      commentAvatar.alt = 'Аватар';
+      commentAvatar.loading = 'lazy';
+      commentAvatar.addEventListener('click', () => viewUserProfile(commentUsername));
+
+      const commentBody = document.createElement('div');
+      commentBody.className = 'comment-body';
+
+      const commentHeader = document.createElement('div');
+      commentHeader.className = 'comment-header';
+
+      const commentAuthor = document.createElement('span');
+      commentAuthor.className =
+        'author ' + (!commentColor && commentAdmin ? 'admin-style' : '');
+      commentAuthor.style.cursor = 'pointer';
+      commentAuthor.style.fontSize = '.95rem';
+      if (commentColor) commentAuthor.style.color = commentColor;
+      commentAuthor.append(
+        document.createTextNode(displayUsername(commentUsername) + ' ')
+      );
+      commentAuthor.insertAdjacentHTML('beforeend', verifiedBadge(commentUsername));
+      commentAuthor.addEventListener('click', () => viewUserProfile(commentUsername));
+
+      const commentTime = document.createElement('span');
+      commentTime.className = 'time';
+      commentTime.style.fontSize = '.75rem';
+      commentTime.textContent = comment.time || '';
+
+      commentHeader.append(commentAuthor, commentTime);
+
+      const commentText = document.createElement('div');
+      commentText.className = 'comment-text';
+      commentText.textContent = comment.text || '';
+
+      commentBody.append(commentHeader, commentText);
+
+      if (isAdmin) {
+        const deleteCommentButton = document.createElement('button');
+        deleteCommentButton.className = 'admin-btn';
+        deleteCommentButton.style.cssText = 'margin:5px 0 0;padding:3px 8px;font-size:.75rem';
+        deleteCommentButton.textContent = '❌ Стереть ответ';
+        deleteCommentButton.addEventListener(
+          'click',
+          () => deleteComment(post.id, comment.id)
+        );
+        commentBody.appendChild(deleteCommentButton);
+      }
+
+      commentEl.append(commentAvatar, commentBody);
+      comments.appendChild(commentEl);
     });
 
-    commentsHTML += `
-      <div class="comment-form">
-        <input type="text" id="comm-input-${escapeAttribute(post.id)}" class="comment-input" placeholder="Написать ответ в ветку...">
-        <button class="primary comment-btn" onclick="sendComment('${escapeAttribute(post.id)}')">Ответить</button>
-      </div>
-    </div>`;
+    const commentForm = document.createElement('div');
+    commentForm.className = 'comment-form';
 
-    container.innerHTML += `
-      <div class="post">
-        <img class="avatar" src="${avatar}" alt="ava" onclick="viewUserProfile('${escapeAttribute(username)}')">
-        <div class="post-body">
-          <div class="post-header">
-            <span class="author ${styleClass}"${color ? ` style="color:${color}"` : ''} onclick="viewUserProfile('${escapeAttribute(username)}')">${escapeHTML(username)} ${badge}</span>
-            <span class="time">${escapeHTML(post.time || '')}</span>
-          </div>
-          <div class="text">${escapeHTML(post.text || '')}</div>
-          ${tagsHTML}
-          ${deleteButton}
-          ${commentsHTML}
-        </div>
-      </div>`;
+    const commentInput = document.createElement('input');
+    commentInput.type = 'text';
+    commentInput.className = 'comment-input';
+    commentInput.id = 'comm-input-' + String(post.id);
+    commentInput.maxLength = 2000;
+    commentInput.placeholder = 'Написать ответ в ветку...';
+
+    const commentButton = document.createElement('button');
+    commentButton.className = 'primary comment-btn';
+    commentButton.textContent = 'Ответить';
+    commentButton.addEventListener('click', () => sendComment(post.id));
+    commentInput.addEventListener('keydown', event => {
+      if (event.key === 'Enter') sendComment(post.id);
+    });
+
+    commentForm.append(commentInput, commentButton);
+    comments.appendChild(commentForm);
+    body.appendChild(comments);
+
+    card.append(avatarImg, body);
+    fragment.appendChild(card);
   });
+
+  container.appendChild(fragment);
 
   if (Date.now() < rateLimitUntil) {
     lockForumButtons(Math.ceil((rateLimitUntil - Date.now()) / 1000));
   }
 }
 
-/* ПАНЕЛЬ АДМИНИСТРАЦИИ */
+/* Панель администрации */
 
 function toggleAdminPanel() {
-  if (!isAdmin) return;
+  if (!isAdmin) {
+    showToast('Недостаточно прав.', 'error');
+    return;
+  }
+
   adminPanelOpen = !adminPanelOpen;
   document.getElementById('admin-panel').classList.toggle('hidden', !adminPanelOpen);
   document.getElementById('admin-panel-btn').textContent = adminPanelOpen
@@ -680,58 +950,92 @@ function toggleAdminPanel() {
     : '🛡️ Панель администрации';
 }
 
-/* СИСТЕМНЫЕ СООБЩЕНИЯ */
+/* Системные сообщения */
 
 function getAdminVisuals(username) {
-  const key = Object.keys(ADMIN_AVATARS).find(k => normalizeUsername(k) === normalizeUsername(username));
-  return {
-    avatar: getAvatar(username),
-    nameClass: getAdminStyle(username, ADMIN_NAMES) !== 'none'
-      ? 'name-theme-' + getAdminStyle(username, ADMIN_NAMES)
-      : ''
-  };
+  return {avatar: getAvatar(username)};
 }
 
 function renderSystemMessages() {
   const container = document.getElementById('system-container');
-  if (!container) return;
   container.innerHTML = '';
 
   if (!systemMessages.length) {
-    container.innerHTML = '<p style="color:#71717a;text-align:center">Системных сообщений пока нет.</p>';
+    container.innerHTML =
+      '<p style="color:#71717a;text-align:center">Системных сообщений пока нет.</p>';
     return;
   }
 
+  const fragment = document.createDocumentFragment();
+
   systemMessages.forEach(message => {
-    // В Worker message.username — получатель, message.from — отправитель.
     const sender = String(message.from || 'Система');
-    const senderIsAdmin = isAdminUsername(sender);
+    const senderAdmin = isAdminUsername(sender);
     const visual = getAdminVisuals(sender);
     const color = getNameColor(sender);
-    const deleteButton = isAdmin
-      ? `<button class="admin-btn" style="margin:10px 0 0" onclick="deleteSystemMessage('${escapeAttribute(message.id)}')">❌ Удалить глобально</button>`
-      : '';
 
-    container.innerHTML += `
-      <div class="post system-message" style="border-color:#27272a">
-        <img class="avatar" src="${safeImageUrl(visual.avatar)}" alt="ava" onclick="viewUserProfile('${escapeAttribute(sender)}')">
-        <div class="post-body">
-          <div class="post-header">
-            <span class="author ${senderIsAdmin && !color ? visual.nameClass : ''}"${color ? ` style="color:${color}"` : ''} onclick="viewUserProfile('${escapeAttribute(sender)}')">${escapeHTML(sender)} ${senderIsAdmin ? '<span class="verified-badge" title="Аккаунт администрации форума">✓</span>' : ''}</span>
-            <span class="time">${escapeHTML(message.time || '')}</span>
-          </div>
-          <div class="text">${escapeHTML(message.text || '')}</div>
-          ${deleteButton}
-        </div>
-      </div>`;
+    const card = document.createElement('div');
+    card.className = 'post system-message';
+    card.style.borderColor = '#27272a';
+
+    const avatar = document.createElement('img');
+    avatar.className = 'avatar';
+    avatar.src = safeImageUrl(visual.avatar);
+    avatar.alt = 'Аватар';
+    avatar.addEventListener('click', () => viewUserProfile(sender));
+
+    const body = document.createElement('div');
+    body.className = 'post-body';
+
+    const header = document.createElement('div');
+    header.className = 'post-header';
+
+    const author = document.createElement('span');
+    author.className = 'author';
+    author.style.cursor = 'pointer';
+    if (color) author.style.color = color;
+    author.append(document.createTextNode(displayUsername(sender) + ' '));
+    author.insertAdjacentHTML('beforeend', verifiedBadge(sender));
+    author.addEventListener('click', () => viewUserProfile(sender));
+
+    const time = document.createElement('span');
+    time.className = 'time';
+    time.textContent = message.time || '';
+
+    header.append(author, time);
+
+    const text = document.createElement('div');
+    text.className = 'text';
+    text.textContent = message.text || '';
+
+    body.append(header, text);
+
+    if (isAdmin) {
+      const deleteButton = document.createElement('button');
+      deleteButton.className = 'admin-btn';
+      deleteButton.style.marginTop = '10px';
+      deleteButton.textContent = '❌ Удалить глобально';
+      deleteButton.addEventListener(
+        'click',
+        () => deleteSystemMessage(message.id)
+      );
+      body.appendChild(deleteButton);
+    }
+
+    card.append(avatar, body);
+    fragment.appendChild(card);
   });
+
+  container.appendChild(fragment);
 }
 
 async function loadSystemMessages(markRead = false) {
   if (!currentUsername) return;
 
   try {
-    const res = await fetch(WORKER_URL + '/api/system?username=' + encodeURIComponent(currentUsername));
+    const res = await fetch(
+      WORKER_URL + '/api/system?username=' + encodeURIComponent(normalizeUsername(currentUsername))
+    );
     const data = await parseWorkerResponse(res);
     if (!res.ok) return;
 
@@ -747,82 +1051,68 @@ async function loadSystemMessages(markRead = false) {
         .filter(Boolean);
 
       if (messageIds.length) {
-        const readRes = await fetch(WORKER_URL + '/api/system/read', {
-          method: 'POST',
-          headers: {'Content-Type':'application/json'},
-          body: JSON.stringify({
-            username: currentUsername,
-            password: currentPassword,
-            messageIds
-          })
+        const {res: readRes, data: readData} = await apiPost('/api/system/read', {
+          username: normalizeUsername(currentUsername),
+          password: currentPassword,
+          messageIds
         });
 
-        if (readRes.ok) updateSystemUnread(false);
+        if (readRes.ok && readData.success) updateSystemUnread(false);
       }
     }
   } catch (_) {}
 }
 
 function updateSystemUnread(unread) {
-  const dot = document.getElementById('system-unread-dot');
-  if (dot) dot.classList.toggle('hidden', !unread);
+  document.getElementById('system-unread-dot')
+    ?.classList.toggle('hidden', !unread);
 }
 
-function openSystemMessages() {
+function showSystemView(composer) {
   systemViewOpen = true;
+  document.getElementById('feed-controls').classList.add('hidden');
   document.getElementById('posts-container').classList.add('hidden');
-
-  document.querySelectorAll('#forum-box > .box').forEach(el => {
-    if (el.id !== 'admin-panel' && el.id !== 'system-box') el.classList.add('hidden');
-  });
-
   document.getElementById('system-box').classList.remove('hidden');
-  document.getElementById('system-compose').classList.add('hidden');
-  document.getElementById('system-btn').innerHTML = '↩️ Вернуться на Ленту';
+  document.getElementById('system-compose').classList.toggle('hidden', !composer);
+
+  document.getElementById('system-btn').textContent = '↩️ Вернуться на ленту';
   document.getElementById('system-btn').onclick = returnToFeed;
 
   if (isAdmin) {
-    document.getElementById('admin-system-btn').innerText = '↩️ Вернуться на Ленту';
+    document.getElementById('admin-system-btn').textContent = '↩️ Вернуться на ленту';
     document.getElementById('admin-system-btn').onclick = returnToFeed;
   }
 
   loadSystemMessages(true);
 }
 
+function openSystemMessages() {
+  showSystemView(false);
+}
+
 function openSystemComposer() {
-  if (!isAdmin) return;
-  systemViewOpen = true;
-  document.getElementById('posts-container').classList.add('hidden');
-
-  document.querySelectorAll('#forum-box > .box').forEach(el => {
-    if (el.id !== 'admin-panel' && el.id !== 'system-box') el.classList.add('hidden');
-  });
-
-  document.getElementById('system-box').classList.remove('hidden');
-  document.getElementById('system-compose').classList.remove('hidden');
-  document.getElementById('admin-system-btn').innerText = '↩️ Вернуться на Ленту';
-  document.getElementById('admin-system-btn').onclick = returnToFeed;
-
-  loadSystemMessages(true);
+  if (!isAdmin) return showToast('Недостаточно прав.', 'error');
+  showSystemView(true);
 }
 
 function returnToFeed() {
   systemViewOpen = false;
   document.getElementById('system-box').classList.add('hidden');
-
-  document.querySelectorAll('#forum-box > .box').forEach(el => {
-    if (el.id !== 'admin-panel') el.classList.remove('hidden');
-  });
-
-  if (!adminPanelOpen) document.getElementById('admin-panel').classList.add('hidden');
+  document.getElementById('feed-controls').classList.remove('hidden');
   document.getElementById('posts-container').classList.remove('hidden');
 
-  document.getElementById('system-btn').innerHTML = '🔔 Системные сообщения<span id="system-unread-dot" class="system-unread-dot hidden"></span>';
+  document.getElementById('system-btn').innerHTML =
+    '🔔 Системные сообщения<span id="system-unread-dot" class="system-unread-dot hidden"></span>';
   document.getElementById('system-btn').onclick = openSystemMessages;
 
   if (isAdmin) {
-    document.getElementById('admin-system-btn').innerText = '✍️ Написать систем. сообщение';
+    document.getElementById('admin-system-btn').textContent =
+      '✍️ Написать систем. сообщение';
     document.getElementById('admin-system-btn').onclick = openSystemComposer;
+  }
+
+  if (!adminPanelOpen) {
+    document.getElementById('admin-panel').classList.add('hidden');
   }
 
   loadPosts();
@@ -830,47 +1120,61 @@ function returnToFeed() {
 }
 
 async function sendSystemMessage() {
-  if (!isAdmin) return alert('Недостаточно прав.');
+  if (!isAdmin) return showToast('Недостаточно прав.', 'error');
+
   const input = document.getElementById('system-text');
   const text = input.value.trim();
-  if (!text) return alert('Введите текст системного уведомления.');
+
+  if (!text) return showToast('Введи текст системного уведомления.', 'warning');
 
   try {
-    const res = await fetch(WORKER_URL + '/api/admin/system', {
-      method: 'POST',
-      headers: {'Content-Type':'application/json'},
-      body: JSON.stringify({username:currentUsername,password:currentPassword,text})
+    const {res, data} = await apiPost('/api/admin/system', {
+      username: normalizeUsername(currentUsername),
+      password: currentPassword,
+      text
     });
 
-    const data = await parseWorkerResponse(res);
-    if (!res.ok) return alert(data.error || 'Ошибка отправки.');
+    if (!res.ok || !data.success) {
+      showToast(data.error || 'Ошибка отправки.', 'error');
+      return;
+    }
 
     input.value = '';
     await loadSystemMessages(false);
     renderSystemMessages();
-    alert('Системное уведомление отправлено!');
+    showToast('Системное уведомление отправлено!', 'success');
   } catch (_) {
-    alert('Ошибка сервера.');
+    showToast('Ошибка сервера.', 'error');
   }
 }
 
 async function deleteSystemMessage(messageId) {
-  if (!isAdmin || !confirm('Удалить это системное уведомление глобально?')) return;
+  if (!isAdmin) return;
+
+  const confirmed = await confirmAction(
+    'Это сообщение будет удалено из системных уведомлений форума.',
+    'Удалить системное сообщение',
+    'Удалить'
+  );
+  if (!confirmed) return;
 
   try {
-    const res = await fetch(WORKER_URL + '/api/admin/system-delete', {
-      method: 'POST',
-      headers: {'Content-Type':'application/json'},
-      body: JSON.stringify({username:currentUsername,password:currentPassword,messageId:String(messageId)})
+    const {res, data} = await apiPost('/api/admin/system-delete', {
+      username: normalizeUsername(currentUsername),
+      password: currentPassword,
+      messageId: String(messageId)
     });
 
-    const data = await parseWorkerResponse(res);
-    if (!res.ok) return alert(data.error || 'Ошибка удаления.');
+    if (!res.ok || !data.success) {
+      showToast(data.error || 'Ошибка удаления.', 'error');
+      return;
+    }
 
     await loadSystemMessages(false);
     renderSystemMessages();
+    showToast('Системное сообщение удалено.', 'success');
   } catch (_) {
-    alert('Ошибка сервера.');
+    showToast('Ошибка сервера.', 'error');
   }
 }
 
@@ -879,158 +1183,180 @@ function startSystemPolling() {
   systemPoll = setInterval(() => loadSystemMessages(false), 5000);
 }
 
-/* ПУБЛИКАЦИЯ ПОСТА */
+/* Публикация поста */
 
 async function sendPost() {
   if (Date.now() < rateLimitUntil) {
-    showRateLimit({error:'Подожди немного — антиспам уже ограничил отправку.'});
+    showRateLimit({error:'Подожди немного перед следующей публикацией.'});
     return;
   }
 
   const text = document.getElementById('post-text').value.trim();
   const tags = document.getElementById('post-tags').value.trim();
-  if (!text) return alert('Введите текст сообщения.');
+
+  if (!text) return showToast('Введи текст поста.', 'warning');
 
   const button = document.getElementById('send-btn');
   button.disabled = true;
 
   try {
-    const res = await fetch(WORKER_URL + '/api/posts', {
-      method: 'POST',
-      headers: {'Content-Type':'application/json'},
-      body: JSON.stringify({username:currentUsername,password:currentPassword,text,tags})
+    const {res, data} = await apiPost('/api/posts', {
+      username: normalizeUsername(currentUsername),
+      password: currentPassword,
+      text,
+      tags
     });
 
-    const data = await parseWorkerResponse(res);
-    if (!res.ok) {
-      if (res.status !== 429) alert(data.error || 'Ошибка публикации.');
+    if (!res.ok || !data.success) {
+      if (res.status !== 429) {
+        showToast(data.error || 'Ошибка публикации.', 'error');
+      }
       return;
     }
 
     document.getElementById('post-text').value = '';
     document.getElementById('post-tags').value = '';
+    showToast('Пост опубликован!', 'success');
     await loadPosts();
   } catch (_) {
-    alert('Ошибка публикации.');
+    showToast('Ошибка публикации.', 'error');
   } finally {
     if (Date.now() >= rateLimitUntil) button.disabled = false;
   }
 }
 
-/* КОММЕНТАРИИ */
+/* Комментарии */
 
 async function sendComment(postId) {
   if (Date.now() < rateLimitUntil) {
-    showRateLimit({error:'Не спамь 😭 Подожди немного перед следующим действием.'});
+    showRateLimit({error:'Подожди немного перед следующим комментарием.'});
     return;
   }
 
   const input = document.getElementById('comm-input-' + postId);
   if (!input) return;
+
   const text = input.value.trim();
-  if (!text) return;
+  if (!text) return showToast('Напиши текст комментария.', 'warning');
 
   const button = input.parentElement.querySelector('.comment-btn');
   if (button) button.disabled = true;
 
   try {
-    const res = await fetch(WORKER_URL + '/api/comments', {
-      method: 'POST',
-      headers: {'Content-Type':'application/json'},
-      body: JSON.stringify({username:currentUsername,password:currentPassword,postId:String(postId),text})
+    const {res, data} = await apiPost('/api/comments', {
+      username: normalizeUsername(currentUsername),
+      password: currentPassword,
+      postId: String(postId),
+      text
     });
 
-    const data = await parseWorkerResponse(res);
-    if (!res.ok) {
-      if (res.status !== 429) alert(data.error || 'Ошибка отправки ответа.');
+    if (!res.ok || !data.success) {
+      if (res.status !== 429) {
+        showToast(data.error || 'Ошибка отправки ответа.', 'error');
+      }
       return;
     }
 
     input.value = '';
+    showToast('Комментарий опубликован.', 'success');
     await loadPosts();
   } catch (_) {
-    alert('Ошибка отправки ответа.');
+    showToast('Ошибка отправки ответа.', 'error');
   } finally {
     if (button && Date.now() >= rateLimitUntil) button.disabled = false;
   }
 }
 
-/* УДАЛЕНИЕ ПОСТА */
+/* Удаление поста */
 
 async function deletePost(postId) {
-  if (!isAdmin || !confirm('Удалить пост?')) return;
+  if (!isAdmin) return showToast('Недостаточно прав.', 'error');
+
+  const confirmed = await confirmAction(
+    'Пост и все его комментарии будут удалены. Это действие нельзя отменить.',
+    'Удалить пост',
+    'Удалить пост'
+  );
+  if (!confirmed) return;
 
   try {
-    const res = await fetch(WORKER_URL + '/api/admin/delete', {
-      method: 'POST',
-      headers: {'Content-Type':'application/json'},
-      body: JSON.stringify({username:currentUsername,password:currentPassword,postId:String(postId)})
+    const {res, data} = await apiPost('/api/admin/delete', {
+      username: normalizeUsername(currentUsername),
+      password: currentPassword,
+      postId: String(postId)
     });
 
-    const data = await parseWorkerResponse(res);
-    if (!res.ok) return alert(data.error || 'Ошибка удаления.');
+    if (!res.ok || !data.success) {
+      showToast(data.error || 'Ошибка удаления.', 'error');
+      return;
+    }
 
     allPosts = allPosts.filter(post => String(post.id) !== String(postId));
     renderPosts();
+    showToast('Пост удалён.', 'success');
   } catch (_) {
-    alert('Ошибка сервера.');
+    showToast('Ошибка сервера.', 'error');
   }
 }
 
-/* УДАЛЕНИЕ КОММЕНТАРИЯ */
+/* Удаление комментария */
 
 async function deleteComment(postId, commentId) {
-  if (!isAdmin || !confirm('Удалить этот ответ из ветки?')) return;
+  if (!isAdmin) return showToast('Недостаточно прав.', 'error');
+
+  const confirmed = await confirmAction(
+    'Этот комментарий будет удалён из ветки.',
+    'Удалить комментарий',
+    'Удалить'
+  );
+  if (!confirmed) return;
 
   try {
-    const res = await fetch(WORKER_URL + '/api/admin/delete-comment', {
-      method: 'POST',
-      headers: {'Content-Type':'application/json'},
-      body: JSON.stringify({
-        username:currentUsername,
-        password:currentPassword,
-        postId:String(postId),
-        commentId:String(commentId)
-      })
+    const {res, data} = await apiPost('/api/admin/delete-comment', {
+      username: normalizeUsername(currentUsername),
+      password: currentPassword,
+      postId: String(postId),
+      commentId: String(commentId)
     });
 
-    const data = await parseWorkerResponse(res);
-    if (!res.ok) return alert(data.error || 'Ошибка удаления ответа.');
+    if (!res.ok || !data.success) {
+      showToast(data.error || 'Ошибка удаления комментария.', 'error');
+      return;
+    }
 
     const post = allPosts.find(item => String(item.id) === String(postId));
     if (post && Array.isArray(post.comments)) {
-      post.comments = post.comments.filter(comment => String(comment.id) !== String(commentId));
+      post.comments = post.comments.filter(
+        comment => String(comment.id) !== String(commentId)
+      );
     }
 
     renderPosts();
+    showToast('Комментарий удалён.', 'success');
   } catch (_) {
-    alert('Ошибка удаления ответа.');
+    showToast('Ошибка удаления комментария.', 'error');
   }
 }
 
-/* МОЙ ПРОФИЛЬ */
+/* Мой профиль */
 
 async function openMyProfile() {
+  const profile = await fetchProfile(currentUsername);
   const usernameEl = document.getElementById('my-prof-username');
   const avatarEl = document.getElementById('my-prof-avatar');
   const bioInput = document.getElementById('my-prof-bio-input');
-  const profile = await fetchProfile(currentUsername);
 
-  usernameEl.innerText = currentUsername;
-  usernameEl.className = 'profile-username';
+  usernameEl.textContent = displayUsername(currentUsername);
   usernameEl.style.color = safeColor(profile?.nameColor) || '';
-
   avatarEl.src = safeImageUrl(profile?.avatarUrl || getAvatar(currentUsername));
 
   const cardTheme = getAdminStyle(currentUsername, ADMIN_CARDS);
   document.getElementById('my-profile-card').className =
-    'modal-content profile-card ' + (cardTheme !== 'none' ? 'theme-' + cardTheme : '');
+    'modal-content profile-card ' +
+    (cardTheme !== 'none' ? 'theme-' + cardTheme : '');
 
-  const bio = profile?.bio || '';
-  bioInput.value = /написал о себе|hasn't written/i.test(bio) ? '' : bio;
-
-  // Загрузка файлов отключена в Worker. Пользовательская аватарка остаётся стандартной.
-  document.getElementById('avatar-user-controls').classList.add('hidden');
+  bioInput.value = profile?.bio || '';
+  document.getElementById('avatar-user-controls').classList.toggle('hidden', isAdmin);
   document.getElementById('admin-avatar-controls').classList.toggle('hidden', !isAdmin);
 
   if (isAdmin) await loadAdminAvatarOptions();
@@ -1038,7 +1364,7 @@ async function openMyProfile() {
   document.getElementById('my-profile-modal').classList.remove('hidden');
 }
 
-/* ВЫБОР АВАТАРКИ АДМИНИСТРАЦИЕЙ */
+/* Аватарки администрации */
 
 async function loadAdminAvatarOptions() {
   const select = document.getElementById('admin-avatar-select');
@@ -1048,17 +1374,16 @@ async function loadAdminAvatarOptions() {
   status.textContent = 'Загрузка списка...';
 
   try {
-    const [optionsRes, profile] = await Promise.all([
-      fetch(WORKER_URL + '/api/avatar/options', {
-        method: 'POST',
-        headers: {'Content-Type':'application/json'},
-        body: JSON.stringify({username:currentUsername,password:currentPassword})
+    const [result, profile] = await Promise.all([
+      apiPost('/api/avatar/options', {
+        username: normalizeUsername(currentUsername),
+        password: currentPassword
       }),
       fetchProfile(currentUsername)
     ]);
 
-    const data = await parseWorkerResponse(optionsRes);
-    if (!optionsRes.ok) {
+    const {res, data} = result;
+    if (!res.ok || !data.success) {
       status.textContent = data.error || 'Не удалось получить список.';
       return;
     }
@@ -1068,11 +1393,11 @@ async function loadAdminAvatarOptions() {
     const currentAvatar = String(profile?.avatarUrl || '');
 
     options.forEach(option => {
-      const el = document.createElement('option');
-      el.value = String(option.id);
-      el.textContent = option.label || option.id;
-      if (option.url && option.url === currentAvatar) el.selected = true;
-      select.appendChild(el);
+      const element = document.createElement('option');
+      element.value = String(option.id);
+      element.textContent = option.label || option.id;
+      if (option.url && option.url === currentAvatar) element.selected = true;
+      select.appendChild(element);
     });
 
     status.textContent = options.length ? '' : 'Список аватарок пуст.';
@@ -1082,110 +1407,103 @@ async function loadAdminAvatarOptions() {
 }
 
 async function saveSelectedAdminAvatar() {
-  if (!isAdmin) return;
+  if (!isAdmin) return showToast('Недостаточно прав.', 'error');
 
   const select = document.getElementById('admin-avatar-select');
   const status = document.getElementById('admin-avatar-status');
-  if (!select || !select.value) {
+
+  if (!select?.value) {
     status.textContent = 'Нет доступных аватарок.';
     return;
   }
 
   try {
-    const res = await fetch(WORKER_URL + '/api/avatar/select', {
-      method: 'POST',
-      headers: {'Content-Type':'application/json'},
-      body: JSON.stringify({
-        username:currentUsername,
-        password:currentPassword,
-        avatarId:select.value
-      })
+    const {res, data} = await apiPost('/api/avatar/select', {
+      username: normalizeUsername(currentUsername),
+      password: currentPassword,
+      avatarId: select.value
     });
 
-    const data = await parseWorkerResponse(res);
-    if (!res.ok) {
+    if (!res.ok || !data.success) {
       status.textContent = data.error || 'Не удалось сменить аватар.';
       return;
     }
 
-    const avatarUrl = data.avatarUrl || data.avatar;
-    if (avatarUrl) {
-      document.getElementById('my-prof-avatar').src =
-        avatarUrl + (avatarUrl.includes('?') ? '&' : '?') + 'v=' + Date.now();
+    const avatarUrl = safeImageUrl(data.avatarUrl || data.avatar);
+    document.getElementById('my-prof-avatar').src = avatarUrl;
 
-      const cached = profileCache[normalizeUsername(currentUsername)];
-      if (cached) cached.avatarUrl = avatarUrl;
-    }
+    const cached = profileCache[normalizeUsername(currentUsername)];
+    if (cached) cached.avatarUrl = avatarUrl;
 
     status.textContent = 'Аватар администрации установлен.';
+    showToast('Аватар изменён.', 'success');
     await loadPosts();
   } catch (_) {
     status.textContent = 'Ошибка соединения с сервером.';
   }
 }
 
-/* ЦВЕТ НИКА */
+/* Цвет ника */
 
 async function setUserNameColor() {
-  if (!isAdmin) return alert('Недостаточно прав.');
+  if (!isAdmin) return showToast('Недостаточно прав.', 'error');
 
   const target = document.getElementById('namecolor-username').value.trim();
   const color = document.getElementById('namecolor-value').value;
 
-  if (!target) return alert('Укажи ник пользователя.');
-  if (color && !/^#[0-9a-f]{6}$/i.test(color)) return alert('Выбран некорректный цвет.');
+  if (!target) return showToast('Укажи ник пользователя.', 'warning');
 
   try {
-    const res = await fetch(WORKER_URL + '/api/admin/name-color', {
-      method: 'POST',
-      headers: {'Content-Type':'application/json'},
-      body: JSON.stringify({
-        username:currentUsername,
-        password:currentPassword,
-        target,
-        color
-      })
+    const {res, data} = await apiPost('/api/admin/name-color', {
+      username: normalizeUsername(currentUsername),
+      password: currentPassword,
+      target,
+      color
     });
 
-    const data = await parseWorkerResponse(res);
-    if (!res.ok) return alert(data.error || 'Не удалось изменить цвет ника.');
+    if (!res.ok || !data.success) {
+      showToast(data.error || 'Не удалось изменить цвет ника.', 'error');
+      return;
+    }
 
     delete profileCache[normalizeUsername(target)];
     await fetchProfile(target);
     await loadPosts();
-    alert('Цвет ника обновлён.');
+    showToast('Цвет ника обновлён.', 'success');
   } catch (_) {
-    alert('Ошибка соединения с сервером.');
+    showToast('Ошибка соединения с сервером.', 'error');
   }
 }
 
-/* СОХРАНЕНИЕ ПРОФИЛЯ */
+/* Сохранение профиля */
 
 async function saveMyProfile() {
   const bio = document.getElementById('my-prof-bio-input').value.trim();
 
   try {
-    const res = await fetch(WORKER_URL + '/api/profile/save', {
-      method: 'POST',
-      headers: {'Content-Type':'application/json'},
-      body: JSON.stringify({username:currentUsername,password:currentPassword,bio})
+    const {res, data} = await apiPost('/api/profile/save', {
+      username: normalizeUsername(currentUsername),
+      password: currentPassword,
+      bio
     });
 
-    const data = await parseWorkerResponse(res);
-    if (!res.ok) return alert(data.error || 'Ошибка сохранения профиля.');
+    if (!res.ok || !data.success) {
+      showToast(data.error || 'Ошибка сохранения профиля.', 'error');
+      return;
+    }
 
     if (profileCache[normalizeUsername(currentUsername)]) {
       profileCache[normalizeUsername(currentUsername)].bio = bio;
     }
 
-    alert('Описание профиля успешно изменено!');
+    showToast('Описание профиля сохранено.', 'success');
     closeModal('my-profile-modal');
   } catch (_) {
-    alert('Ошибка сохранения профиля.');
+    showToast('Ошибка сохранения профиля.', 'error');
   }
 }
 
-/* ПРОСМОТР ПРОФИЛЯ */
+/* Просмотр профиля */
 
 async function viewUserProfile(targetNick) {
   const username = displayUsername(targetNick);
@@ -1193,78 +1511,98 @@ async function viewUserProfile(targetNick) {
   const avatarEl = document.getElementById('view-prof-avatar');
   const bioEl = document.getElementById('view-prof-bio');
 
-  nameEl.innerText = username;
-  nameEl.className = 'profile-username';
+  nameEl.textContent = username;
   nameEl.style.color = '';
   avatarEl.src = safeImageUrl(getAvatar(username));
-  bioEl.innerText = 'Загрузка информации...';
+  bioEl.textContent = 'Загрузка информации...';
 
   const cardTheme = getAdminStyle(username, ADMIN_CARDS);
   document.getElementById('view-profile-card').className =
-    'modal-content profile-card ' + (cardTheme !== 'none' ? 'theme-' + cardTheme : '');
+    'modal-content profile-card ' +
+    (cardTheme !== 'none' ? 'theme-' + cardTheme : '');
 
   document.getElementById('view-profile-modal').classList.remove('hidden');
 
   const profile = await fetchProfile(username);
   if (!profile) {
-    bioEl.innerText = 'Не удалось загрузить профиль.';
+    bioEl.textContent = 'Не удалось загрузить профиль.';
     return;
   }
 
   if (profile.avatarUrl) avatarEl.src = safeImageUrl(profile.avatarUrl);
   nameEl.style.color = safeColor(profile.nameColor) || '';
-  bioEl.innerText = profile.bio || 'Нет описания.';
+  bioEl.textContent = profile.bio || 'Нет описания.';
 }
 
-/* БАН */
+/* Бан */
 
 async function banUser() {
-  if (!isAdmin) return;
+  if (!isAdmin) return showToast('Недостаточно прав.', 'error');
+
   const target = document.getElementById('ban-username').value.trim();
-  if (!target) return;
+  if (!target) return showToast('Укажи ник для бана.', 'warning');
+
+  const confirmed = await confirmAction(
+    `Заблокировать пользователя ${displayUsername(target)}?`,
+    'Подтверждение бана',
+    'Заблокировать'
+  );
+  if (!confirmed) return;
 
   try {
-    const res = await fetch(WORKER_URL + '/api/admin/ban', {
-      method: 'POST',
-      headers: {'Content-Type':'application/json'},
-      body: JSON.stringify({username:currentUsername,password:currentPassword,userToBan:target})
+    const {res, data} = await apiPost('/api/admin/ban', {
+      username: normalizeUsername(currentUsername),
+      password: currentPassword,
+      userToBan: target
     });
 
-    const data = await parseWorkerResponse(res);
-    if (!res.ok) return alert(data.error || 'Ошибка');
+    if (!res.ok || !data.success) {
+      showToast(data.error || 'Не удалось заблокировать пользователя.', 'error');
+      return;
+    }
 
-    alert('Пользователь забанен!');
     document.getElementById('ban-username').value = '';
+    showToast(`Пользователь ${displayUsername(data.username || target)} заблокирован.`, 'success');
   } catch (_) {
-    alert('Ошибка сервера.');
+    showToast('Ошибка сервера.', 'error');
   }
 }
 
-/* РАЗБАН */
+/* Разбан */
 
 async function unbanUser() {
-  if (!isAdmin) return;
+  if (!isAdmin) return showToast('Недостаточно прав.', 'error');
+
   const target = document.getElementById('unban-username').value.trim();
-  if (!target) return;
+  if (!target) return showToast('Укажи ник для разбана.', 'warning');
+
+  const confirmed = await confirmAction(
+    `Разблокировать пользователя ${displayUsername(target)}?`,
+    'Подтверждение разбана',
+    'Разблокировать'
+  );
+  if (!confirmed) return;
 
   try {
-    const res = await fetch(WORKER_URL + '/api/admin/unban', {
-      method: 'POST',
-      headers: {'Content-Type':'application/json'},
-      body: JSON.stringify({username:currentUsername,password:currentPassword,userToUnban:target})
+    const {res, data} = await apiPost('/api/admin/unban', {
+      username: normalizeUsername(currentUsername),
+      password: currentPassword,
+      userToUnban: target
     });
 
-    const data = await parseWorkerResponse(res);
-    if (!res.ok) return alert(data.error || 'Ошибка разбана.');
+    if (!res.ok || !data.success) {
+      showToast(data.error || 'Не удалось разблокировать пользователя.', 'error');
+      return;
+    }
 
-    alert('Пользователь разбанен!');
     document.getElementById('unban-username').value = '';
+    showToast(`Пользователь ${displayUsername(data.username || target)} разблокирован.`, 'success');
   } catch (_) {
-    alert('Ошибка сервера.');
+    showToast('Ошибка сервера.', 'error');
   }
 }
 
-/* ПОИСК */
+/* Поиск по тегам */
 
 function setSearchTag(tag) {
   document.getElementById('search-input').value = tag;
@@ -1282,6 +1620,20 @@ function resetFilter() {
   currentFilterTag = '';
   renderPosts();
 }
+
+document.getElementById('search-input').addEventListener('keydown', event => {
+  if (event.key === 'Enter') filterByTag();
+});
+
+document.getElementById('post-text').addEventListener('keydown', event => {
+  if ((event.ctrlKey || event.metaKey) && event.key === 'Enter') sendPost();
+});
+
+document.getElementById('password-input').addEventListener('keydown', event => {
+  if (event.key === 'Enter') {
+    document.getElementById('auth-action-btn').click();
+  }
+});
 </script>
 </body>
 </html>
