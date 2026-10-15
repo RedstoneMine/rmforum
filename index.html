@@ -42,13 +42,17 @@ button:disabled {opacity:.55;cursor:not-allowed}
   from {transform:scale(.95);opacity:0}
   to {transform:scale(1);opacity:1}
 }
+
+/* Щит верификации: поверх карточек, постов и других элементов */
 .verified-badge {
   display:inline-flex;
   position:relative;
+  z-index:100;
   align-items:center;
   vertical-align:middle;
   cursor:pointer;
   margin-left:3px;
+  overflow:visible;
 }
 .verified-badge img {
   width:17px;
@@ -72,15 +76,156 @@ button:disabled {opacity:.55;cursor:not-allowed}
   white-space:nowrap;
   box-shadow:0 8px 24px #0008;
   opacity:0;
+  visibility:hidden;
   pointer-events:none;
-  transition:.18s;
-  z-index:20;
+  transition:opacity .18s,transform .18s,visibility .18s;
+  z-index:2147483647;
 }
 .verified-badge:hover::after,
 .verified-badge:focus-visible::after {
   opacity:1;
+  visibility:visible;
   transform:translateX(-50%) translateY(0);
 }
+
+/* Щит рядом с ником внутри карточек профиля */
+.profile-username .verified-badge {
+  margin-left:6px;
+}
+.profile-username .verified-badge img {
+  width:19px;
+  height:19px;
+}
+
+/* Независимый выбор фона карточки профиля */
+#admin-card-theme-controls {
+  margin:16px 0;
+  padding:14px;
+  border:1px solid #3f3f46;
+  border-radius:12px;
+  background:#18181b;
+}
+#admin-card-theme-controls h4 {
+  margin:0 0 10px;
+  color:#f87171;
+}
+#admin-card-theme-controls select {
+  margin-bottom:9px;
+}
+.card-theme-status {
+  min-height:18px;
+  margin:8px 0 0;
+  color:#a1a1aa;
+  font-size:.85rem;
+}
+.profile-card.theme-none {
+  background:#18181b!important;
+}
+.profile-card.theme-red {
+  background:linear-gradient(145deg,#351416,#18181b 75%)!important;
+}
+.profile-card.theme-gold {
+  background:linear-gradient(145deg,#382b12,#18181b 75%)!important;
+}
+.profile-card.theme-purple {
+  background:linear-gradient(145deg,#29163e,#18181b 75%)!important;
+}
+.profile-card.theme-green {
+  background:linear-gradient(145deg,#123522,#18181b 75%)!important;
+}
+.profile-card.theme-blue {
+  background:linear-gradient(145deg,#142b45,#18181b 75%)!important;
+}
+.profile-card.theme-cyan {
+  background:linear-gradient(145deg,#10383c,#18181b 75%)!important;
+}
+.profile-card.theme-pink {
+  background:linear-gradient(145deg,#3b1930,#18181b 75%)!important;
+}
+
+/* Галерея аватарок администрации */
+#admin-avatar-gallery {
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+  margin:14px 0;
+}
+.avatar-gallery-preview {
+  position:relative;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:12px;
+}
+.avatar-gallery-preview img {
+  width:128px;
+  height:128px;
+  object-fit:cover;
+  border-radius:16px;
+  border:2px solid #ef4444;
+  background:#09090b;
+  box-shadow:0 0 22px #ef444422;
+}
+.avatar-gallery-arrow {
+  width:40px;
+  height:44px;
+  flex:0 0 40px;
+  padding:0!important;
+  margin:0!important;
+  font-size:24px!important;
+  line-height:1;
+  background:#27272a!important;
+  color:#f4f4f5!important;
+  border:1px solid #3f3f46!important;
+  border-radius:10px!important;
+}
+.avatar-gallery-arrow:hover {
+  background:#3f3f46!important;
+}
+#admin-avatar-gallery-label {
+  color:#e4e4e7;
+  text-align:center;
+  font-weight:600;
+  overflow-wrap:anywhere;
+}
+.avatar-gallery-thumbnails {
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(58px,1fr));
+  gap:8px;
+}
+.avatar-gallery-thumb {
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:3px!important;
+  margin:0!important;
+  min-width:0!important;
+  aspect-ratio:1;
+  background:#09090b!important;
+  border:2px solid #3f3f46!important;
+  border-radius:10px!important;
+  overflow:hidden;
+}
+.avatar-gallery-thumb img {
+  display:block;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  border-radius:6px;
+}
+.avatar-gallery-thumb.selected {
+  border-color:#22c55e!important;
+  box-shadow:0 0 0 2px #22c55e44,0 0 15px #22c55e44;
+}
+.avatar-gallery-thumb:focus-visible,
+.avatar-gallery-arrow:focus-visible {
+  outline:2px solid #f87171;
+  outline-offset:3px;
+}
+#admin-avatar-select {
+  display:none!important;
+}
+
 #toast-container {
   position:fixed;
   top:18px;
@@ -153,6 +298,14 @@ button:disabled {opacity:.55;cursor:not-allowed}
     width:100%;
     min-width:0;
   }
+  .avatar-gallery-preview img {
+    width:108px;
+    height:108px;
+  }
+  .avatar-gallery-arrow {
+    width:36px;
+    flex-basis:36px;
+  }
 }
 </style>
 </head>
@@ -222,17 +375,56 @@ button:disabled {opacity:.55;cursor:not-allowed}
     <h2 id="my-profile-title">МОЙ ПРОФИЛЬ</h2>
     <img id="my-prof-avatar" class="profile-big-avatar"
          src="./robot.png" alt="Аватар">
+
     <div id="avatar-user-controls" class="avatar-controls hidden">
       <p class="avatar-hint">Для обычных пользователей используется стандартная аватарка.</p>
     </div>
+
     <div id="admin-avatar-controls" class="avatar-controls hidden">
       <h4>🛡️ Аватар администрации</h4>
-      <p class="avatar-hint">Выбери одну из доступных аватарок.</p>
+      <p class="avatar-hint">Выбери аватарку в галерее. Стрелки переключают изображения, а зелёная рамка отмечает выбранное.</p>
+
+      <div id="admin-avatar-gallery">
+        <div class="avatar-gallery-preview">
+          <button type="button" id="avatar-gallery-prev"
+                  class="avatar-gallery-arrow"
+                  aria-label="Предыдущая аватарка"
+                  onclick="stepAdminAvatar(-1)">‹</button>
+          <img id="admin-avatar-preview" src="./robot.png" alt="Предпросмотр аватарки">
+          <button type="button" id="avatar-gallery-next"
+                  class="avatar-gallery-arrow"
+                  aria-label="Следующая аватарка"
+                  onclick="stepAdminAvatar(1)">›</button>
+        </div>
+        <div id="admin-avatar-gallery-label" aria-live="polite">Загрузка аватарок...</div>
+        <div id="admin-avatar-thumbnails" class="avatar-gallery-thumbnails"></div>
+      </div>
+
       <select id="admin-avatar-select" aria-label="Аватар администрации"></select>
+
       <button type="button" onclick="saveSelectedAdminAvatar()"
               class="avatar-action-btn">Установить аватар</button>
       <p id="admin-avatar-status" class="avatar-status" aria-live="polite"></p>
     </div>
+
+    <div id="admin-card-theme-controls" class="hidden">
+      <h4>🎨 Фон карточки профиля</h4>
+      <p class="avatar-hint">Эта настройка не меняет цвет ника. Она влияет только на фон карточки профиля.</p>
+      <select id="admin-card-theme-select" aria-label="Фон карточки профиля">
+        <option value="none">Стандартный</option>
+        <option value="red">Красный</option>
+        <option value="gold">Золотой</option>
+        <option value="purple">Фиолетовый</option>
+        <option value="green">Зелёный</option>
+        <option value="blue">Синий</option>
+        <option value="cyan">Голубой</option>
+        <option value="pink">Розовый</option>
+      </select>
+      <button type="button" onclick="saveAdminCardTheme()"
+              class="avatar-action-btn">Сохранить фон карточки</button>
+      <p id="admin-card-theme-status" class="card-theme-status" aria-live="polite"></p>
+    </div>
+
     <div id="my-prof-username" class="profile-username" style="color:#fff">@User</div>
     <textarea id="my-prof-bio-input" placeholder="Расскажи о себе..."
               rows="4" maxlength="200"></textarea>
@@ -427,6 +619,10 @@ const ADMIN_DESCBACK = {
   '@rm_emperor':'purple'
 };
 
+const ALLOWED_CARD_THEMES = new Set([
+  'none','red','gold','purple','green','blue','cyan','pink'
+]);
+
 let allPosts = [];
 let currentFilterTag = '';
 let currentUsername = '';
@@ -439,6 +635,8 @@ let systemViewOpen = false;
 let systemPoll = null;
 let adminPanelOpen = false;
 let confirmationResolver = null;
+let adminAvatarOptions = [];
+let selectedAdminAvatarIndex = 0;
 
 const profileCache = Object.create(null);
 
@@ -476,10 +674,6 @@ function safeColor(color) {
   return /^#[0-9a-f]{6}$/i.test(value) ? value : '';
 }
 
-/*
- * Поддерживаются локальные изображения и URL изображений сайта
- * redstonemine.github.io/rmforum/.
- */
 function safeImageUrl(url) {
   const value = String(url || '').trim();
 
@@ -545,9 +739,7 @@ function showToast(message, type = 'info', duration = 3600) {
     container.firstElementChild.remove();
   }
 
-  if (duration > 0) {
-    setTimeout(() => toast.remove(), duration);
-  }
+  if (duration > 0) setTimeout(() => toast.remove(), duration);
 }
 
 function confirmAction(
@@ -569,8 +761,7 @@ function confirmAction(
 }
 
 function resolveConfirmation(result) {
-  const modal = document.getElementById('confirm-modal');
-  modal.classList.add('hidden');
+  document.getElementById('confirm-modal').classList.add('hidden');
 
   if (confirmationResolver) {
     const resolve = confirmationResolver;
@@ -580,18 +771,13 @@ function resolveConfirmation(result) {
 }
 
 document.getElementById('confirm-modal').addEventListener('click', event => {
-  if (event.target.id === 'confirm-modal') {
-    resolveConfirmation(false);
-  }
+  if (event.target.id === 'confirm-modal') resolveConfirmation(false);
 });
 
 document.addEventListener('keydown', event => {
   if (event.key === 'Escape') {
     const modal = document.getElementById('confirm-modal');
-
-    if (!modal.classList.contains('hidden')) {
-      resolveConfirmation(false);
-    }
+    if (!modal.classList.contains('hidden')) resolveConfirmation(false);
   }
 });
 
@@ -606,11 +792,7 @@ function closeModal(id) {
 
 async function parseWorkerResponse(res) {
   let data = {};
-
-  try {
-    data = await res.json();
-  } catch (_) {}
-
+  try { data = await res.json(); } catch (_) {}
   if (res.status === 429) showRateLimit(data);
   return data;
 }
@@ -631,12 +813,10 @@ async function apiPost(path, body) {
 function getRetrySeconds(data) {
   for (const key of ['remaining', 'retryAfter', 'retry_after']) {
     const value = Number(data?.[key]);
-
     if (Number.isFinite(value) && value > 0) {
       return Math.max(1, Math.ceil(value));
     }
   }
-
   return 60;
 }
 
@@ -648,14 +828,12 @@ function showRateLimit(data) {
     data?.error || 'Слишком много запросов. Немного подожди.';
 
   document.getElementById('ratelimit-modal').classList.remove('hidden');
-
   updateRateLimitTimer();
 
   if (rateLimitInterval) clearInterval(rateLimitInterval);
 
   rateLimitInterval = setInterval(() => {
     updateRateLimitTimer();
-
     if (Date.now() >= rateLimitUntil) {
       clearInterval(rateLimitInterval);
       rateLimitInterval = null;
@@ -668,17 +846,13 @@ function showRateLimit(data) {
 
 function updateRateLimitTimer() {
   const timer = document.getElementById('ratelimit-timer');
-  const remaining = Math.max(
-    0,
-    Math.ceil((rateLimitUntil - Date.now()) / 1000)
-  );
+  const remaining = Math.max(0, Math.ceil((rateLimitUntil - Date.now()) / 1000));
 
   if (!remaining) {
     timer.textContent = 'Можно продолжать 👍';
   } else {
     const minutes = Math.floor(remaining / 60);
     const seconds = remaining % 60;
-
     timer.textContent = minutes
       ? `${minutes}:${String(seconds).padStart(2, '0')}`
       : `${seconds} сек.`;
@@ -688,11 +862,7 @@ function updateRateLimitTimer() {
 function lockForumButtons(seconds) {
   document.querySelectorAll('#send-btn,.comment-btn').forEach(button => {
     button.disabled = true;
-
-    if (!button.dataset.originalText) {
-      button.dataset.originalText = button.textContent;
-    }
-
+    if (!button.dataset.originalText) button.dataset.originalText = button.textContent;
     button.textContent = `⏳ Подождите ${seconds}с`;
   });
 }
@@ -700,31 +870,21 @@ function lockForumButtons(seconds) {
 function unlockForumButtons() {
   document.querySelectorAll('#send-btn,.comment-btn').forEach(button => {
     button.disabled = false;
-
-    if (button.dataset.originalText) {
-      button.textContent = button.dataset.originalText;
-    }
+    if (button.dataset.originalText) button.textContent = button.dataset.originalText;
   });
 }
 
 function closeRateLimitModal() {
   document.getElementById('ratelimit-modal').classList.add('hidden');
-
-  if (Date.now() >= rateLimitUntil) {
-    unlockForumButtons();
-  }
+  if (Date.now() >= rateLimitUntil) unlockForumButtons();
 }
 
 /* Защита от слишком частых перезагрузок */
 
 (function checkGlobalBlocks() {
   const now = Date.now();
-  const passwordBanUntil = Number(
-    sessionStorage.getItem('password_ban_until') || 0
-  );
-  const spamBanUntil = Number(
-    sessionStorage.getItem('spam_ban_until') || 0
-  );
+  const passwordBanUntil = Number(sessionStorage.getItem('password_ban_until') || 0);
+  const spamBanUntil = Number(sessionStorage.getItem('spam_ban_until') || 0);
 
   if (passwordBanUntil > now || spamBanUntil > now) {
     window.addEventListener('DOMContentLoaded', () => {
@@ -741,19 +901,16 @@ function closeRateLimitModal() {
       document.getElementById('block-modal').classList.remove('hidden');
       document.body.classList.add('banned-screen');
     });
-
     return;
   }
 
   let history = [];
-
   try {
     history = JSON.parse(sessionStorage.getItem('reload_history') || '[]');
   } catch (_) {}
 
   history = history.filter(time => now - time < 60000);
   history.push(now);
-
   sessionStorage.setItem('reload_history', JSON.stringify(history));
 
   if (history.length > 5) {
@@ -767,7 +924,6 @@ function closeRateLimitModal() {
 function showAuthForm(type) {
   document.getElementById('menu-box').classList.add('hidden');
   document.getElementById('login-box').classList.remove('hidden');
-
   document.getElementById('password-input').value = '';
   document.getElementById('password-input').autocomplete =
     type === 'register' ? 'new-password' : 'current-password';
@@ -810,49 +966,33 @@ async function submitAuth(authType) {
 
   try {
     const {res, data} = await apiPost('/api/auth', {
-      username,
-      password,
-      type: authType
+      username, password, type: authType
     });
 
     if (!res.ok || !data.success) {
-      if (res.status !== 429) {
-        showToast(data.error || 'Ошибка авторизации.', 'error');
-      }
+      if (res.status !== 429) showToast(data.error || 'Ошибка авторизации.', 'error');
 
       if (
         authType === 'login' &&
         /неправильный ник или пароль|неверный пароль/i.test(data.error || '')
       ) {
-        sessionStorage.setItem(
-          'password_ban_until',
-          String(Date.now() + 5400000)
-        );
+        sessionStorage.setItem('password_ban_until', String(Date.now() + 5400000));
       }
-
       return;
     }
 
     currentUsername = displayUsername(data.username || username);
     currentPassword = password;
-
-    // Права администратора подтверждаются сервером.
     isAdmin = data.admin === true;
 
     document.getElementById('login-box').classList.add('hidden');
     document.getElementById('menu-box').classList.add('hidden');
     document.getElementById('forum-box').classList.remove('hidden');
-
-    document.getElementById('admin-panel-btn')
-      .classList.toggle('hidden', !isAdmin);
-
-    document.getElementById('admin-system-btn')
-      .classList.toggle('hidden', !isAdmin);
-
+    document.getElementById('admin-panel-btn').classList.toggle('hidden', !isAdmin);
+    document.getElementById('admin-system-btn').classList.toggle('hidden', !isAdmin);
     document.getElementById('admin-panel').classList.add('hidden');
 
-    document.getElementById('welcome-msg').textContent =
-      '⛏️ Лента — ' + currentUsername;
+    document.getElementById('welcome-msg').textContent = '⛏️ Лента — ' + currentUsername;
 
     await loadMyProfileCache();
     await loadPosts();
@@ -879,10 +1019,7 @@ async function fetchProfile(username) {
   if (!clean) return null;
 
   try {
-    const {res, data} = await apiPost('/api/profile/get', {
-      username: clean
-    });
-
+    const {res, data} = await apiPost('/api/profile/get', {username: clean});
     if (!res.ok || !data.success) return null;
 
     profileCache[clean] = {
@@ -890,6 +1027,7 @@ async function fetchProfile(username) {
       bio: typeof data.bio === 'string' ? data.bio : '',
       avatarUrl: data.avatarUrl || data.avatar || '',
       nameColor: safeColor(data.nameColor || data.namecolor),
+      cardTheme: ALLOWED_CARD_THEMES.has(data.cardTheme) ? data.cardTheme : '',
       admin: data.admin === true
     };
 
@@ -908,11 +1046,8 @@ async function loadPostProfiles() {
 
   allPosts.forEach(post => {
     if (post.username) names.add(normalizeUsername(post.username));
-
     (post.comments || []).forEach(comment => {
-      if (comment.username) {
-        names.add(normalizeUsername(comment.username));
-      }
+      if (comment.username) names.add(normalizeUsername(comment.username));
     });
   });
 
@@ -924,15 +1059,12 @@ function getAvatar(username) {
   const clean = normalizeUsername(username);
   const cached = profileCache[clean];
 
-  if (cached?.avatarUrl) {
-    return safeImageUrl(cached.avatarUrl);
-  }
+  if (cached?.avatarUrl) return safeImageUrl(cached.avatarUrl);
 
   if (isAdminUsername(username)) {
     const key = Object.keys(ADMIN_AVATARS).find(
       item => normalizeUsername(item) === clean
     );
-
     if (key) return ADMIN_AVATARS[key];
   }
 
@@ -949,6 +1081,29 @@ function authorStyle(username, suppliedColor) {
   return color ? ` style="color:${color}"` : '';
 }
 
+function getProfileCardTheme(username, profile) {
+  const cachedTheme = profile?.cardTheme ||
+    profileCache[normalizeUsername(username)]?.cardTheme;
+
+  if (ALLOWED_CARD_THEMES.has(cachedTheme)) return cachedTheme;
+  return getAdminStyle(username, ADMIN_CARDS);
+}
+
+function applyProfileCardTheme(card, username, profile) {
+  const theme = getProfileCardTheme(username, profile);
+  card.className = 'modal-content profile-card ' +
+    (theme && theme !== 'none' ? 'theme-' + theme : 'theme-none');
+}
+
+function setProfileUsernameWithBadge(element, username, profile) {
+  element.replaceChildren();
+  element.appendChild(document.createTextNode(displayUsername(username) + ' '));
+
+  if (isAdminUsername(username) || profile?.admin === true) {
+    element.insertAdjacentHTML('beforeend', verifiedBadge(username));
+  }
+}
+
 /* Лента */
 
 async function loadPosts() {
@@ -961,7 +1116,6 @@ async function loadPosts() {
         document.getElementById('posts-container').textContent =
           data.error || 'Ошибка загрузки ленты.';
       }
-
       return;
     }
 
@@ -969,8 +1123,7 @@ async function loadPosts() {
     await loadPostProfiles();
     renderPosts();
   } catch (_) {
-    document.getElementById('posts-container').textContent =
-      'Ошибка загрузки ленты.';
+    document.getElementById('posts-container').textContent = 'Ошибка загрузки ленты.';
   }
 }
 
@@ -981,9 +1134,7 @@ function renderPosts() {
   const filtered = currentFilterTag
     ? allPosts.filter(post =>
         Array.isArray(post.tags) &&
-        post.tags.some(tag =>
-          String(tag).toLowerCase() === currentFilterTag.toLowerCase()
-        )
+        post.tags.some(tag => String(tag).toLowerCase() === currentFilterTag.toLowerCase())
       )
     : allPosts;
 
@@ -1021,9 +1172,7 @@ function renderPosts() {
     const author = document.createElement('span');
     author.className = 'author ' + styleClass;
     author.style.cursor = 'pointer';
-
     if (color) author.style.color = color;
-
     author.append(document.createTextNode(displayUsername(username) + ' '));
     author.insertAdjacentHTML('beforeend', verifiedBadge(username));
     author.addEventListener('click', () => viewUserProfile(username));
@@ -1031,13 +1180,11 @@ function renderPosts() {
     const time = document.createElement('span');
     time.className = 'time';
     time.textContent = post.time || '';
-
     header.append(author, time);
 
     const text = document.createElement('div');
     text.className = 'text';
     text.textContent = post.text || '';
-
     body.append(header, text);
 
     if (Array.isArray(post.tags) && post.tags.length) {
@@ -1049,16 +1196,13 @@ function renderPosts() {
         tagEl.className = 'tag';
         tagEl.textContent = tag;
         tagEl.tabIndex = 0;
-
         tagEl.addEventListener('click', () => setSearchTag(tag));
-
         tagEl.addEventListener('keydown', event => {
           if (event.key === 'Enter' || event.key === ' ') {
             event.preventDefault();
             setSearchTag(tag);
           }
         });
-
         tags.appendChild(tagEl);
       });
 
@@ -1089,10 +1233,7 @@ function renderPosts() {
       commentAvatar.src = safeImageUrl(getAvatar(commentUsername));
       commentAvatar.alt = 'Аватар';
       commentAvatar.loading = 'lazy';
-      commentAvatar.addEventListener(
-        'click',
-        () => viewUserProfile(commentUsername)
-      );
+      commentAvatar.addEventListener('click', () => viewUserProfile(commentUsername));
 
       const commentBody = document.createElement('div');
       commentBody.className = 'comment-body';
@@ -1101,53 +1242,32 @@ function renderPosts() {
       commentHeader.className = 'comment-header';
 
       const commentAuthor = document.createElement('span');
-      commentAuthor.className =
-        'author ' + (!commentColor && commentAdmin ? 'admin-style' : '');
-
+      commentAuthor.className = 'author ' +
+        (!commentColor && commentAdmin ? 'admin-style' : '');
       commentAuthor.style.cursor = 'pointer';
       commentAuthor.style.fontSize = '.95rem';
-
       if (commentColor) commentAuthor.style.color = commentColor;
-
-      commentAuthor.append(
-        document.createTextNode(displayUsername(commentUsername) + ' ')
-      );
-
-      commentAuthor.insertAdjacentHTML(
-        'beforeend',
-        verifiedBadge(commentUsername)
-      );
-
-      commentAuthor.addEventListener(
-        'click',
-        () => viewUserProfile(commentUsername)
-      );
+      commentAuthor.append(document.createTextNode(displayUsername(commentUsername) + ' '));
+      commentAuthor.insertAdjacentHTML('beforeend', verifiedBadge(commentUsername));
+      commentAuthor.addEventListener('click', () => viewUserProfile(commentUsername));
 
       const commentTime = document.createElement('span');
       commentTime.className = 'time';
       commentTime.style.fontSize = '.75rem';
       commentTime.textContent = comment.time || '';
-
       commentHeader.append(commentAuthor, commentTime);
 
       const commentText = document.createElement('div');
       commentText.className = 'comment-text';
       commentText.textContent = comment.text || '';
-
       commentBody.append(commentHeader, commentText);
 
       if (isAdmin) {
         const deleteCommentButton = document.createElement('button');
         deleteCommentButton.className = 'admin-btn';
-        deleteCommentButton.style.cssText =
-          'margin:5px 0 0;padding:3px 8px;font-size:.75rem';
+        deleteCommentButton.style.cssText = 'margin:5px 0 0;padding:3px 8px;font-size:.75rem';
         deleteCommentButton.textContent = '❌ Стереть ответ';
-
-        deleteCommentButton.addEventListener(
-          'click',
-          () => deleteComment(post.id, comment.id)
-        );
-
+        deleteCommentButton.addEventListener('click', () => deleteComment(post.id, comment.id));
         commentBody.appendChild(deleteCommentButton);
       }
 
@@ -1169,7 +1289,6 @@ function renderPosts() {
     commentButton.className = 'primary comment-btn';
     commentButton.textContent = 'Ответить';
     commentButton.addEventListener('click', () => sendComment(post.id));
-
     commentInput.addEventListener('keydown', event => {
       if (event.key === 'Enter') sendComment(post.id);
     });
@@ -1185,9 +1304,7 @@ function renderPosts() {
   container.appendChild(fragment);
 
   if (Date.now() < rateLimitUntil) {
-    lockForumButtons(
-      Math.ceil((rateLimitUntil - Date.now()) / 1000)
-    );
+    lockForumButtons(Math.ceil((rateLimitUntil - Date.now()) / 1000));
   }
 }
 
@@ -1200,10 +1317,7 @@ function toggleAdminPanel() {
   }
 
   adminPanelOpen = !adminPanelOpen;
-
-  document.getElementById('admin-panel')
-    .classList.toggle('hidden', !adminPanelOpen);
-
+  document.getElementById('admin-panel').classList.toggle('hidden', !adminPanelOpen);
   document.getElementById('admin-panel-btn').textContent = adminPanelOpen
     ? '✖️ Скрыть панель администрации'
     : '🛡️ Панель администрации';
@@ -1228,11 +1342,6 @@ function renderSystemMessages() {
   const fragment = document.createDocumentFragment();
 
   systemMessages.forEach(message => {
-    /*
-     * Системные уведомления отображаются от реального аккаунта.
-     * Не используем message.username: в API это поле может обозначать
-     * получателя сообщения, а не его автора.
-     */
     const sender = String(
       message.from ||
       message.authorUsername ||
@@ -1261,9 +1370,7 @@ function renderSystemMessages() {
     const author = document.createElement('span');
     author.className = 'author';
     author.style.cursor = 'pointer';
-
     if (color) author.style.color = color;
-
     author.append(document.createTextNode(displayUsername(sender) + ' '));
     author.insertAdjacentHTML('beforeend', verifiedBadge(sender));
     author.addEventListener('click', () => viewUserProfile(sender));
@@ -1271,13 +1378,11 @@ function renderSystemMessages() {
     const time = document.createElement('span');
     time.className = 'time';
     time.textContent = message.time || '';
-
     header.append(author, time);
 
     const text = document.createElement('div');
     text.className = 'text';
     text.textContent = message.text || '';
-
     body.append(header, text);
 
     if (isAdmin) {
@@ -1285,12 +1390,7 @@ function renderSystemMessages() {
       deleteButton.className = 'admin-btn';
       deleteButton.style.marginTop = '10px';
       deleteButton.textContent = '❌ Удалить глобально';
-
-      deleteButton.addEventListener(
-        'click',
-        () => deleteSystemMessage(message.id)
-      );
-
+      deleteButton.addEventListener('click', () => deleteSystemMessage(message.id));
       body.appendChild(deleteButton);
     }
 
@@ -1314,7 +1414,6 @@ async function loadSystemMessages(markRead = false) {
     if (!res.ok) return;
 
     systemMessages = Array.isArray(data.messages) ? data.messages : [];
-
     updateSystemUnread(Number(data.unread || 0) > 0);
 
     if (systemViewOpen) renderSystemMessages();
@@ -1326,46 +1425,33 @@ async function loadSystemMessages(markRead = false) {
         .filter(Boolean);
 
       if (messageIds.length) {
-        const {res: readRes, data: readData} = await apiPost(
-          '/api/system/read',
-          {
-            username: normalizeUsername(currentUsername),
-            password: currentPassword,
-            messageIds
-          }
-        );
+        const {res: readRes, data: readData} = await apiPost('/api/system/read', {
+          username: normalizeUsername(currentUsername),
+          password: currentPassword,
+          messageIds
+        });
 
-        if (readRes.ok && readData.success) {
-          updateSystemUnread(false);
-        }
+        if (readRes.ok && readData.success) updateSystemUnread(false);
       }
     }
   } catch (_) {}
 }
 
 function updateSystemUnread(unread) {
-  document.getElementById('system-unread-dot')
-    ?.classList.toggle('hidden', !unread);
+  document.getElementById('system-unread-dot')?.classList.toggle('hidden', !unread);
 }
 
 function showSystemView(composer) {
   systemViewOpen = true;
-
   document.getElementById('feed-controls').classList.add('hidden');
   document.getElementById('posts-container').classList.add('hidden');
   document.getElementById('system-box').classList.remove('hidden');
-  document.getElementById('system-compose')
-    .classList.toggle('hidden', !composer);
-
-  document.getElementById('system-btn').textContent =
-    '↩️ Вернуться на ленту';
-
+  document.getElementById('system-compose').classList.toggle('hidden', !composer);
+  document.getElementById('system-btn').textContent = '↩️ Вернуться на ленту';
   document.getElementById('system-btn').onclick = returnToFeed;
 
   if (isAdmin) {
-    document.getElementById('admin-system-btn').textContent =
-      '↩️ Вернуться на ленту';
-
+    document.getElementById('admin-system-btn').textContent = '↩️ Вернуться на ленту';
     document.getElementById('admin-system-btn').onclick = returnToFeed;
   }
 
@@ -1377,52 +1463,38 @@ function openSystemMessages() {
 }
 
 function openSystemComposer() {
-  if (!isAdmin) {
-    return showToast('Недостаточно прав.', 'error');
-  }
-
+  if (!isAdmin) return showToast('Недостаточно прав.', 'error');
   showSystemView(true);
 }
 
 function returnToFeed() {
   systemViewOpen = false;
-
   document.getElementById('system-box').classList.add('hidden');
   document.getElementById('feed-controls').classList.remove('hidden');
   document.getElementById('posts-container').classList.remove('hidden');
 
   document.getElementById('system-btn').innerHTML =
     '🔔 Системные сообщения<span id="system-unread-dot" class="system-unread-dot hidden"></span>';
-
   document.getElementById('system-btn').onclick = openSystemMessages;
 
   if (isAdmin) {
-    document.getElementById('admin-system-btn').textContent =
-      '✍️ Написать систем. сообщение';
-
-    document.getElementById('admin-system-btn').onclick =
-      openSystemComposer;
+    document.getElementById('admin-system-btn').textContent = '✍️ Написать систем. сообщение';
+    document.getElementById('admin-system-btn').onclick = openSystemComposer;
   }
 
-  if (!adminPanelOpen) {
-    document.getElementById('admin-panel').classList.add('hidden');
-  }
+  if (!adminPanelOpen) document.getElementById('admin-panel').classList.add('hidden');
 
   loadPosts();
   loadSystemMessages(false);
 }
 
 async function sendSystemMessage() {
-  if (!isAdmin) {
-    return showToast('Недостаточно прав.', 'error');
-  }
+  if (!isAdmin) return showToast('Недостаточно прав.', 'error');
 
   const input = document.getElementById('system-text');
   const text = input.value.trim();
 
-  if (!text) {
-    return showToast('Введи текст системного уведомления.', 'warning');
-  }
+  if (!text) return showToast('Введи текст системного уведомления.', 'warning');
 
   try {
     const {res, data} = await apiPost('/api/admin/system', {
@@ -1439,7 +1511,6 @@ async function sendSystemMessage() {
     input.value = '';
     await loadSystemMessages(false);
     renderSystemMessages();
-
     showToast('Системное уведомление отправлено!', 'success');
   } catch (_) {
     showToast('Ошибка сервера.', 'error');
@@ -1454,7 +1525,6 @@ async function deleteSystemMessage(messageId) {
     'Удалить системное сообщение',
     'Удалить'
   );
-
   if (!confirmed) return;
 
   try {
@@ -1471,7 +1541,6 @@ async function deleteSystemMessage(messageId) {
 
     await loadSystemMessages(false);
     renderSystemMessages();
-
     showToast('Системное сообщение удалено.', 'success');
   } catch (_) {
     showToast('Ошибка сервера.', 'error');
@@ -1480,28 +1549,21 @@ async function deleteSystemMessage(messageId) {
 
 function startSystemPolling() {
   if (systemPoll) clearInterval(systemPoll);
-
-  systemPoll = setInterval(() => {
-    loadSystemMessages(false);
-  }, 5000);
+  systemPoll = setInterval(() => loadSystemMessages(false), 5000);
 }
 
 /* Публикация поста */
 
 async function sendPost() {
   if (Date.now() < rateLimitUntil) {
-    showRateLimit({
-      error:'Подожди немного перед следующей публикацией.'
-    });
+    showRateLimit({error:'Подожди немного перед следующей публикацией.'});
     return;
   }
 
   const text = document.getElementById('post-text').value.trim();
   const tags = document.getElementById('post-tags').value.trim();
 
-  if (!text) {
-    return showToast('Введи текст поста.', 'warning');
-  }
+  if (!text) return showToast('Введи текст поста.', 'warning');
 
   const button = document.getElementById('send-btn');
   button.disabled = true;
@@ -1515,24 +1577,18 @@ async function sendPost() {
     });
 
     if (!res.ok || !data.success) {
-      if (res.status !== 429) {
-        showToast(data.error || 'Ошибка публикации.', 'error');
-      }
-
+      if (res.status !== 429) showToast(data.error || 'Ошибка публикации.', 'error');
       return;
     }
 
     document.getElementById('post-text').value = '';
     document.getElementById('post-tags').value = '';
-
     showToast('Пост опубликован!', 'success');
     await loadPosts();
   } catch (_) {
     showToast('Ошибка публикации.', 'error');
   } finally {
-    if (Date.now() >= rateLimitUntil) {
-      button.disabled = false;
-    }
+    if (Date.now() >= rateLimitUntil) button.disabled = false;
   }
 }
 
@@ -1540,9 +1596,7 @@ async function sendPost() {
 
 async function sendComment(postId) {
   if (Date.now() < rateLimitUntil) {
-    showRateLimit({
-      error:'Подожди немного перед следующим комментарием.'
-    });
+    showRateLimit({error:'Подожди немного перед следующим комментарием.'});
     return;
   }
 
@@ -1550,10 +1604,7 @@ async function sendComment(postId) {
   if (!input) return;
 
   const text = input.value.trim();
-
-  if (!text) {
-    return showToast('Напиши текст комментария.', 'warning');
-  }
+  if (!text) return showToast('Напиши текст комментария.', 'warning');
 
   const button = input.parentElement.querySelector('.comment-btn');
   if (button) button.disabled = true;
@@ -1567,10 +1618,7 @@ async function sendComment(postId) {
     });
 
     if (!res.ok || !data.success) {
-      if (res.status !== 429) {
-        showToast(data.error || 'Ошибка отправки ответа.', 'error');
-      }
-
+      if (res.status !== 429) showToast(data.error || 'Ошибка отправки ответа.', 'error');
       return;
     }
 
@@ -1580,25 +1628,20 @@ async function sendComment(postId) {
   } catch (_) {
     showToast('Ошибка отправки ответа.', 'error');
   } finally {
-    if (button && Date.now() >= rateLimitUntil) {
-      button.disabled = false;
-    }
+    if (button && Date.now() >= rateLimitUntil) button.disabled = false;
   }
 }
 
 /* Удаление поста */
 
 async function deletePost(postId) {
-  if (!isAdmin) {
-    return showToast('Недостаточно прав.', 'error');
-  }
+  if (!isAdmin) return showToast('Недостаточно прав.', 'error');
 
   const confirmed = await confirmAction(
     'Пост и все его комментарии будут удалены. Это действие нельзя отменить.',
     'Удалить пост',
     'Удалить пост'
   );
-
   if (!confirmed) return;
 
   try {
@@ -1613,10 +1656,7 @@ async function deletePost(postId) {
       return;
     }
 
-    allPosts = allPosts.filter(
-      post => String(post.id) !== String(postId)
-    );
-
+    allPosts = allPosts.filter(post => String(post.id) !== String(postId));
     renderPosts();
     showToast('Пост удалён.', 'success');
   } catch (_) {
@@ -1627,16 +1667,13 @@ async function deletePost(postId) {
 /* Удаление комментария */
 
 async function deleteComment(postId, commentId) {
-  if (!isAdmin) {
-    return showToast('Недостаточно прав.', 'error');
-  }
+  if (!isAdmin) return showToast('Недостаточно прав.', 'error');
 
   const confirmed = await confirmAction(
     'Этот комментарий будет удалён из ветки.',
     'Удалить комментарий',
     'Удалить'
   );
-
   if (!confirmed) return;
 
   try {
@@ -1652,10 +1689,7 @@ async function deleteComment(postId, commentId) {
       return;
     }
 
-    const post = allPosts.find(
-      item => String(item.id) === String(postId)
-    );
-
+    const post = allPosts.find(item => String(item.id) === String(postId));
     if (post && Array.isArray(post.comments)) {
       post.comments = post.comments.filter(
         comment => String(comment.id) !== String(commentId)
@@ -1677,18 +1711,16 @@ async function openMyProfile() {
   const avatarEl = document.getElementById('my-prof-avatar');
   const bioInput = document.getElementById('my-prof-bio-input');
 
-  usernameEl.textContent = displayUsername(currentUsername);
+  setProfileUsernameWithBadge(usernameEl, currentUsername, profile);
   usernameEl.style.color = safeColor(profile?.nameColor) || '';
 
-  avatarEl.src = safeImageUrl(
-    profile?.avatarUrl || getAvatar(currentUsername)
+  avatarEl.src = safeImageUrl(profile?.avatarUrl || getAvatar(currentUsername));
+
+  applyProfileCardTheme(
+    document.getElementById('my-profile-card'),
+    currentUsername,
+    profile
   );
-
-  const cardTheme = getAdminStyle(currentUsername, ADMIN_CARDS);
-
-  document.getElementById('my-profile-card').className =
-    'modal-content profile-card ' +
-    (cardTheme !== 'none' ? 'theme-' + cardTheme : '');
 
   bioInput.value = profile?.bio || '';
 
@@ -1698,15 +1730,83 @@ async function openMyProfile() {
   document.getElementById('admin-avatar-controls')
     .classList.toggle('hidden', !isAdmin);
 
+  document.getElementById('admin-card-theme-controls')
+    .classList.toggle('hidden', !isAdmin);
+
   if (isAdmin) {
-    await loadAdminAvatarOptions();
+    await Promise.all([
+      loadAdminAvatarOptions(),
+      loadAdminCardTheme()
+    ]);
   }
 
-  document.getElementById('my-profile-modal')
-    .classList.remove('hidden');
+  document.getElementById('my-profile-modal').classList.remove('hidden');
 }
 
-/* Аватарки администрации */
+/* Галерея аватарок администрации */
+
+function getAdminAvatarUrl(option) {
+  return safeImageUrl(option?.url || option?.avatarUrl || '');
+}
+
+function renderAdminAvatarGallery() {
+  const preview = document.getElementById('admin-avatar-preview');
+  const label = document.getElementById('admin-avatar-gallery-label');
+  const thumbs = document.getElementById('admin-avatar-thumbnails');
+  const select = document.getElementById('admin-avatar-select');
+
+  thumbs.replaceChildren();
+
+  if (!adminAvatarOptions.length) {
+    preview.src = './robot.png';
+    label.textContent = 'Нет доступных аватарок.';
+    return;
+  }
+
+  selectedAdminAvatarIndex = Math.max(
+    0,
+    Math.min(selectedAdminAvatarIndex, adminAvatarOptions.length - 1)
+  );
+
+  const selected = adminAvatarOptions[selectedAdminAvatarIndex];
+  preview.src = getAdminAvatarUrl(selected);
+  preview.onerror = () => { preview.src = './robot.png'; };
+  label.textContent = `${selected.label || selected.id || 'Аватар'} (${selectedAdminAvatarIndex + 1}/${adminAvatarOptions.length})`;
+  select.value = String(selected.id);
+
+  adminAvatarOptions.forEach((option, index) => {
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'avatar-gallery-thumb' +
+      (index === selectedAdminAvatarIndex ? ' selected' : '');
+    button.setAttribute('aria-label', `Выбрать аватарку: ${option.label || option.id}`);
+    button.setAttribute('aria-pressed', String(index === selectedAdminAvatarIndex));
+
+    const img = document.createElement('img');
+    img.src = getAdminAvatarUrl(option);
+    img.alt = option.label || option.id || 'Аватар';
+    img.loading = 'lazy';
+    img.onerror = () => { img.src = './robot.png'; };
+
+    button.appendChild(img);
+    button.addEventListener('click', () => {
+      selectedAdminAvatarIndex = index;
+      renderAdminAvatarGallery();
+    });
+
+    thumbs.appendChild(button);
+  });
+}
+
+function stepAdminAvatar(direction) {
+  if (!adminAvatarOptions.length) return;
+
+  selectedAdminAvatarIndex =
+    (selectedAdminAvatarIndex + direction + adminAvatarOptions.length) %
+    adminAvatarOptions.length;
+
+  renderAdminAvatarGallery();
+}
 
 async function loadAdminAvatarOptions() {
   const select = document.getElementById('admin-avatar-select');
@@ -1728,41 +1828,36 @@ async function loadAdminAvatarOptions() {
     const {res, data} = result;
 
     if (!res.ok || !data.success) {
-      status.textContent =
-        data.error || 'Не удалось получить список.';
+      status.textContent = data.error || 'Не удалось получить список.';
       return;
     }
 
+    adminAvatarOptions = Array.isArray(data.options) ? data.options : [];
     select.innerHTML = '';
 
-    const options = Array.isArray(data.options) ? data.options : [];
-    const currentAvatar = String(profile?.avatarUrl || '');
-
-    options.forEach(option => {
+    adminAvatarOptions.forEach(option => {
       const element = document.createElement('option');
-
       element.value = String(option.id);
       element.textContent = option.label || option.id;
-
-      if (option.url && option.url === currentAvatar) {
-        element.selected = true;
-      }
-
       select.appendChild(element);
     });
 
-    status.textContent = options.length
-      ? ''
-      : 'Список аватарок пуст.';
+    const currentAvatar = String(profile?.avatarUrl || '');
+    const selectedIndex = adminAvatarOptions.findIndex(option =>
+      String(option.url || option.avatarUrl || '') === currentAvatar
+    );
+
+    selectedAdminAvatarIndex = selectedIndex >= 0 ? selectedIndex : 0;
+    renderAdminAvatarGallery();
+
+    status.textContent = adminAvatarOptions.length ? '' : 'Список аватарок пуст.';
   } catch (_) {
     status.textContent = 'Ошибка соединения с сервером.';
   }
 }
 
 async function saveSelectedAdminAvatar() {
-  if (!isAdmin) {
-    return showToast('Недостаточно прав.', 'error');
-  }
+  if (!isAdmin) return showToast('Недостаточно прав.', 'error');
 
   const select = document.getElementById('admin-avatar-select');
   const status = document.getElementById('admin-avatar-status');
@@ -1780,22 +1875,82 @@ async function saveSelectedAdminAvatar() {
     });
 
     if (!res.ok || !data.success) {
-      status.textContent =
-        data.error || 'Не удалось сменить аватар.';
+      status.textContent = data.error || 'Не удалось сменить аватар.';
       return;
     }
 
     const avatarUrl = safeImageUrl(data.avatarUrl || data.avatar);
-
     document.getElementById('my-prof-avatar').src = avatarUrl;
 
     const cached = profileCache[normalizeUsername(currentUsername)];
     if (cached) cached.avatarUrl = avatarUrl;
 
     status.textContent = 'Аватар администрации установлен.';
-
     showToast('Аватар изменён.', 'success');
     await loadPosts();
+  } catch (_) {
+    status.textContent = 'Ошибка соединения с сервером.';
+  }
+}
+
+/* Фон карточки профиля администрации */
+
+async function loadAdminCardTheme() {
+  if (!isAdmin) return;
+
+  const select = document.getElementById('admin-card-theme-select');
+  const status = document.getElementById('admin-card-theme-status');
+  status.textContent = 'Загрузка темы...';
+
+  try {
+    const profile = await fetchProfile(currentUsername);
+    const cachedTheme = profile?.cardTheme ||
+      getAdminStyle(currentUsername, ADMIN_CARDS);
+
+    select.value = ALLOWED_CARD_THEMES.has(cachedTheme) ? cachedTheme : 'none';
+    status.textContent = '';
+  } catch (_) {
+    status.textContent = 'Не удалось загрузить текущую тему.';
+  }
+}
+
+async function saveAdminCardTheme() {
+  if (!isAdmin) return showToast('Недостаточно прав.', 'error');
+
+  const select = document.getElementById('admin-card-theme-select');
+  const status = document.getElementById('admin-card-theme-status');
+  const theme = select.value;
+
+  if (!ALLOWED_CARD_THEMES.has(theme)) {
+    status.textContent = 'Выбрана недопустимая тема.';
+    return;
+  }
+
+  status.textContent = 'Сохранение...';
+
+  try {
+    const {res, data} = await apiPost('/api/admin/card-theme', {
+      username: normalizeUsername(currentUsername),
+      password: currentPassword,
+      theme
+    });
+
+    if (!res.ok || !data.success) {
+      status.textContent = data.error || 'Не удалось сохранить фон карточки.';
+      return;
+    }
+
+    const clean = normalizeUsername(currentUsername);
+    if (profileCache[clean]) profileCache[clean].cardTheme = theme;
+
+    applyProfileCardTheme(
+      document.getElementById('my-profile-card'),
+      currentUsername,
+      profileCache[clean]
+    );
+
+    status.textContent = 'Фон карточки сохранён.';
+    showToast('Фон карточки профиля обновлён.', 'success');
   } catch (_) {
     status.textContent = 'Ошибка соединения с сервером.';
   }
@@ -1804,16 +1959,12 @@ async function saveSelectedAdminAvatar() {
 /* Цвет ника */
 
 async function setUserNameColor() {
-  if (!isAdmin) {
-    return showToast('Недостаточно прав.', 'error');
-  }
+  if (!isAdmin) return showToast('Недостаточно прав.', 'error');
 
   const target = document.getElementById('namecolor-username').value.trim();
   const color = document.getElementById('namecolor-value').value;
 
-  if (!target) {
-    return showToast('Укажи ник пользователя.', 'warning');
-  }
+  if (!target) return showToast('Укажи ник пользователя.', 'warning');
 
   try {
     const {res, data} = await apiPost('/api/admin/name-color', {
@@ -1829,10 +1980,8 @@ async function setUserNameColor() {
     }
 
     delete profileCache[normalizeUsername(target)];
-
     await fetchProfile(target);
     await loadPosts();
-
     showToast('Цвет ника обновлён.', 'success');
   } catch (_) {
     showToast('Ошибка соединения с сервером.', 'error');
@@ -1880,49 +2029,49 @@ async function viewUserProfile(targetNick) {
   avatarEl.src = safeImageUrl(getAvatar(username));
   bioEl.textContent = 'Загрузка информации...';
 
-  const cardTheme = getAdminStyle(username, ADMIN_CARDS);
+  const cachedProfile = profileCache[normalizeUsername(username)];
+  applyProfileCardTheme(
+    document.getElementById('view-profile-card'),
+    username,
+    cachedProfile
+  );
 
-  document.getElementById('view-profile-card').className =
-    'modal-content profile-card ' +
-    (cardTheme !== 'none' ? 'theme-' + cardTheme : '');
-
-  document.getElementById('view-profile-modal')
-    .classList.remove('hidden');
+  document.getElementById('view-profile-modal').classList.remove('hidden');
 
   const profile = await fetchProfile(username);
 
   if (!profile) {
     bioEl.textContent = 'Не удалось загрузить профиль.';
+    setProfileUsernameWithBadge(nameEl, username, null);
     return;
   }
 
-  if (profile.avatarUrl) {
-    avatarEl.src = safeImageUrl(profile.avatarUrl);
-  }
+  if (profile.avatarUrl) avatarEl.src = safeImageUrl(profile.avatarUrl);
 
+  setProfileUsernameWithBadge(nameEl, username, profile);
   nameEl.style.color = safeColor(profile.nameColor) || '';
   bioEl.textContent = profile.bio || 'Нет описания.';
+
+  applyProfileCardTheme(
+    document.getElementById('view-profile-card'),
+    username,
+    profile
+  );
 }
 
 /* Бан */
 
 async function banUser() {
-  if (!isAdmin) {
-    return showToast('Недостаточно прав.', 'error');
-  }
+  if (!isAdmin) return showToast('Недостаточно прав.', 'error');
 
   const target = document.getElementById('ban-username').value.trim();
-
-  if (!target) {
-    return showToast('Укажи ник для бана.', 'warning');
-  }
+  if (!target) return showToast('Укажи ник для бана.', 'warning');
 
   const confirmed = await confirmAction(
     `Заблокировать пользователя ${displayUsername(target)}?`,
     'Подтверждение бана',
     'Заблокировать'
   );
-
   if (!confirmed) return;
 
   try {
@@ -1933,15 +2082,11 @@ async function banUser() {
     });
 
     if (!res.ok || !data.success) {
-      showToast(
-        data.error || 'Не удалось заблокировать пользователя.',
-        'error'
-      );
+      showToast(data.error || 'Не удалось заблокировать пользователя.', 'error');
       return;
     }
 
     document.getElementById('ban-username').value = '';
-
     showToast(
       `Пользователь ${displayUsername(data.username || target)} заблокирован.`,
       'success'
@@ -1954,22 +2099,16 @@ async function banUser() {
 /* Разбан */
 
 async function unbanUser() {
-  if (!isAdmin) {
-    return showToast('Недостаточно прав.', 'error');
-  }
+  if (!isAdmin) return showToast('Недостаточно прав.', 'error');
 
   const target = document.getElementById('unban-username').value.trim();
-
-  if (!target) {
-    return showToast('Укажи ник для разбана.', 'warning');
-  }
+  if (!target) return showToast('Укажи ник для разбана.', 'warning');
 
   const confirmed = await confirmAction(
     `Разблокировать пользователя ${displayUsername(target)}?`,
     'Подтверждение разбана',
     'Разблокировать'
   );
-
   if (!confirmed) return;
 
   try {
@@ -1980,15 +2119,11 @@ async function unbanUser() {
     });
 
     if (!res.ok || !data.success) {
-      showToast(
-        data.error || 'Не удалось разблокировать пользователя.',
-        'error'
-      );
+      showToast(data.error || 'Не удалось разблокировать пользователя.', 'error');
       return;
     }
 
     document.getElementById('unban-username').value = '';
-
     showToast(
       `Пользователь ${displayUsername(data.username || target)} разблокирован.`,
       'success'
@@ -2022,9 +2157,7 @@ document.getElementById('search-input').addEventListener('keydown', event => {
 });
 
 document.getElementById('post-text').addEventListener('keydown', event => {
-  if ((event.ctrlKey || event.metaKey) && event.key === 'Enter') {
-    sendPost();
-  }
+  if ((event.ctrlKey || event.metaKey) && event.key === 'Enter') sendPost();
 });
 
 document.getElementById('password-input').addEventListener('keydown', event => {
