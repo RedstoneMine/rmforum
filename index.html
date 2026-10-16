@@ -30,7 +30,18 @@ button:disabled{opacity:.55;cursor:not-allowed}
 #admin-card-theme-controls h4{margin:0 0 10px;color:#f87171}
 #admin-card-theme-controls select{margin-bottom:9px}
 .card-theme-status{min-height:18px;margin:8px 0 0;color:#a1a1aa;font-size:.85rem}
-.profile-card.theme-none{background:#18181b!important}
+
+/* Исправленный сброс фона */
+.profile-card.theme-none{
+  background:#18181b!important;
+  background-image:none!important;
+  background-color:#18181b!important;
+  background-size:auto!important;
+  background-position:initial!important;
+  background-repeat:initial!important;
+  animation:none!important;
+}
+
 .profile-card.theme-red{background:linear-gradient(145deg,#351416,#18181b 75%)!important}
 .profile-card.theme-gold{background:linear-gradient(145deg,#382b12,#18181b 75%)!important}
 .profile-card.theme-purple{background:linear-gradient(145deg,#29163e,#18181b 75%)!important}
@@ -40,7 +51,6 @@ button:disabled{opacity:.55;cursor:not-allowed}
 .profile-card.theme-pink{background:linear-gradient(145deg,#3b1930,#18181b 75%)!important}
 .profile-card.image-background{background-size:cover!important;background-position:center!important;background-repeat:no-repeat!important}
 
-/* Анимированные ники администрации */
 @keyframes nameGradient{
   0%{background-position:0% 50%}
   50%{background-position:100% 50%}
@@ -345,10 +355,6 @@ function safeColor(color) {
   return /^#[0-9a-f]{6}$/i.test(value) ? value : '';
 }
 
-/*
- * Изображения принимаются только с сайта форума или из относительных
- * путей сайта. Список допустимых картинок не хранится в HTML.
- */
 function safeImageUrl(url) {
   const value = String(url || '').trim();
   if (!value) return './robot.png';
@@ -384,8 +390,6 @@ function verifiedBadge(username, profile) {
     <img src="./check.png" alt="">
   </span>`;
 }
-
-/* Уведомления */
 
 function showToast(message, type = 'info', duration = 3600) {
   const container = document.getElementById('toast-container');
@@ -477,8 +481,6 @@ async function apiPost(path, body) {
   return {res, data};
 }
 
-/* Антиспам */
-
 function getRetrySeconds(data) {
   for (const key of ['remaining', 'retryAfter', 'retry_after']) {
     const value = Number(data?.[key]);
@@ -544,8 +546,6 @@ function closeRateLimitModal() {
   document.getElementById('ratelimit-modal').classList.add('hidden');
   if (Date.now() >= rateLimitUntil) unlockForumButtons();
 }
-
-/* Защита от слишком частых перезагрузок */
 
 (function checkGlobalBlocks() {
   const now = Date.now();
@@ -725,24 +725,16 @@ function getAvatar(username) {
   return safeImageUrl(cached?.avatarUrl || '');
 }
 
-/* Цвет из свежего профиля имеет приоритет над цветом из поста */
 function getNameColor(username, suppliedColor) {
   const cached = profileCache[normalizeUsername(username)];
   return safeColor(cached ? cached.nameColor : suppliedColor);
 }
 
-/* Анимация применяется исключительно администраторам */
 function applyUsernameAppearance(element, username, suppliedColor) {
   const animationClasses = [
-    'name-theme-purple',
-    'name-theme-green',
-    'name-theme-gold',
-    'name-theme-red',
-    'name-theme-blue',
-    'name-theme-cyan',
-    'name-theme-pink',
-    'name-theme-gray',
-    'name-theme-orange'
+    'name-theme-purple','name-theme-green','name-theme-gold',
+    'name-theme-red','name-theme-blue','name-theme-cyan',
+    'name-theme-pink','name-theme-gray','name-theme-orange'
   ];
 
   element.classList.remove(...animationClasses, 'admin-style');
@@ -795,24 +787,44 @@ function authorStyle(username, suppliedColor) {
   return color ? ` style="color:${color}"` : '';
 }
 
+/* Исправленное применение фона карточки */
+
 function applyProfileCardTheme(card, username, profile) {
   const clean = normalizeUsername(username);
   const currentProfile = profile || profileCache[clean] || {};
-  const background = safeImageUrl(getCardBackground(currentProfile));
+  const backgroundUrl = getCardBackground(currentProfile);
+  const theme = String(currentProfile.cardTheme || 'none');
 
   card.classList.remove(
-    'theme-none','theme-red','theme-gold','theme-purple','theme-green',
-    'theme-blue','theme-cyan','theme-pink','image-background'
+    'theme-none','theme-red','theme-gold','theme-purple',
+    'theme-green','theme-blue','theme-cyan','theme-pink',
+    'image-background'
   );
 
-  if (getCardBackground(currentProfile)) {
+  card.style.removeProperty('background-image');
+
+  if (backgroundUrl) {
+    const background = safeImageUrl(backgroundUrl);
+
     card.classList.add('image-background');
-    card.style.backgroundImage = `linear-gradient(#11111388,#111113cc),url("${background}")`;
-  } else {
-    card.style.backgroundImage = '';
-    const theme = String(currentProfile.cardTheme || 'none');
-    const allowedThemes = ['none','red','gold','purple','green','blue','cyan','pink'];
-    card.classList.add('theme-' + (allowedThemes.includes(theme) ? theme : 'none'));
+    card.style.setProperty(
+      'background-image',
+      `linear-gradient(#11111388,#111113cc),url("${background}")`,
+      'important'
+    );
+    return;
+  }
+
+  const allowedThemes = [
+    'none','red','gold','purple','green','blue','cyan','pink'
+  ];
+
+  const safeTheme = allowedThemes.includes(theme) ? theme : 'none';
+  card.classList.add('theme-' + safeTheme);
+
+  if (safeTheme === 'none') {
+    card.style.setProperty('background-image','none','important');
+    card.style.setProperty('background-color','#18181b','important');
   }
 }
 
@@ -1342,8 +1354,6 @@ async function sendComment(postId) {
   }
 }
 
-/* Удаление поста */
-
 async function deletePost(postId) {
   if (!isAdmin) return showToast('Недостаточно прав.', 'error');
 
@@ -1373,8 +1383,6 @@ async function deletePost(postId) {
     showToast('Ошибка сервера.', 'error');
   }
 }
-
-/* Удаление комментария */
 
 async function deleteComment(postId, commentId) {
   if (!isAdmin) return showToast('Недостаточно прав.', 'error');
@@ -1411,7 +1419,7 @@ async function deleteComment(postId, commentId) {
   }
 }
 
-/* Галерея изображений: изображения предоставляет Worker */
+/* Галерея изображений */
 
 function getOptionPath(option) {
   return String(option?.path || option?.id || option?.key || '');
@@ -1666,43 +1674,95 @@ async function loadAdminCardTheme() {
   }
 }
 
+/* Исправленное сохранение и удаление фона */
+
 async function saveAdminCardTheme(mode) {
-  if (!isAdmin) return showToast('Недостаточно прав.', 'error');
+  if (!isAdmin) {
+    showToast('Недостаточно прав.', 'error');
+    return;
+  }
 
   const status = document.getElementById('admin-card-theme-status');
+  const clean = normalizeUsername(currentUsername);
+  const removingImage = mode === 'none';
   const option = adminCardOptions[selectedAdminCardIndex];
-  const imagePath = mode === 'none' ? 'none' : (option ? getOptionPath(option) : '');
+
+  const imagePath = removingImage
+    ? 'none'
+    : (option ? getOptionPath(option) : '');
 
   if (!imagePath) {
     status.textContent = 'Выбери изображение.';
     return;
   }
 
-  status.textContent = 'Сохранение фона карточки...';
+  status.textContent = removingImage
+    ? 'Удаление фона карточки...'
+    : 'Сохранение фона карточки...';
 
   try {
     const {res, data} = await apiPost('/api/admin/card-theme', {
-      username:normalizeUsername(currentUsername),
+      username:clean,
       password:currentPassword,
       imageKey:imagePath,
       image:imagePath,
       path:imagePath,
       key:imagePath,
-      theme:mode === 'none' ? 'none' : imagePath
+      theme:removingImage ? 'none' : imagePath
     });
 
     if (!res.ok || !data.success) {
-      status.textContent = data.error || 'Не удалось сохранить фон карточки.';
+      status.textContent =
+        data.error || 'Не удалось сохранить фон карточки.';
       return;
     }
 
-    const clean = normalizeUsername(currentUsername);
-    if (profileCache[clean]) {
-      profileCache[clean].cardBackgroundUrl =
-        data.cardBackgroundUrl || data.backgroundUrl || data.imageUrl ||
-        (mode === 'none' ? '' : getOptionUrl(option));
-      profileCache[clean].cardTheme = mode === 'none' ? 'none' : '';
+    if (!profileCache[clean]) {
+      profileCache[clean] = {
+        username:clean,
+        bio:'',
+        avatarUrl:'',
+        cardBackgroundUrl:'',
+        nameColor:'',
+        cardTheme:'none',
+        admin:true
+      };
     }
+
+    if (removingImage) {
+      /*
+       * При удалении не читаем URL из ответа Worker:
+       * сервер может вернуть адрес предыдущего изображения.
+       */
+      profileCache[clean].cardBackgroundUrl = '';
+      profileCache[clean].cardTheme = 'none';
+
+      const card = document.getElementById('my-profile-card');
+
+      card.classList.remove(
+        'image-background','theme-red','theme-gold','theme-purple',
+        'theme-green','theme-blue','theme-cyan','theme-pink'
+      );
+      card.classList.add('theme-none');
+
+      card.style.setProperty('background-image','none','important');
+      card.style.setProperty('background-color','#18181b','important');
+      card.style.setProperty('background-size','auto','important');
+      card.style.setProperty('background-position','initial','important');
+      card.style.setProperty('background-repeat','initial','important');
+
+      status.textContent = 'Изображение фона удалено.';
+      showToast('Фон карточки удалён.', 'success');
+      return;
+    }
+
+    profileCache[clean].cardBackgroundUrl =
+      data.cardBackgroundUrl ||
+      data.backgroundUrl ||
+      data.imageUrl ||
+      getOptionUrl(option);
+
+    profileCache[clean].cardTheme = '';
 
     applyProfileCardTheme(
       document.getElementById('my-profile-card'),
@@ -1767,7 +1827,6 @@ async function setUserNameColor() {
     await fetchProfile(target);
     await loadPosts();
 
-    /* Если изменили цвет своего ника, сразу обновляем его в профиле */
     if (normalizeUsername(target) === normalizeUsername(currentUsername)) {
       setProfileUsernameWithBadge(
         document.getElementById('my-prof-username'),
