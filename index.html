@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -273,6 +274,7 @@ button:disabled{opacity:.55;cursor:not-allowed}
 const WORKER_URL = 'https://restless-hill-dd2a.redstonemineforum.workers.dev';
 
 let allPosts = [];
+let postsLoaded = false;
 let currentFilterTag = '';
 let currentUsername = '';
 let currentPassword = '';
@@ -281,7 +283,6 @@ let rateLimitUntil = 0;
 let rateLimitInterval = null;
 let systemMessages = [];
 let systemViewOpen = false;
-let systemPoll = null;
 let adminPanelOpen = false;
 let confirmationResolver = null;
 let adminAvatarOptions = [];
@@ -290,22 +291,10 @@ let selectedAdminAvatarIndex = 0;
 let selectedAdminCardIndex = -1;
 
 const profileCache = Object.create(null);
-
-/*
- * Оптимизация запросов:
- * 1. Не допускаем несколько одновременных запросов одного профиля.
- * 2. Не допускаем одновременных запросов ленты.
- * 3. Не допускаем параллельных проверок системных сообщений.
- * 4. Вместо постоянного опроса раз в 5 секунд проверяем сообщения
- *    раз в 30 секунд. При открытии системных сообщений загрузка
- *    по-прежнему выполняется сразу.
- */
 const profileRequests = new Map();
 let postsRequest = null;
 let systemMessagesRequest = null;
 let systemReadRequested = false;
-let lastSystemFetchAt = 0;
-let systemPollBusy = false;
 
 function normalizeUsername(username) {
   return String(username || '').trim().replace(/^@+/, '').toLowerCase();
@@ -625,9 +614,10 @@ async function submitAuth(authType) {
 
     profileCache[normalizeUsername(currentUsername)] = undefined;
     profileRequests.clear();
-    lastSystemFetchAt = 0;
     systemMessagesRequest = null;
     systemReadRequested = false;
+    postsLoaded = false;
+    allPosts = [];
 
     document.getElementById('login-box').classList.add('hidden');
     document.getElementById('menu-box').classList.add('hidden');
@@ -639,7 +629,6 @@ async function submitAuth(authType) {
 
     await loadMyProfileCache();
     await loadPosts();
-    startSystemPolling();
     await loadSystemMessages(false);
 
     showToast(
@@ -663,6 +652,7 @@ async function fetchProfile(username) {
   const clean = normalizeUsername(username);
   if (!clean) return null;
 
+  if (profileCache[clean]) return profileCache[clean];
   if (profileRequests.has(clean)) return profileRequests.get(clean);
 
   const request = (async () => {
@@ -829,9 +819,15 @@ function setProfileUsernameWithBadge(element, username, profile) {
   if (badge) element.insertAdjacentHTML('beforeend', badge);
 }
 
-/* Лента */
+/* Лента: посты хранятся в allPosts в памяти страницы.
+   Повторный вход в ленту не вызывает повторный запрос к Worker. */
 
-async function loadPosts() {
+async function loadPosts(force = false) {
+  if (postsLoaded && !force) {
+    renderPosts();
+    return;
+  }
+
   if (postsRequest) return postsRequest;
 
   postsRequest = (async () => {
@@ -848,6 +844,7 @@ async function loadPosts() {
       }
 
       allPosts = Array.isArray(data) ? data : [];
+      postsLoaded = true;
       await loadPostProfiles();
       renderPosts();
     } catch (_) {
@@ -1055,7 +1052,7 @@ function toggleAdminPanel() {
     : '🛡️ Панель администрации';
 }
 
-/* Системные сообщения */
+/* Системные сообщения: автоматического опроса и interval-запросов нет. */
 
 function getAdminVisuals(username) {
   return {avatar:getAvatar(username)};
@@ -1128,22 +1125,13 @@ function renderSystemMessages() {
   container.appendChild(fragment);
 }
 
-async function loadSystemMessages(markRead = false, force = false) {
+async function loadSystemMessages(markRead = false) {
   if (!currentUsername) return;
 
   if (markRead) systemReadRequested = true;
 
   if (systemMessagesRequest) {
     await systemMessagesRequest;
-
-    if (systemReadRequested && !systemMessagesRequest) {
-      systemReadRequested = false;
-      await markLoadedSystemMessagesRead();
-    }
-    return;
-  }
-
-  if (!force && !markRead && Date.now() - lastSystemFetchAt < 30000) {
     return;
   }
 
@@ -1159,12 +1147,9 @@ async function loadSystemMessages(markRead = false, force = false) {
 
       systemMessages = Array.isArray(data.messages) ? data.messages : [];
       updateSystemUnread(Number(data.unread || 0) > 0);
-      lastSystemFetchAt = Date.now();
 
       if (systemViewOpen) renderSystemMessages();
-    } catch (_) {
-      // При ошибке не обновляем время последней успешной загрузки.
-    }
+    } catch (_) {}
   })();
 
   try {
@@ -1222,7 +1207,8 @@ function showSystemView(composer) {
     document.getElementById('admin-system-btn').onclick = returnToFeed;
   }
 
-  loadSystemMessages(true, true);
+  /* Запрос выполняется только по нажатию пользователя. */
+  loadSystemMessages(true);
 }
 
 function openSystemMessages() {
@@ -1250,8 +1236,9 @@ function returnToFeed() {
   }
 
   if (!adminPanelOpen) document.getElementById('admin-panel').classList.add('hidden');
-  loadPosts();
-  loadSystemMessages(false, true);
+
+  /* Используем уже загруженные посты, не обращаясь к Worker повторно. */
+  renderPosts();
 }
 
 async function sendSystemMessage() {
@@ -1274,7 +1261,7 @@ async function sendSystemMessage() {
     }
 
     input.value = '';
-    await loadSystemMessages(false, true);
+    await loadSystemMessages();
     renderSystemMessages();
     showToast('Системное уведомление отправлено!', 'success');
   } catch (_) {
@@ -1304,27 +1291,12 @@ async function deleteSystemMessage(messageId) {
       return;
     }
 
-    await loadSystemMessages(false, true);
+    systemMessages = systemMessages.filter(message => String(message.id) !== String(messageId));
     renderSystemMessages();
     showToast('Системное сообщение удалено.', 'success');
   } catch (_) {
     showToast('Ошибка сервера.', 'error');
   }
-}
-
-function startSystemPolling() {
-  if (systemPoll) clearInterval(systemPoll);
-
-  systemPoll = setInterval(async () => {
-    if (systemPollBusy || document.hidden || !currentUsername) return;
-
-    systemPollBusy = true;
-    try {
-      await loadSystemMessages(false, true);
-    } finally {
-      systemPollBusy = false;
-    }
-  }, 30000);
 }
 
 /* Публикация поста */
@@ -1359,7 +1331,10 @@ async function sendPost() {
     document.getElementById('post-text').value = '';
     document.getElementById('post-tags').value = '';
     showToast('Пост опубликован!', 'success');
-    await loadPosts();
+
+    /* После публикации обновляем кэш, чтобы новый пост сразу появился в ленте. */
+    postsLoaded = false;
+    await loadPosts(true);
   } catch (_) {
     showToast('Ошибка публикации.', 'error');
   } finally {
@@ -1400,7 +1375,8 @@ async function sendComment(postId) {
 
     input.value = '';
     showToast('Комментарий опубликован.', 'success');
-    await loadPosts();
+    postsLoaded = false;
+    await loadPosts(true);
   } catch (_) {
     showToast('Ошибка отправки ответа.', 'error');
   } finally {
@@ -1669,7 +1645,7 @@ async function saveSelectedAdminAvatar() {
     document.getElementById('my-prof-avatar').src = avatarUrl;
     status.textContent = 'Аватар администрации установлен.';
     showToast('Аватар изменён.', 'success');
-    await loadPosts();
+    renderPosts();
   } catch (_) {
     status.textContent = 'Ошибка соединения с сервером.';
   }
@@ -1882,7 +1858,7 @@ async function setUserNameColor() {
     if (pending) await pending;
 
     await fetchProfile(target);
-    await loadPosts();
+    renderPosts();
 
     if (cleanTarget === normalizeUsername(currentUsername)) {
       setProfileUsernameWithBadge(
@@ -2066,21 +2042,8 @@ document.getElementById('password-input').addEventListener('keydown', event => {
   if (event.key === 'Enter') document.getElementById('auth-action-btn').click();
 });
 
-/* При возвращении на вкладку сразу проверяем системные сообщения,
-   но не создаём несколько параллельных запросов. */
-
-document.addEventListener('visibilitychange', () => {
-  if (!document.hidden && currentUsername) {
-    loadSystemMessages(false, true);
-  }
-});
-
-window.addEventListener('pagehide', () => {
-  if (systemPoll) {
-    clearInterval(systemPoll);
-    systemPoll = null;
-  }
-});
+/* Удалён автоматический опрос системных сообщений:
+   нет startSystemPolling, visibilitychange и pagehide для polling. */
 </script>
 </body>
 </html>
