@@ -1,4 +1,3 @@
-
 /* =========================================================
    REDSTONEMINE FORUM 2.0 — REDSTONE DARK
    Основная таблица стилей
@@ -94,8 +93,6 @@ textarea{min-height:90px;resize:vertical;line-height:1.6}
 
 /* =========================================================
    АНИМИРОВАННЫЕ НИКИ АДМИНИСТРАТОРОВ
-   Класс применяется к админам через JavaScript.
-   Обычные пользователи этот класс не получают.
    ========================================================= */
 .author.admin-name-animated,
 .profile-username.admin-name-animated{
@@ -118,14 +115,32 @@ textarea{min-height:90px;resize:vertical;line-height:1.6}
   -webkit-background-clip:text;
   color:transparent!important;
   -webkit-text-fill-color:transparent;
-  animation:adminNameShimmer 5s linear infinite;
+  animation:adminNameShimmer 2s linear infinite;
   font-weight:850;
   text-shadow:none;
 }
+
+/* Не даём прозрачному тексту ника скрывать значок верификации */
 .author.admin-name-animated .verified-badge,
 .profile-username.admin-name-animated .verified-badge{
-  -webkit-text-fill-color:initial;
+  color:initial!important;
+  -webkit-text-fill-color:initial!important;
+  background:transparent!important;
+  background-image:none!important;
+  opacity:1!important;
 }
+
+/* Подсказка значка должна оставаться обычным видимым текстом */
+.author.admin-name-animated .verified-badge:after,
+.profile-username.admin-name-animated .verified-badge:after,
+.verified-badge:after{
+  -webkit-text-fill-color:#f4f6fb!important;
+  color:#f4f6fb!important;
+  background:#101722!important;
+  background-image:none!important;
+  text-shadow:none!important;
+}
+
 @keyframes adminNameShimmer{
   0%{background-position:0% 50%}
   100%{background-position:300% 50%}
@@ -135,11 +150,74 @@ textarea{min-height:90px;resize:vertical;line-height:1.6}
 .tags-container{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:3px}
 .tag{padding:5px 10px;border:1px solid #2d425b;border-radius:8px;background:#162333;color:#91c9ff;font-size:.78rem;cursor:pointer;transition:background .2s,border-color .2s}
 .tag:hover{border-color:#4974a1;background:#1b3048}
-.verified-badge{position:relative;z-index:1000;display:inline-flex!important;align-items:center!important;justify-content:center!important;width:18px!important;height:18px!important;min-width:18px;flex:0 0 18px;margin:0 0 0 3px!important;padding:0!important;overflow:visible!important;border:0!important;border-radius:50%!important;background:transparent!important;box-shadow:none!important;cursor:help;vertical-align:middle;transform:none!important}
-.verified-badge img{display:block;width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 0 4px rgba(77,141,255,.35));transition:transform .2s}
+
+/* Значок верификации и всплывающая подсказка */
+.verified-badge{
+  position:relative;
+  z-index:1000;
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  width:18px!important;
+  height:18px!important;
+  min-width:18px;
+  flex:0 0 18px;
+  margin:0 0 0 3px!important;
+  padding:0!important;
+  overflow:visible!important;
+  border:0!important;
+  border-radius:50%!important;
+  background:transparent!important;
+  background-image:none!important;
+  box-shadow:none!important;
+  color:initial!important;
+  -webkit-text-fill-color:initial!important;
+  cursor:help;
+  vertical-align:middle;
+  transform:none!important;
+}
+.verified-badge img{
+  display:block;
+  width:100%;
+  height:100%;
+  object-fit:contain;
+  filter:drop-shadow(0 0 4px rgba(77,141,255,.35));
+  transition:transform .2s;
+}
 .verified-badge:hover img{transform:scale(1.15)}
-.verified-badge:after{content:attr(data-tooltip);position:absolute;bottom:calc(100% + 8px);left:50%;z-index:2147483647;padding:8px 11px;border:1px solid #39465c;border-radius:8px;background:#101722;color:#f4f6fb;font-size:12px;font-weight:500;white-space:nowrap;opacity:0;visibility:hidden;pointer-events:none;transform:translate(-50%,4px);transition:opacity .18s,transform .18s,visibility .18s;box-shadow:0 8px 24px #0008}
-.verified-badge:hover:after,.verified-badge:focus-visible:after{opacity:1;visibility:visible;transform:translate(-50%,0)}
+.verified-badge:after{
+  content:attr(data-tooltip);
+  position:absolute;
+  bottom:calc(100% + 8px);
+  left:50%;
+  z-index:2147483647;
+  display:block;
+  padding:8px 11px;
+  border:1px solid #39465c;
+  border-radius:8px;
+  background:#101722!important;
+  background-image:none!important;
+  color:#f4f6fb!important;
+  -webkit-text-fill-color:#f4f6fb!important;
+  font-size:12px;
+  font-weight:500;
+  line-height:1.4;
+  white-space:nowrap;
+  text-shadow:none!important;
+  opacity:0;
+  visibility:hidden;
+  pointer-events:none;
+  transform:translate(-50%,4px);
+  transition:opacity .18s,transform .18s,visibility .18s;
+  box-shadow:0 8px 24px #0008;
+}
+.verified-badge:hover:after,
+.verified-badge:focus-visible:after{
+  opacity:1;
+  visibility:visible;
+  transform:translate(-50%,0);
+}
+
 .comments-section{margin-top:18px;padding-top:15px;border-top:1px solid #293140}
 .comment{display:flex;gap:11px;min-width:0;margin:13px 0 0 7px;padding-left:12px;border-left:2px solid #343e50;transition:border-color .2s}
 .comment:hover{border-left-color:#64738c}
@@ -237,17 +315,25 @@ textarea{min-height:90px;resize:vertical;line-height:1.6}
 .profile-card.theme-pink h2{color:#f472b6}
 .profile-card.theme-gray h2{color:#d4d4d4}
 .profile-card.theme-orange h2{color:#fb923c}
+
 @keyframes nameGradient{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
-.name-theme-purple,.name-theme-green,.name-theme-gold,.name-theme-red,.name-theme-blue,.name-theme-cyan,.name-theme-pink,.name-theme-gray,.name-theme-orange{background-size:300% 100%;background-clip:text;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:nameGradient 5s ease-in-out infinite}
+.name-theme-purple,.name-theme-green,.name-theme-gold,.name-theme-red,.name-theme-blue,.name-theme-cyan,.name-theme-pink,.name-theme-gray,.name-theme-orange{
+  background-size:300% 100%;
+  background-clip:text;
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  animation:nameGradient 2s ease-in-out infinite;
+}
 .name-theme-purple{background-image:linear-gradient(90deg,#8a2be2,#c43cff,#ff5cff,#7226d9)}
 .name-theme-green{background-image:linear-gradient(90deg,#16a34a,#4ade80,#86efac,#15803d)}
 .name-theme-gold{background-image:linear-gradient(90deg,#ca8a04,#fde047,#fef08a,#854d0e)}
 .name-theme-red{background-image:linear-gradient(90deg,#dc2626,#f87171,#fca5a5,#991b1b)}
 .name-theme-blue{background-image:linear-gradient(90deg,#1d4ed8,#60a5fa,#93c5fd,#1e40af)}
-.name-theme-cyan{background-image:linear-gradient(90deg,#0e7490,#22d3ee,#67e8f9,#15803d)}
+.name-theme-cyan{background-image:linear-gradient(90deg,#0e7490,#22d3ee,#67e8f9,#155e75)}
 .name-theme-pink{background-image:linear-gradient(90deg,#be185d,#f472b6,#f9a8d4,#9d174d)}
 .name-theme-gray{background-image:linear-gradient(90deg,#737373,#d4d4d4,#f5f5f5,#525252)}
 .name-theme-orange{background-image:linear-gradient(90deg,#c2410c,#fb923c,#fed7aa,#9a3412)}
+
 @keyframes descGradient{0%{background-position:0% 50%}100%{background-position:400% 50%}}
 .desc-text-purple,.desc-text-green,.desc-text-gold,.desc-text-red,.desc-text-blue,.desc-text-cyan,.desc-text-pink,.desc-text-gray,.desc-text-orange{font-weight:800!important;background-size:400% 100%!important;background-clip:text!important;-webkit-background-clip:text!important;-webkit-text-fill-color:transparent!important;animation:descGradient 5s linear infinite!important}
 .desc-text-purple{background-image:linear-gradient(90deg,#8c6cff,#cbb5ff,#9e82ff)!important}
@@ -268,6 +354,7 @@ textarea{min-height:90px;resize:vertical;line-height:1.6}
 .desc-back-pink{background:linear-gradient(135deg,#35021e,#831843,#35021e)!important;border:1px solid #db2777!important}
 .desc-back-gray{background:linear-gradient(135deg,#171717,#3f3f46,#171717)!important;border:1px solid #737373!important}
 .desc-back-orange{background:linear-gradient(135deg,#2a1003,#7c2d12,#2a1003)!important;border:1px solid #ea580c!important}
+
 @keyframes pageEnter{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:translateY(0)}}
 @keyframes postEnter{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
 @keyframes overlayEnter{from{opacity:0}to{opacity:1}}
@@ -275,6 +362,7 @@ textarea{min-height:90px;resize:vertical;line-height:1.6}
 @keyframes toastEnter{from{opacity:0;transform:translateY(-7px)}to{opacity:1;transform:translateY(0)}}
 @keyframes unreadPulse{0%,100%{opacity:1}50%{opacity:.45}}
 @keyframes profileGlow{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+
 @media(max-width:850px){
 body{padding:22px 16px}
 .container{max-width:100%}
