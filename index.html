@@ -30,18 +30,7 @@ button:disabled{opacity:.55;cursor:not-allowed}
 #admin-card-theme-controls h4{margin:0 0 10px;color:#f87171}
 #admin-card-theme-controls select{margin-bottom:9px}
 .card-theme-status{min-height:18px;margin:8px 0 0;color:#a1a1aa;font-size:.85rem}
-
-/* Исправленный сброс фона */
-.profile-card.theme-none{
-  background:#18181b!important;
-  background-image:none!important;
-  background-color:#18181b!important;
-  background-size:auto!important;
-  background-position:initial!important;
-  background-repeat:initial!important;
-  animation:none!important;
-}
-
+.profile-card.theme-none{background:#18181b!important;background-image:none!important;background-color:#18181b!important;background-size:auto!important;background-position:initial!important;background-repeat:initial!important;animation:none!important}
 .profile-card.theme-red{background:linear-gradient(145deg,#351416,#18181b 75%)!important}
 .profile-card.theme-gold{background:linear-gradient(145deg,#382b12,#18181b 75%)!important}
 .profile-card.theme-purple{background:linear-gradient(145deg,#29163e,#18181b 75%)!important}
@@ -50,21 +39,8 @@ button:disabled{opacity:.55;cursor:not-allowed}
 .profile-card.theme-cyan{background:linear-gradient(145deg,#10383c,#18181b 75%)!important}
 .profile-card.theme-pink{background:linear-gradient(145deg,#3b1930,#18181b 75%)!important}
 .profile-card.image-background{background-size:cover!important;background-position:center!important;background-repeat:no-repeat!important}
-
-@keyframes nameGradient{
-  0%{background-position:0% 50%}
-  50%{background-position:100% 50%}
-  100%{background-position:0% 50%}
-}
-.name-theme-purple,.name-theme-green,.name-theme-gold,
-.name-theme-red,.name-theme-blue,.name-theme-cyan,
-.name-theme-pink,.name-theme-gray,.name-theme-orange{
-  background-size:300% 100%;
-  background-clip:text;
-  -webkit-background-clip:text;
-  -webkit-text-fill-color:transparent;
-  animation:nameGradient 5s ease-in-out infinite;
-}
+@keyframes nameGradient{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+.name-theme-purple,.name-theme-green,.name-theme-gold,.name-theme-red,.name-theme-blue,.name-theme-cyan,.name-theme-pink,.name-theme-gray,.name-theme-orange{background-size:300% 100%;background-clip:text;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:nameGradient 5s ease-in-out infinite}
 .name-theme-purple{background-image:linear-gradient(90deg,#8a2be2,#c43cff,#ff5cff,#7226d9)}
 .name-theme-green{background-image:linear-gradient(90deg,#16a34a,#4ade80,#86efac,#15803d)}
 .name-theme-gold{background-image:linear-gradient(90deg,#ca8a04,#fde047,#fef08a,#854d0e)}
@@ -74,7 +50,6 @@ button:disabled{opacity:.55;cursor:not-allowed}
 .name-theme-pink{background-image:linear-gradient(90deg,#be185d,#f472b6,#f9a8d4,#9d174d)}
 .name-theme-gray{background-image:linear-gradient(90deg,#737373,#d4d4d4,#f5f5f5,#525252)}
 .name-theme-orange{background-image:linear-gradient(90deg,#c2410c,#fb923c,#fed7aa,#9a3412)}
-
 #admin-avatar-gallery,#admin-card-gallery{display:flex;flex-direction:column;gap:12px;margin:14px 0}
 .avatar-gallery-preview{position:relative;display:flex;align-items:center;justify-content:center;gap:12px}
 .avatar-gallery-preview img{width:128px;height:128px;object-fit:cover;border-radius:16px;border:2px solid #ef4444;background:#09090b;box-shadow:0 0 22px #ef444422}
@@ -98,16 +73,7 @@ button:disabled{opacity:.55;cursor:not-allowed}
 #confirm-description{color:#d4d4d8;line-height:1.6;overflow-wrap:anywhere}
 #system-btn{position:relative}#posts-container.hidden{display:none}
 #toast-container button{min-width:0}
-@media(max-width:600px){
-#forum-actions{align-items:stretch!important}.post{padding:14px}
-.system-message .avatar{width:48px;height:48px}
-#toast-container{top:10px;right:10px;width:calc(100vw - 20px)}
-.confirm-actions{flex-direction:column}
-.admin-tool-row{flex-wrap:wrap}
-.admin-tool-row input,.admin-tool-row select,.admin-tool-row button{width:100%;min-width:0}
-.avatar-gallery-preview img{width:108px;height:108px}
-.avatar-gallery-arrow{width:36px;flex-basis:36px}
-}
+@media(max-width:600px){#forum-actions{align-items:stretch!important}.post{padding:14px}.system-message .avatar{width:48px;height:48px}#toast-container{top:10px;right:10px;width:calc(100vw - 20px)}.confirm-actions{flex-direction:column}.admin-tool-row{flex-wrap:wrap}.admin-tool-row input,.admin-tool-row select,.admin-tool-row button{width:100%;min-width:0}.avatar-gallery-preview img{width:108px;height:108px}.avatar-gallery-arrow{width:36px;flex-basis:36px}}
 </style>
 </head>
 
@@ -144,13 +110,8 @@ button:disabled{opacity:.55;cursor:not-allowed}
 <div id="notice-modal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="agreement-title">
   <div class="modal-content">
     <h2 id="agreement-title">ПОЛЬЗОВАТЕЛЬСКОЕ СОГЛАШЕНИЕ</h2>
-    <p style="color:#d4d4d8;line-height:1.6;text-align:justify;font-size:.95rem;margin-bottom:20px">
-      Для входа на форум проекта RedstoneMine необходимо подтвердить согласие с правилами форума.
-    </p>
-    <p style="color:#a1a1aa;line-height:1.6;text-align:center;font-size:.9rem;margin-bottom:20px">
-      Нажимая «Принимаю», вы соглашаетесь с
-      <a href="./agreement.html" target="_blank" rel="noopener noreferrer" class="agreement-link">условиями использования форума</a>.
-    </p>
+    <p style="color:#d4d4d8;line-height:1.6;text-align:justify;font-size:.95rem;margin-bottom:20px">Для входа на форум проекта RedstoneMine необходимо подтвердить согласие с правилами форума.</p>
+    <p style="color:#a1a1aa;line-height:1.6;text-align:center;font-size:.9rem;margin-bottom:20px">Нажимая «Принимаю», вы соглашаетесь с <a href="./agreement.html" target="_blank" rel="noopener noreferrer" class="agreement-link">условиями использования форума</a>.</p>
     <button style="width:100%;letter-spacing:1px" onclick="acceptTerms()">ПРИНИМАЮ</button>
   </div>
 </div>
@@ -197,9 +158,7 @@ button:disabled{opacity:.55;cursor:not-allowed}
 
     <div id="my-prof-username" class="profile-username" style="color:#fff">@User</div>
     <textarea id="my-prof-bio-input" placeholder="Расскажи о себе..." rows="4" maxlength="200"></textarea>
-    <p style="color:#71717a;font-size:.8rem;margin-top:0;margin-bottom:20px;text-align:left">
-      Лимит: 200 символов. Изменять текст можно раз в 3 часа.
-    </p>
+    <p style="color:#71717a;font-size:.8rem;margin-top:0;margin-bottom:20px;text-align:left">Лимит: 200 символов. Изменять текст можно раз в 3 часа.</p>
     <div style="display:flex;gap:10px">
       <button class="secondary" style="flex:1" onclick="saveMyProfile()">Сохранить текст</button>
       <button class="back-btn" style="margin:0;flex:1" onclick="closeModal('my-profile-modal')">Закрыть</button>
@@ -331,6 +290,22 @@ let selectedAdminAvatarIndex = 0;
 let selectedAdminCardIndex = -1;
 
 const profileCache = Object.create(null);
+
+/*
+ * Оптимизация запросов:
+ * 1. Не допускаем несколько одновременных запросов одного профиля.
+ * 2. Не допускаем одновременных запросов ленты.
+ * 3. Не допускаем параллельных проверок системных сообщений.
+ * 4. Вместо постоянного опроса раз в 5 секунд проверяем сообщения
+ *    раз в 30 секунд. При открытии системных сообщений загрузка
+ *    по-прежнему выполняется сразу.
+ */
+const profileRequests = new Map();
+let postsRequest = null;
+let systemMessagesRequest = null;
+let systemReadRequested = false;
+let lastSystemFetchAt = 0;
+let systemPollBusy = false;
 
 function normalizeUsername(username) {
   return String(username || '').trim().replace(/^@+/, '').toLowerCase();
@@ -626,6 +601,7 @@ async function submitAuth(authType) {
   }
 
   const button = document.getElementById('auth-action-btn');
+  if (button.disabled) return;
   button.disabled = true;
 
   try {
@@ -646,6 +622,12 @@ async function submitAuth(authType) {
     currentUsername = displayUsername(data.username || username);
     currentPassword = password;
     isAdmin = data.admin === true;
+
+    profileCache[normalizeUsername(currentUsername)] = undefined;
+    profileRequests.clear();
+    lastSystemFetchAt = 0;
+    systemMessagesRequest = null;
+    systemReadRequested = false;
 
     document.getElementById('login-box').classList.add('hidden');
     document.getElementById('menu-box').classList.add('hidden');
@@ -681,23 +663,35 @@ async function fetchProfile(username) {
   const clean = normalizeUsername(username);
   if (!clean) return null;
 
+  if (profileRequests.has(clean)) return profileRequests.get(clean);
+
+  const request = (async () => {
+    try {
+      const {res, data} = await apiPost('/api/profile/get', {username:clean});
+      if (!res.ok || !data.success) return null;
+
+      profileCache[clean] = {
+        username:data.username || clean,
+        bio:typeof data.bio === 'string' ? data.bio : '',
+        avatarUrl:data.avatarUrl || data.avatar || '',
+        cardBackgroundUrl:getCardBackground(data),
+        nameColor:safeColor(data.nameColor || data.namecolor),
+        cardTheme:String(data.cardTheme || ''),
+        admin:data.admin === true
+      };
+
+      return profileCache[clean];
+    } catch (_) {
+      return null;
+    }
+  })();
+
+  profileRequests.set(clean, request);
+
   try {
-    const {res, data} = await apiPost('/api/profile/get', {username:clean});
-    if (!res.ok || !data.success) return null;
-
-    profileCache[clean] = {
-      username:data.username || clean,
-      bio:typeof data.bio === 'string' ? data.bio : '',
-      avatarUrl:data.avatarUrl || data.avatar || '',
-      cardBackgroundUrl:getCardBackground(data),
-      nameColor:safeColor(data.nameColor || data.namecolor),
-      cardTheme:String(data.cardTheme || ''),
-      admin:data.admin === true
-    };
-
-    return profileCache[clean];
-  } catch (_) {
-    return null;
+    return await request;
+  } finally {
+    if (profileRequests.get(clean) === request) profileRequests.delete(clean);
   }
 }
 
@@ -787,8 +781,6 @@ function authorStyle(username, suppliedColor) {
   return color ? ` style="color:${color}"` : '';
 }
 
-/* Исправленное применение фона карточки */
-
 function applyProfileCardTheme(card, username, profile) {
   const clean = normalizeUsername(username);
   const currentProfile = profile || profileCache[clean] || {};
@@ -840,23 +832,33 @@ function setProfileUsernameWithBadge(element, username, profile) {
 /* Лента */
 
 async function loadPosts() {
-  try {
-    const res = await fetch(WORKER_URL + '/api/posts');
-    const data = await parseWorkerResponse(res);
+  if (postsRequest) return postsRequest;
 
-    if (!res.ok) {
-      if (res.status !== 429) {
-        document.getElementById('posts-container').textContent =
-          data.error || 'Ошибка загрузки ленты.';
+  postsRequest = (async () => {
+    try {
+      const res = await fetch(WORKER_URL + '/api/posts');
+      const data = await parseWorkerResponse(res);
+
+      if (!res.ok) {
+        if (res.status !== 429) {
+          document.getElementById('posts-container').textContent =
+            data.error || 'Ошибка загрузки ленты.';
+        }
+        return;
       }
-      return;
-    }
 
-    allPosts = Array.isArray(data) ? data : [];
-    await loadPostProfiles();
-    renderPosts();
-  } catch (_) {
-    document.getElementById('posts-container').textContent = 'Ошибка загрузки ленты.';
+      allPosts = Array.isArray(data) ? data : [];
+      await loadPostProfiles();
+      renderPosts();
+    } catch (_) {
+      document.getElementById('posts-container').textContent = 'Ошибка загрузки ленты.';
+    }
+  })();
+
+  try {
+    await postsRequest;
+  } finally {
+    postsRequest = null;
   }
 }
 
@@ -1126,38 +1128,78 @@ function renderSystemMessages() {
   container.appendChild(fragment);
 }
 
-async function loadSystemMessages(markRead = false) {
+async function loadSystemMessages(markRead = false, force = false) {
   if (!currentUsername) return;
 
+  if (markRead) systemReadRequested = true;
+
+  if (systemMessagesRequest) {
+    await systemMessagesRequest;
+
+    if (systemReadRequested && !systemMessagesRequest) {
+      systemReadRequested = false;
+      await markLoadedSystemMessagesRead();
+    }
+    return;
+  }
+
+  if (!force && !markRead && Date.now() - lastSystemFetchAt < 30000) {
+    return;
+  }
+
+  systemMessagesRequest = (async () => {
+    try {
+      const res = await fetch(
+        WORKER_URL + '/api/system?username=' +
+        encodeURIComponent(normalizeUsername(currentUsername))
+      );
+
+      const data = await parseWorkerResponse(res);
+      if (!res.ok) return;
+
+      systemMessages = Array.isArray(data.messages) ? data.messages : [];
+      updateSystemUnread(Number(data.unread || 0) > 0);
+      lastSystemFetchAt = Date.now();
+
+      if (systemViewOpen) renderSystemMessages();
+    } catch (_) {
+      // При ошибке не обновляем время последней успешной загрузки.
+    }
+  })();
+
   try {
-    const res = await fetch(
-      WORKER_URL + '/api/system?username=' +
-      encodeURIComponent(normalizeUsername(currentUsername))
-    );
+    await systemMessagesRequest;
+  } finally {
+    systemMessagesRequest = null;
+  }
 
-    const data = await parseWorkerResponse(res);
-    if (!res.ok) return;
+  if (systemReadRequested) {
+    systemReadRequested = false;
+    await markLoadedSystemMessagesRead();
+  }
+}
 
-    systemMessages = Array.isArray(data.messages) ? data.messages : [];
-    updateSystemUnread(Number(data.unread || 0) > 0);
+async function markLoadedSystemMessagesRead() {
+  if (!currentUsername) return;
 
-    if (systemViewOpen) renderSystemMessages();
+  const messageIds = systemMessages
+    .filter(message => !message.read)
+    .map(message => String(message.id))
+    .filter(Boolean);
 
-    if (markRead && Number(data.unread || 0) > 0) {
-      const messageIds = systemMessages
-        .filter(message => !message.read)
-        .map(message => String(message.id))
-        .filter(Boolean);
+  if (!messageIds.length) return;
 
-      if (messageIds.length) {
-        const {res:readRes, data:readData} = await apiPost('/api/system/read', {
-          username:normalizeUsername(currentUsername),
-          password:currentPassword,
-          messageIds
-        });
+  try {
+    const {res, data} = await apiPost('/api/system/read', {
+      username:normalizeUsername(currentUsername),
+      password:currentPassword,
+      messageIds
+    });
 
-        if (readRes.ok && readData.success) updateSystemUnread(false);
-      }
+    if (res.ok && data.success) {
+      systemMessages = systemMessages.map(message => ({...message, read:true}));
+      updateSystemUnread(false);
+      if (systemViewOpen) renderSystemMessages();
     }
   } catch (_) {}
 }
@@ -1180,7 +1222,7 @@ function showSystemView(composer) {
     document.getElementById('admin-system-btn').onclick = returnToFeed;
   }
 
-  loadSystemMessages(true);
+  loadSystemMessages(true, true);
 }
 
 function openSystemMessages() {
@@ -1209,7 +1251,7 @@ function returnToFeed() {
 
   if (!adminPanelOpen) document.getElementById('admin-panel').classList.add('hidden');
   loadPosts();
-  loadSystemMessages(false);
+  loadSystemMessages(false, true);
 }
 
 async function sendSystemMessage() {
@@ -1232,7 +1274,7 @@ async function sendSystemMessage() {
     }
 
     input.value = '';
-    await loadSystemMessages(false);
+    await loadSystemMessages(false, true);
     renderSystemMessages();
     showToast('Системное уведомление отправлено!', 'success');
   } catch (_) {
@@ -1262,7 +1304,7 @@ async function deleteSystemMessage(messageId) {
       return;
     }
 
-    await loadSystemMessages(false);
+    await loadSystemMessages(false, true);
     renderSystemMessages();
     showToast('Системное сообщение удалено.', 'success');
   } catch (_) {
@@ -1272,7 +1314,17 @@ async function deleteSystemMessage(messageId) {
 
 function startSystemPolling() {
   if (systemPoll) clearInterval(systemPoll);
-  systemPoll = setInterval(() => loadSystemMessages(false), 5000);
+
+  systemPoll = setInterval(async () => {
+    if (systemPollBusy || document.hidden || !currentUsername) return;
+
+    systemPollBusy = true;
+    try {
+      await loadSystemMessages(false, true);
+    } finally {
+      systemPollBusy = false;
+    }
+  }, 30000);
 }
 
 /* Публикация поста */
@@ -1288,6 +1340,7 @@ async function sendPost() {
   if (!text) return showToast('Введи текст поста.', 'warning');
 
   const button = document.getElementById('send-btn');
+  if (button.disabled) return;
   button.disabled = true;
 
   try {
@@ -1329,6 +1382,7 @@ async function sendComment(postId) {
   if (!text) return showToast('Напиши текст комментария.', 'warning');
 
   const button = input.parentElement.querySelector('.comment-btn');
+  if (button?.disabled) return;
   if (button) button.disabled = true;
 
   try {
@@ -1473,6 +1527,8 @@ function renderImageGallery(options, selectedIndex, previewId, labelId, thumbsId
   label.textContent = `${getOptionLabel(selected)} (${selectedIndex + 1}/${options.length})`;
   select.value = getOptionPath(selected);
 
+  const fragment = document.createDocumentFragment();
+
   options.forEach((option, index) => {
     const button = document.createElement('button');
     button.type = 'button';
@@ -1488,8 +1544,10 @@ function renderImageGallery(options, selectedIndex, previewId, labelId, thumbsId
 
     button.appendChild(img);
     button.addEventListener('click', () => onChoose(index));
-    thumbs.appendChild(button);
+    fragment.appendChild(button);
   });
+
+  thumbs.appendChild(fragment);
 }
 
 function renderAdminAvatarGallery() {
@@ -1604,11 +1662,11 @@ async function saveSelectedAdminAvatar() {
     }
 
     const avatarUrl = safeImageUrl(data.avatarUrl || data.avatar || getOptionUrl(option));
-    document.getElementById('my-prof-avatar').src = avatarUrl;
 
     const cached = profileCache[normalizeUsername(currentUsername)];
     if (cached) cached.avatarUrl = avatarUrl;
 
+    document.getElementById('my-prof-avatar').src = avatarUrl;
     status.textContent = 'Аватар администрации установлен.';
     showToast('Аватар изменён.', 'success');
     await loadPosts();
@@ -1674,8 +1732,6 @@ async function loadAdminCardTheme() {
   }
 }
 
-/* Исправленное сохранение и удаление фона */
-
 async function saveAdminCardTheme(mode) {
   if (!isAdmin) {
     showToast('Недостаточно прав.', 'error');
@@ -1730,10 +1786,6 @@ async function saveAdminCardTheme(mode) {
     }
 
     if (removingImage) {
-      /*
-       * При удалении не читаем URL из ответа Worker:
-       * сервер может вернуть адрес предыдущего изображения.
-       */
       profileCache[clean].cardBackgroundUrl = '';
       profileCache[clean].cardTheme = 'none';
 
@@ -1823,15 +1875,20 @@ async function setUserNameColor() {
       return;
     }
 
-    delete profileCache[normalizeUsername(target)];
+    const cleanTarget = normalizeUsername(target);
+    delete profileCache[cleanTarget];
+
+    const pending = profileRequests.get(cleanTarget);
+    if (pending) await pending;
+
     await fetchProfile(target);
     await loadPosts();
 
-    if (normalizeUsername(target) === normalizeUsername(currentUsername)) {
+    if (cleanTarget === normalizeUsername(currentUsername)) {
       setProfileUsernameWithBadge(
         document.getElementById('my-prof-username'),
         currentUsername,
-        profileCache[normalizeUsername(currentUsername)]
+        profileCache[cleanTarget]
       );
     }
 
@@ -2007,6 +2064,22 @@ document.getElementById('post-text').addEventListener('keydown', event => {
 
 document.getElementById('password-input').addEventListener('keydown', event => {
   if (event.key === 'Enter') document.getElementById('auth-action-btn').click();
+});
+
+/* При возвращении на вкладку сразу проверяем системные сообщения,
+   но не создаём несколько параллельных запросов. */
+
+document.addEventListener('visibilitychange', () => {
+  if (!document.hidden && currentUsername) {
+    loadSystemMessages(false, true);
+  }
+});
+
+window.addEventListener('pagehide', () => {
+  if (systemPoll) {
+    clearInterval(systemPoll);
+    systemPoll = null;
+  }
 });
 </script>
 </body>
