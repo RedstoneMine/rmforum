@@ -1,3 +1,4 @@
+привет! проверь оптимизирован ли html пж
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -9,303 +10,104 @@
 <link rel="stylesheet" href="./style.css">
 
 <style>
-.system-unread-dot {
-  position:absolute;
-  top:5px;
-  right:5px;
-  width:10px;
-  height:10px;
-  background:#ef4444;
-  border-radius:50%;
-  box-shadow:0 0 10px #ef4444aa;
-}
-.system-unread-dot.hidden {display:none!important}
-.system-message {transition:border-color .2s,box-shadow .2s}
-.system-message:hover {
-  border-color:#3f3f46!important;
-  box-shadow:0 0 12px #ef444414;
-}
-#system-box {margin-bottom:25px}
-#system-box textarea {margin-bottom:10px}
-.agreement-link {
-  color:#ef4444;
-  text-decoration:underline;
-  font-weight:bold;
-}
-.agreement-link:hover {
-  color:#f43f5e;
-  text-shadow:0 0 12px #f43f5ecc;
-}
-button:disabled {opacity:.55;cursor:not-allowed}
-#ratelimit-modal .modal-content {animation:rateLimitAppear .2s ease-out}
-@keyframes rateLimitAppear {
-  from {transform:scale(.95);opacity:0}
-  to {transform:scale(1);opacity:1}
-}
+.system-unread-dot{position:absolute;top:5px;right:5px;width:10px;height:10px;background:#ef4444;border-radius:50%;box-shadow:0 0 10px #ef4444aa}
+.system-unread-dot.hidden{display:none!important}
+.system-message{transition:border-color .2s,box-shadow .2s}
+.system-message:hover{border-color:#3f3f46!important;box-shadow:0 0 12px #ef444414}
+#system-box{margin-bottom:25px}
+#system-box textarea{margin-bottom:10px}
+.agreement-link{color:#ef4444;text-decoration:underline;font-weight:bold}
+.agreement-link:hover{color:#f43f5e;text-shadow:0 0 12px #f43f5ecc}
+button:disabled{opacity:.55;cursor:not-allowed}
+#ratelimit-modal .modal-content{animation:rateLimitAppear .2s ease-out}
+@keyframes rateLimitAppear{from{transform:scale(.95);opacity:0}to{transform:scale(1);opacity:1}}
+.verified-badge{display:inline-flex;position:relative;z-index:100;align-items:center;vertical-align:middle;cursor:pointer;margin-left:3px;overflow:visible}
+.verified-badge img{width:17px;height:17px;object-fit:contain;display:block}
+.verified-badge::after{content:attr(data-tooltip);position:absolute;bottom:calc(100% + 9px);left:50%;transform:translateX(-50%) translateY(4px);background:#18181b;border:1px solid #3f3f46;border-radius:8px;color:#f4f4f5;padding:8px 11px;font-size:12px;font-weight:500;white-space:nowrap;box-shadow:0 8px 24px #0008;opacity:0;visibility:hidden;pointer-events:none;transition:opacity .18s,transform .18s,visibility .18s;z-index:2147483647}
+.verified-badge:hover::after,.verified-badge:focus-visible::after{opacity:1;visibility:visible;transform:translateX(-50%) translateY(0)}
+.profile-username .verified-badge{margin-left:6px}
+.profile-username .verified-badge img{width:19px;height:19px}
+#admin-card-theme-controls{margin:16px 0;padding:14px;border:1px solid #3f3f46;border-radius:12px;background:#18181b}
+#admin-card-theme-controls h4{margin:0 0 10px;color:#f87171}
+#admin-card-theme-controls select{margin-bottom:9px}
+.card-theme-status{min-height:18px;margin:8px 0 0;color:#a1a1aa;font-size:.85rem}
 
-/* Щит верификации: поверх карточек, постов и других элементов */
-.verified-badge {
-  display:inline-flex;
-  position:relative;
-  z-index:100;
-  align-items:center;
-  vertical-align:middle;
-  cursor:pointer;
-  margin-left:3px;
-  overflow:visible;
-}
-.verified-badge img {
-  width:17px;
-  height:17px;
-  object-fit:contain;
-  display:block;
-}
-.verified-badge::after {
-  content:attr(data-tooltip);
-  position:absolute;
-  bottom:calc(100% + 9px);
-  left:50%;
-  transform:translateX(-50%) translateY(4px);
-  background:#18181b;
-  border:1px solid #3f3f46;
-  border-radius:8px;
-  color:#f4f4f5;
-  padding:8px 11px;
-  font-size:12px;
-  font-weight:500;
-  white-space:nowrap;
-  box-shadow:0 8px 24px #0008;
-  opacity:0;
-  visibility:hidden;
-  pointer-events:none;
-  transition:opacity .18s,transform .18s,visibility .18s;
-  z-index:2147483647;
-}
-.verified-badge:hover::after,
-.verified-badge:focus-visible::after {
-  opacity:1;
-  visibility:visible;
-  transform:translateX(-50%) translateY(0);
-}
-
-/* Щит рядом с ником внутри карточек профиля */
-.profile-username .verified-badge {
-  margin-left:6px;
-}
-.profile-username .verified-badge img {
-  width:19px;
-  height:19px;
-}
-
-/* Независимый выбор фона карточки профиля */
-#admin-card-theme-controls {
-  margin:16px 0;
-  padding:14px;
-  border:1px solid #3f3f46;
-  border-radius:12px;
-  background:#18181b;
-}
-#admin-card-theme-controls h4 {
-  margin:0 0 10px;
-  color:#f87171;
-}
-#admin-card-theme-controls select {
-  margin-bottom:9px;
-}
-.card-theme-status {
-  min-height:18px;
-  margin:8px 0 0;
-  color:#a1a1aa;
-  font-size:.85rem;
-}
-.profile-card.theme-none {
+/* Исправленный сброс фона */
+.profile-card.theme-none{
   background:#18181b!important;
-}
-.profile-card.theme-red {
-  background:linear-gradient(145deg,#351416,#18181b 75%)!important;
-}
-.profile-card.theme-gold {
-  background:linear-gradient(145deg,#382b12,#18181b 75%)!important;
-}
-.profile-card.theme-purple {
-  background:linear-gradient(145deg,#29163e,#18181b 75%)!important;
-}
-.profile-card.theme-green {
-  background:linear-gradient(145deg,#123522,#18181b 75%)!important;
-}
-.profile-card.theme-blue {
-  background:linear-gradient(145deg,#142b45,#18181b 75%)!important;
-}
-.profile-card.theme-cyan {
-  background:linear-gradient(145deg,#10383c,#18181b 75%)!important;
-}
-.profile-card.theme-pink {
-  background:linear-gradient(145deg,#3b1930,#18181b 75%)!important;
+  background-image:none!important;
+  background-color:#18181b!important;
+  background-size:auto!important;
+  background-position:initial!important;
+  background-repeat:initial!important;
+  animation:none!important;
 }
 
-/* Галерея аватарок администрации */
-#admin-avatar-gallery {
-  display:flex;
-  flex-direction:column;
-  gap:12px;
-  margin:14px 0;
-}
-.avatar-gallery-preview {
-  position:relative;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  gap:12px;
-}
-.avatar-gallery-preview img {
-  width:128px;
-  height:128px;
-  object-fit:cover;
-  border-radius:16px;
-  border:2px solid #ef4444;
-  background:#09090b;
-  box-shadow:0 0 22px #ef444422;
-}
-.avatar-gallery-arrow {
-  width:40px;
-  height:44px;
-  flex:0 0 40px;
-  padding:0!important;
-  margin:0!important;
-  font-size:24px!important;
-  line-height:1;
-  background:#27272a!important;
-  color:#f4f4f5!important;
-  border:1px solid #3f3f46!important;
-  border-radius:10px!important;
-}
-.avatar-gallery-arrow:hover {
-  background:#3f3f46!important;
-}
-#admin-avatar-gallery-label {
-  color:#e4e4e7;
-  text-align:center;
-  font-weight:600;
-  overflow-wrap:anywhere;
-}
-.avatar-gallery-thumbnails {
-  display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(58px,1fr));
-  gap:8px;
-}
-.avatar-gallery-thumb {
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  padding:3px!important;
-  margin:0!important;
-  min-width:0!important;
-  aspect-ratio:1;
-  background:#09090b!important;
-  border:2px solid #3f3f46!important;
-  border-radius:10px!important;
-  overflow:hidden;
-}
-.avatar-gallery-thumb img {
-  display:block;
-  width:100%;
-  height:100%;
-  object-fit:cover;
-  border-radius:6px;
-}
-.avatar-gallery-thumb.selected {
-  border-color:#22c55e!important;
-  box-shadow:0 0 0 2px #22c55e44,0 0 15px #22c55e44;
-}
-.avatar-gallery-thumb:focus-visible,
-.avatar-gallery-arrow:focus-visible {
-  outline:2px solid #f87171;
-  outline-offset:3px;
-}
-#admin-avatar-select {
-  display:none!important;
-}
+.profile-card.theme-red{background:linear-gradient(145deg,#351416,#18181b 75%)!important}
+.profile-card.theme-gold{background:linear-gradient(145deg,#382b12,#18181b 75%)!important}
+.profile-card.theme-purple{background:linear-gradient(145deg,#29163e,#18181b 75%)!important}
+.profile-card.theme-green{background:linear-gradient(145deg,#123522,#18181b 75%)!important}
+.profile-card.theme-blue{background:linear-gradient(145deg,#142b45,#18181b 75%)!important}
+.profile-card.theme-cyan{background:linear-gradient(145deg,#10383c,#18181b 75%)!important}
+.profile-card.theme-pink{background:linear-gradient(145deg,#3b1930,#18181b 75%)!important}
+.profile-card.image-background{background-size:cover!important;background-position:center!important;background-repeat:no-repeat!important}
 
-#toast-container {
-  position:fixed;
-  top:18px;
-  right:18px;
-  z-index:10000;
-  display:flex;
-  flex-direction:column;
-  gap:10px;
-  width:min(380px,calc(100vw - 36px));
-  pointer-events:none;
+@keyframes nameGradient{
+  0%{background-position:0% 50%}
+  50%{background-position:100% 50%}
+  100%{background-position:0% 50%}
 }
-.toast {
-  display:flex;
-  align-items:flex-start;
-  gap:10px;
-  padding:14px 16px;
-  border:1px solid #3f3f46;
-  border-radius:13px;
-  background:#18181b;
-  color:#f4f4f5;
-  box-shadow:0 12px 35px #0008;
-  animation:toastIn .2s ease-out;
-  pointer-events:auto;
-  overflow-wrap:anywhere;
+.name-theme-purple,.name-theme-green,.name-theme-gold,
+.name-theme-red,.name-theme-blue,.name-theme-cyan,
+.name-theme-pink,.name-theme-gray,.name-theme-orange{
+  background-size:300% 100%;
+  background-clip:text;
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  animation:nameGradient 5s ease-in-out infinite;
 }
-.toast.success {border-color:#15803d}
-.toast.error {border-color:#b91c1c}
-.toast.warning {border-color:#b45309}
-.toast-icon {font-size:18px;line-height:1.2}
-.toast-message {font-size:14px;line-height:1.5;flex:1}
-.toast-close {
-  background:none!important;
-  color:#a1a1aa!important;
-  padding:0!important;
-  margin:0!important;
-  font-size:18px!important;
-  line-height:1!important;
-}
-@keyframes toastIn {
-  from {opacity:0;transform:translateY(-8px)}
-  to {opacity:1;transform:translateY(0)}
-}
-#confirm-modal {z-index:9000}
-#confirm-modal .modal-content {max-width:420px}
-.confirm-actions {display:flex;gap:10px;margin-top:22px}
-.confirm-actions button {flex:1}
-#confirm-description {
-  color:#d4d4d8;
-  line-height:1.6;
-  overflow-wrap:anywhere;
-}
-#system-btn {position:relative}
-#posts-container.hidden {display:none}
-#toast-container button {min-width:0}
+.name-theme-purple{background-image:linear-gradient(90deg,#8a2be2,#c43cff,#ff5cff,#7226d9)}
+.name-theme-green{background-image:linear-gradient(90deg,#16a34a,#4ade80,#86efac,#15803d)}
+.name-theme-gold{background-image:linear-gradient(90deg,#ca8a04,#fde047,#fef08a,#854d0e)}
+.name-theme-red{background-image:linear-gradient(90deg,#dc2626,#f87171,#fca5a5,#991b1b)}
+.name-theme-blue{background-image:linear-gradient(90deg,#1d4ed8,#60a5fa,#93c5fd,#1e40af)}
+.name-theme-cyan{background-image:linear-gradient(90deg,#0e7490,#22d3ee,#67e8f9,#155e75)}
+.name-theme-pink{background-image:linear-gradient(90deg,#be185d,#f472b6,#f9a8d4,#9d174d)}
+.name-theme-gray{background-image:linear-gradient(90deg,#737373,#d4d4d4,#f5f5f5,#525252)}
+.name-theme-orange{background-image:linear-gradient(90deg,#c2410c,#fb923c,#fed7aa,#9a3412)}
 
-@media(max-width:600px) {
-  #forum-actions {align-items:stretch!important}
-  .post {padding:14px}
-  .system-message .avatar {width:48px;height:48px}
-  #toast-container {
-    top:10px;
-    right:10px;
-    width:calc(100vw - 20px);
-  }
-  .confirm-actions {flex-direction:column}
-  .admin-tool-row {flex-wrap:wrap}
-  .admin-tool-row input,
-  .admin-tool-row select,
-  .admin-tool-row button {
-    width:100%;
-    min-width:0;
-  }
-  .avatar-gallery-preview img {
-    width:108px;
-    height:108px;
-  }
-  .avatar-gallery-arrow {
-    width:36px;
-    flex-basis:36px;
-  }
+#admin-avatar-gallery,#admin-card-gallery{display:flex;flex-direction:column;gap:12px;margin:14px 0}
+.avatar-gallery-preview{position:relative;display:flex;align-items:center;justify-content:center;gap:12px}
+.avatar-gallery-preview img{width:128px;height:128px;object-fit:cover;border-radius:16px;border:2px solid #ef4444;background:#09090b;box-shadow:0 0 22px #ef444422}
+.avatar-gallery-arrow{width:40px;height:44px;flex:0 0 40px;padding:0!important;margin:0!important;font-size:24px!important;line-height:1;background:#27272a!important;color:#f4f4f5!important;border:1px solid #3f3f46!important;border-radius:10px!important}
+.avatar-gallery-arrow:hover{background:#3f3f46!important}
+.gallery-label{color:#e4e4e7;text-align:center;font-weight:600;overflow-wrap:anywhere}
+.avatar-gallery-thumbnails{display:grid;grid-template-columns:repeat(auto-fill,minmax(58px,1fr));gap:8px}
+.avatar-gallery-thumb{display:flex;align-items:center;justify-content:center;padding:3px!important;margin:0!important;min-width:0!important;aspect-ratio:1;background:#09090b!important;border:2px solid #3f3f46!important;border-radius:10px!important;overflow:hidden}
+.avatar-gallery-thumb img{display:block;width:100%;height:100%;object-fit:cover;border-radius:6px}
+.avatar-gallery-thumb.selected{border-color:#22c55e!important;box-shadow:0 0 0 2px #22c55e44,0 0 15px #22c55e44}
+.avatar-gallery-thumb:focus-visible,.avatar-gallery-arrow:focus-visible{outline:2px solid #f87171;outline-offset:3px}
+#admin-avatar-select,#admin-card-image-select{display:none!important}
+#toast-container{position:fixed;top:18px;right:18px;z-index:10000;display:flex;flex-direction:column;gap:10px;width:min(380px,calc(100vw - 36px));pointer-events:none}
+.toast{display:flex;align-items:flex-start;gap:10px;padding:14px 16px;border:1px solid #3f3f46;border-radius:13px;background:#18181b;color:#f4f4f5;box-shadow:0 12px 35px #0008;animation:toastIn .2s ease-out;pointer-events:auto;overflow-wrap:anywhere}
+.toast.success{border-color:#15803d}.toast.error{border-color:#b91c1c}.toast.warning{border-color:#b45309}
+.toast-icon{font-size:18px;line-height:1.2}.toast-message{font-size:14px;line-height:1.5;flex:1}
+.toast-close{background:none!important;color:#a1a1aa!important;padding:0!important;margin:0!important;font-size:18px!important;line-height:1!important}
+@keyframes toastIn{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
+#confirm-modal{z-index:9000}#confirm-modal .modal-content{max-width:420px}
+.confirm-actions{display:flex;gap:10px;margin-top:22px}.confirm-actions button{flex:1}
+#confirm-description{color:#d4d4d8;line-height:1.6;overflow-wrap:anywhere}
+#system-btn{position:relative}#posts-container.hidden{display:none}
+#toast-container button{min-width:0}
+@media(max-width:600px){
+#forum-actions{align-items:stretch!important}.post{padding:14px}
+.system-message .avatar{width:48px;height:48px}
+#toast-container{top:10px;right:10px;width:calc(100vw - 20px)}
+.confirm-actions{flex-direction:column}
+.admin-tool-row{flex-wrap:wrap}
+.admin-tool-row input,.admin-tool-row select,.admin-tool-row button{width:100%;min-width:0}
+.avatar-gallery-preview img{width:108px;height:108px}
+.avatar-gallery-arrow{width:36px;flex-basis:36px}
 }
 </style>
 </head>
@@ -313,47 +115,34 @@ button:disabled {opacity:.55;cursor:not-allowed}
 <body>
 <div id="toast-container" aria-live="polite" aria-atomic="false"></div>
 
-<div id="confirm-modal" class="modal-overlay hidden" role="dialog"
-     aria-modal="true" aria-labelledby="confirm-title">
+<div id="confirm-modal" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="confirm-title">
   <div class="modal-content">
     <h2 id="confirm-title">Подтверждение действия</h2>
     <p id="confirm-description">Ты уверен?</p>
     <div class="confirm-actions">
-      <button type="button" class="secondary"
-              onclick="resolveConfirmation(false)">Отмена</button>
-      <button type="button" id="confirm-accept" class="primary"
-              onclick="resolveConfirmation(true)">Подтвердить</button>
+      <button type="button" class="secondary" onclick="resolveConfirmation(false)">Отмена</button>
+      <button type="button" id="confirm-accept" class="primary" onclick="resolveConfirmation(true)">Подтвердить</button>
     </div>
   </div>
 </div>
 
-<div id="block-modal" class="modal-overlay hidden" role="dialog"
-     aria-modal="true">
+<div id="block-modal" class="modal-overlay hidden" role="dialog" aria-modal="true">
   <div class="modal-content" style="border-color:#ef4444">
     <h2 id="block-title" style="color:#ef4444">🚫 ДОСТУП ОГРАНИЧЕН</h2>
     <p id="block-text" style="color:#d4d4d8;line-height:1.5"></p>
   </div>
 </div>
 
-<div id="ratelimit-modal" class="modal-overlay hidden" role="dialog"
-     aria-modal="true">
+<div id="ratelimit-modal" class="modal-overlay hidden" role="dialog" aria-modal="true">
   <div class="modal-content" style="border-color:#f59e0b">
     <h2 style="color:#f59e0b">⚠️ НЕ СПАМИМ</h2>
-    <p id="ratelimit-text"
-       style="color:#d4d4d8;line-height:1.6;text-align:center">
-      Слишком много запросов.
-    </p>
-    <div id="ratelimit-timer"
-         style="font-size:2rem;font-weight:bold;color:#f59e0b;text-align:center;margin:15px 0">
-      --
-    </div>
-    <button class="secondary" style="width:100%"
-            onclick="closeRateLimitModal()">ПОНЯТНО</button>
+    <p id="ratelimit-text" style="color:#d4d4d8;line-height:1.6;text-align:center">Слишком много запросов.</p>
+    <div id="ratelimit-timer" style="font-size:2rem;font-weight:bold;color:#f59e0b;text-align:center;margin:15px 0">--</div>
+    <button class="secondary" style="width:100%" onclick="closeRateLimitModal()">ПОНЯТНО</button>
   </div>
 </div>
 
-<div id="notice-modal" class="modal-overlay" role="dialog"
-     aria-modal="true" aria-labelledby="agreement-title">
+<div id="notice-modal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="agreement-title">
   <div class="modal-content">
     <h2 id="agreement-title">ПОЛЬЗОВАТЕЛЬСКОЕ СОГЛАШЕНИЕ</h2>
     <p style="color:#d4d4d8;line-height:1.6;text-align:justify;font-size:.95rem;margin-bottom:20px">
@@ -361,94 +150,71 @@ button:disabled {opacity:.55;cursor:not-allowed}
     </p>
     <p style="color:#a1a1aa;line-height:1.6;text-align:center;font-size:.9rem;margin-bottom:20px">
       Нажимая «Принимаю», вы соглашаетесь с
-      <a href="./agreement.html" target="_blank" rel="noopener noreferrer"
-         class="agreement-link">условиями использования форума</a>.
+      <a href="./agreement.html" target="_blank" rel="noopener noreferrer" class="agreement-link">условиями использования форума</a>.
     </p>
-    <button style="width:100%;letter-spacing:1px"
-            onclick="acceptTerms()">ПРИНИМАЮ</button>
+    <button style="width:100%;letter-spacing:1px" onclick="acceptTerms()">ПРИНИМАЮ</button>
   </div>
 </div>
 
-<div id="my-profile-modal" class="modal-overlay hidden" role="dialog"
-     aria-modal="true" aria-labelledby="my-profile-title">
+<div id="my-profile-modal" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="my-profile-title">
   <div class="modal-content profile-card" id="my-profile-card">
     <h2 id="my-profile-title">МОЙ ПРОФИЛЬ</h2>
-    <img id="my-prof-avatar" class="profile-big-avatar"
-         src="./robot.png" alt="Аватар">
-
-    <div id="avatar-user-controls" class="avatar-controls hidden">
-      <p class="avatar-hint">Для обычных пользователей используется стандартная аватарка.</p>
-    </div>
+    <img id="my-prof-avatar" class="profile-big-avatar" src="./robot.png" alt="Аватар">
 
     <div id="admin-avatar-controls" class="avatar-controls hidden">
       <h4>🛡️ Аватар администрации</h4>
-      <p class="avatar-hint">Выбери аватарку в галерее. Стрелки переключают изображения, а зелёная рамка отмечает выбранное.</p>
-
+      <p class="avatar-hint">Выбери любое изображение из репозитория. Обычные пользователи не могут менять аватар.</p>
       <div id="admin-avatar-gallery">
         <div class="avatar-gallery-preview">
-          <button type="button" id="avatar-gallery-prev"
-                  class="avatar-gallery-arrow"
-                  aria-label="Предыдущая аватарка"
-                  onclick="stepAdminAvatar(-1)">‹</button>
+          <button type="button" id="avatar-gallery-prev" class="avatar-gallery-arrow" aria-label="Предыдущая аватарка" onclick="stepAdminAvatar(-1)">‹</button>
           <img id="admin-avatar-preview" src="./robot.png" alt="Предпросмотр аватарки">
-          <button type="button" id="avatar-gallery-next"
-                  class="avatar-gallery-arrow"
-                  aria-label="Следующая аватарка"
-                  onclick="stepAdminAvatar(1)">›</button>
+          <button type="button" id="avatar-gallery-next" class="avatar-gallery-arrow" aria-label="Следующая аватарка" onclick="stepAdminAvatar(1)">›</button>
         </div>
-        <div id="admin-avatar-gallery-label" aria-live="polite">Загрузка аватарок...</div>
+        <div id="admin-avatar-gallery-label" class="gallery-label" aria-live="polite">Загрузка изображений...</div>
         <div id="admin-avatar-thumbnails" class="avatar-gallery-thumbnails"></div>
       </div>
-
       <select id="admin-avatar-select" aria-label="Аватар администрации"></select>
-
-      <button type="button" onclick="saveSelectedAdminAvatar()"
-              class="avatar-action-btn">Установить аватар</button>
+      <button type="button" onclick="saveSelectedAdminAvatar()" class="avatar-action-btn">Установить аватар</button>
       <p id="admin-avatar-status" class="avatar-status" aria-live="polite"></p>
     </div>
 
     <div id="admin-card-theme-controls" class="hidden">
       <h4>🎨 Фон карточки профиля</h4>
-      <p class="avatar-hint">Эта настройка не меняет цвет ника. Она влияет только на фон карточки профиля.</p>
-      <select id="admin-card-theme-select" aria-label="Фон карточки профиля">
-        <option value="none">Стандартный</option>
-        <option value="red">Красный</option>
-        <option value="gold">Золотой</option>
-        <option value="purple">Фиолетовый</option>
-        <option value="green">Зелёный</option>
-        <option value="blue">Синий</option>
-        <option value="cyan">Голубой</option>
-        <option value="pink">Розовый</option>
-      </select>
-      <button type="button" onclick="saveAdminCardTheme()"
-              class="avatar-action-btn">Сохранить фон карточки</button>
+      <p class="avatar-hint">Выбери изображение из репозитория или стандартный фон. Настройка влияет только на карточку профиля.</p>
+      <div id="admin-card-gallery">
+        <div class="avatar-gallery-preview">
+          <button type="button" class="avatar-gallery-arrow" aria-label="Предыдущий фон" onclick="stepAdminCardImage(-1)">‹</button>
+          <img id="admin-card-image-preview" src="./robot.png" alt="Предпросмотр фона карточки">
+          <button type="button" class="avatar-gallery-arrow" aria-label="Следующий фон" onclick="stepAdminCardImage(1)">›</button>
+        </div>
+        <div id="admin-card-gallery-label" class="gallery-label" aria-live="polite">Загрузка изображений...</div>
+        <div id="admin-card-thumbnails" class="avatar-gallery-thumbnails"></div>
+      </div>
+      <select id="admin-card-image-select" aria-label="Изображение фона карточки"></select>
+      <button type="button" onclick="saveAdminCardTheme()" class="avatar-action-btn">Сохранить фон карточки</button>
+      <button type="button" class="secondary" onclick="saveAdminCardTheme('none')">Убрать изображение</button>
       <p id="admin-card-theme-status" class="card-theme-status" aria-live="polite"></p>
     </div>
 
     <div id="my-prof-username" class="profile-username" style="color:#fff">@User</div>
-    <textarea id="my-prof-bio-input" placeholder="Расскажи о себе..."
-              rows="4" maxlength="200"></textarea>
+    <textarea id="my-prof-bio-input" placeholder="Расскажи о себе..." rows="4" maxlength="200"></textarea>
     <p style="color:#71717a;font-size:.8rem;margin-top:0;margin-bottom:20px;text-align:left">
       Лимит: 200 символов. Изменять текст можно раз в 3 часа.
     </p>
     <div style="display:flex;gap:10px">
       <button class="secondary" style="flex:1" onclick="saveMyProfile()">Сохранить текст</button>
-      <button class="back-btn" style="margin:0;flex:1"
-              onclick="closeModal('my-profile-modal')">Закрыть</button>
+      <button class="back-btn" style="margin:0;flex:1" onclick="closeModal('my-profile-modal')">Закрыть</button>
     </div>
   </div>
 </div>
 
-<div id="view-profile-modal" class="modal-overlay hidden" role="dialog"
-     aria-modal="true" aria-labelledby="view-profile-title">
+<div id="view-profile-modal" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="view-profile-title">
   <div class="modal-content profile-card" id="view-profile-card">
     <h2 id="view-profile-title">ПРОФИЛЬ ИГРОКА</h2>
-    <img id="view-prof-avatar" class="profile-big-avatar"
-         src="./robot.png" alt="Аватар">
+    <img id="view-prof-avatar" class="profile-big-avatar" src="./robot.png" alt="Аватар">
     <div id="view-prof-username" class="profile-username">@User</div>
     <div id="view-prof-bio" class="profile-bio-text">Загрузка информации...</div>
-    <button class="back-btn" style="width:100%;margin:0"
-            onclick="closeModal('view-profile-modal')">ЗАКРЫТЬ</button>
+    <button class="back-btn" style="width:100%;margin:0" onclick="closeModal('view-profile-modal')">ЗАКРЫТЬ</button>
   </div>
 </div>
 
@@ -457,25 +223,18 @@ button:disabled {opacity:.55;cursor:not-allowed}
     <h2>⛏️ ДОБРО ПОЖАЛОВАТЬ НА REDSTONE MINE</h2>
     <p style="color:#a1a1aa">Выберите действие для входа на форум сервера:</p>
     <div class="menu-choice">
-      <button class="primary menu-btn" onclick="showAuthForm('login')">
-        🔑 Войти в существующий аккаунт
-      </button>
-      <button class="secondary menu-btn" onclick="showAuthForm('register')">
-        📝 Зарегистрировать новый ник
-      </button>
+      <button class="primary menu-btn" onclick="showAuthForm('login')">🔑 Войти в существующий аккаунт</button>
+      <button class="secondary menu-btn" onclick="showAuthForm('register')">📝 Зарегистрировать новый ник</button>
     </div>
   </div>
 
   <div id="login-box" class="hidden">
     <h2>АВТОРИЗАЦИЯ</h2>
     <p id="auth-desc" style="color:#a1a1aa;font-size:.9rem;margin-bottom:20px"></p>
-    <input type="text" id="username-input" maxlength="32"
-           autocomplete="username" placeholder="Твой ник (например: Stepan)">
-    <input type="password" id="password-input" maxlength="128"
-           autocomplete="current-password" placeholder="Пароль от аккаунта...">
+    <input type="text" id="username-input" maxlength="32" autocomplete="username" placeholder="Твой ник (например: Stepan)">
+    <input type="password" id="password-input" maxlength="128" autocomplete="current-password" placeholder="Пароль от аккаунта...">
     <div class="auth-buttons">
-      <button class="primary" id="auth-action-btn"
-              onclick="submitAuth('login')">ПОДТВЕРДИТЬ</button>
+      <button class="primary" id="auth-action-btn" onclick="submitAuth('login')">ПОДТВЕРДИТЬ</button>
       <button class="back-btn" onclick="hideAuthForm()">НАЗАД</button>
     </div>
   </div>
@@ -483,17 +242,14 @@ button:disabled {opacity:.55;cursor:not-allowed}
   <div id="forum-box" class="hidden">
     <div id="admin-panel" class="box hidden" style="border-color:#f43f5e">
       <h4 style="margin:0 0 12px;color:#f43f5e">🛡️ УПРАВЛЕНИЕ СЕРВЕРОМ</h4>
-
       <div style="display:flex;gap:10px;margin-bottom:10px">
         <input type="text" id="ban-username" placeholder="@ник для бана" style="margin:0">
         <button onclick="banUser()">БАН</button>
       </div>
-
       <div style="display:flex;gap:10px">
         <input type="text" id="unban-username" placeholder="@ник для разбана" style="margin:0">
         <button onclick="unbanUser()" style="background:#10b981">РАЗБАН</button>
       </div>
-
       <div class="admin-tool-divider"></div>
       <h4>🎨 Цвет ника пользователя</h4>
       <div class="admin-tool-row">
@@ -517,21 +273,10 @@ button:disabled {opacity:.55;cursor:not-allowed}
     <div style="display:flex;justify-content:space-between;align-items:center;gap:15px;margin-bottom:20px;background:#121214;padding:15px;border-radius:12px;border:1px solid #27272a">
       <h3 id="welcome-msg" style="margin:0;font-size:1.1rem;color:#fff;text-shadow:none">⛏️ Лента</h3>
       <div id="forum-actions" style="display:flex;flex-direction:column;gap:8px;align-items:flex-end">
-        <button id="admin-panel-btn" class="admin-btn hidden"
-                style="padding:8px 16px;font-size:.85rem;margin:0"
-                onclick="toggleAdminPanel()">🛡️ Панель администрации</button>
-        <button id="admin-system-btn" class="primary hidden"
-                style="padding:8px 16px;font-size:.85rem;background:#2563eb"
-                onclick="openSystemComposer()">✍️ Написать систем. сообщение</button>
-        <button id="system-btn" class="secondary"
-                style="padding:8px 16px;font-size:.85rem;position:relative"
-                onclick="openSystemMessages()">
-          🔔 Системные сообщения
-          <span id="system-unread-dot" class="system-unread-dot hidden"></span>
-        </button>
-        <button id="profile-btn" class="secondary"
-                style="padding:8px 16px;font-size:.85rem"
-                onclick="openMyProfile()">📝 Мой профиль</button>
+        <button id="admin-panel-btn" class="admin-btn hidden" style="padding:8px 16px;font-size:.85rem;margin:0" onclick="toggleAdminPanel()">🛡️ Панель администрации</button>
+        <button id="admin-system-btn" class="primary hidden" style="padding:8px 16px;font-size:.85rem;background:#2563eb" onclick="openSystemComposer()">✍️ Написать систем. сообщение</button>
+        <button id="system-btn" class="secondary" style="padding:8px 16px;font-size:.85rem;position:relative" onclick="openSystemMessages()">🔔 Системные сообщения <span id="system-unread-dot" class="system-unread-dot hidden"></span></button>
+        <button id="profile-btn" class="secondary" style="padding:8px 16px;font-size:.85rem" onclick="openMyProfile()">📝 Мой профиль</button>
       </div>
     </div>
 
@@ -541,32 +286,25 @@ button:disabled {opacity:.55;cursor:not-allowed}
         <button class="back-btn" onclick="returnToFeed()">Вернуться на ленту</button>
       </div>
       <div id="system-compose" class="hidden" style="margin-bottom:20px">
-        <textarea id="system-text" rows="4" maxlength="5000"
-                  placeholder="Текст системного уведомления..."></textarea>
-        <button class="primary" style="background:#2563eb"
-                onclick="sendSystemMessage()">Отправить</button>
+        <textarea id="system-text" rows="4" maxlength="5000" placeholder="Текст системного уведомления..."></textarea>
+        <button class="primary" style="background:#2563eb" onclick="sendSystemMessage()">Отправить</button>
       </div>
       <div id="system-container">Загрузка системных сообщений...</div>
     </div>
 
     <div id="feed-controls">
       <div class="search-box">
-        <input type="text" id="search-input"
-               placeholder="Поиск по хэштегу (например: #дом)..." style="margin:0">
+        <input type="text" id="search-input" placeholder="Поиск по хэштегу (например: #дом)..." style="margin:0">
         <button class="primary" onclick="filterByTag()">Искать / Обновить</button>
         <button onclick="resetFilter()" style="background:#27272a">Сброс</button>
       </div>
-
       <div class="box">
         <h3>💬 НОВЫЙ ПОСТ</h3>
-        <textarea id="post-text" placeholder="Текст сообщения..."
-                  rows="3" maxlength="5000"></textarea>
-        <input type="text" id="post-tags" maxlength="1000"
-               placeholder="Хэштеги через пробел (например: дом торговля спавн)">
+        <textarea id="post-text" placeholder="Текст сообщения..." rows="3" maxlength="5000"></textarea>
+        <input type="text" id="post-tags" maxlength="1000" placeholder="Хэштеги через пробел (например: дом торговля спавн)">
         <button class="primary" id="send-btn" onclick="sendPost()">Опубликовать</button>
       </div>
     </div>
-
     <div id="posts-container">Загрузка архивов...</div>
   </div>
 </div>
@@ -575,53 +313,6 @@ button:disabled {opacity:.55;cursor:not-allowed}
 'use strict';
 
 const WORKER_URL = 'https://restless-hill-dd2a.redstonemineforum.workers.dev';
-
-const ADMIN_WHITELIST = [
-  'redstonemine', 'krutoi', 'rm_emperor', 'on404',
-  'egor4ik', 'ava', 'redstonemine_community', 'palka'
-];
-
-const ADMIN_AVATARS = {
-  '@redstonemine': './admin_cube.png',
-  '@krutoi': './popcat.jpg',
-  '@rm_emperor': './RM_Emperor.png',
-  '@on404': './on404.png',
-  '@egor4ik': './floppa.jpg'
-};
-
-const ADMIN_CARDS = {
-  '@redstonemine':'red',
-  '@krutoi':'none',
-  '@rm_emperor':'purple',
-  '@on404':'pink',
-  '@egor4ik':'gold'
-};
-
-const ADMIN_NAMES = {
-  '@redstonemine':'red',
-  '@krutoi':'gold',
-  '@rm_emperor':'purple',
-  '@on404':'green',
-  '@egor4ik':'gold'
-};
-
-const ADMIN_DESCRIPTION = {
-  '@redstonemine':'gold',
-  '@krutoi':'gold',
-  '@on404':'green',
-  '@rm_emperor':'blue'
-};
-
-const ADMIN_DESCBACK = {
-  '@redstonemine':'red',
-  '@krutoi':'gold',
-  '@on404':'pink',
-  '@rm_emperor':'purple'
-};
-
-const ALLOWED_CARD_THEMES = new Set([
-  'none','red','gold','purple','green','blue','cyan','pink'
-]);
 
 let allPosts = [];
 let currentFilterTag = '';
@@ -632,10 +323,13 @@ let rateLimitUntil = 0;
 let rateLimitInterval = null;
 let systemMessages = [];
 let systemViewOpen = false;
+let systemPoll = null;
 let adminPanelOpen = false;
 let confirmationResolver = null;
 let adminAvatarOptions = [];
+let adminCardOptions = [];
 let selectedAdminAvatarIndex = 0;
+let selectedAdminCardIndex = -1;
 
 const profileCache = Object.create(null);
 
@@ -646,17 +340,6 @@ function normalizeUsername(username) {
 function displayUsername(username) {
   const value = String(username || '').trim();
   return value.startsWith('@') ? value : '@' + value;
-}
-
-function isAdminUsername(username) {
-  return ADMIN_WHITELIST.includes(normalizeUsername(username));
-}
-
-function getAdminStyle(username, list) {
-  const key = Object.keys(list || {}).find(
-    k => normalizeUsername(k) === normalizeUsername(username)
-  );
-  return key ? list[key] : 'none';
 }
 
 function escapeHTML(value) {
@@ -675,21 +358,32 @@ function safeColor(color) {
 
 function safeImageUrl(url) {
   const value = String(url || '').trim();
+  if (!value) return './robot.png';
 
-  if (
-    /^https:\/\/redstonemine\.github\.io\/(?:rmforum\/)?[a-z0-9_.-]+$/i.test(value)
-  ) {
-    return value;
-  }
+  try {
+    const parsed = new URL(value, location.origin);
+    const allowedOrigin = location.origin === parsed.origin ||
+      parsed.origin === 'https://redstonemine.github.io';
 
-  if (/^\.\/[a-z0-9_.-]+$/i.test(value)) return value;
-  if (value === '/robot.png') return value;
+    if (
+      allowedOrigin &&
+      /\.(png|jpe?g|gif|webp|avif|svg)$/i.test(parsed.pathname)
+    ) {
+      return parsed.href;
+    }
+  } catch (_) {}
 
   return './robot.png';
 }
 
-function verifiedBadge(username) {
-  if (!isAdminUsername(username)) return '';
+function profileIsAdmin(username) {
+  const clean = normalizeUsername(username);
+  if (clean && clean === normalizeUsername(currentUsername) && isAdmin) return true;
+  return profileCache[clean]?.admin === true;
+}
+
+function verifiedBadge(username, profile) {
+  if (!(profile?.admin === true || profileIsAdmin(username))) return '';
 
   return `<span class="verified-badge" tabindex="0" role="img"
     aria-label="Аккаунт администрации RedstoneMine Форум"
@@ -697,8 +391,6 @@ function verifiedBadge(username) {
     <img src="./check.png" alt="">
   </span>`;
 }
-
-/* Уведомления */
 
 function showToast(message, type = 'info', duration = 3600) {
   const container = document.getElementById('toast-container');
@@ -709,13 +401,7 @@ function showToast(message, type = 'info', duration = 3600) {
     ['success', 'error', 'warning'].includes(type) ? type : ''
   );
 
-  const icons = {
-    success: '✓',
-    error: '✕',
-    warning: '⚠',
-    info: 'ℹ'
-  };
-
+  const icons = {success:'✓', error:'✕', warning:'⚠', info:'ℹ'};
   const icon = document.createElement('span');
   icon.className = 'toast-icon';
   icon.textContent = icons[type] || icons.info;
@@ -734,24 +420,15 @@ function showToast(message, type = 'info', duration = 3600) {
   toast.append(icon, text, close);
   container.appendChild(toast);
 
-  while (container.children.length > 5) {
-    container.firstElementChild.remove();
-  }
-
+  while (container.children.length > 5) container.firstElementChild.remove();
   if (duration > 0) setTimeout(() => toast.remove(), duration);
 }
 
-function confirmAction(
-  message,
-  title = 'Подтверждение действия',
-  acceptText = 'Подтвердить'
-) {
+function confirmAction(message, title = 'Подтверждение действия', acceptText = 'Подтвердить') {
   const modal = document.getElementById('confirm-modal');
-
   document.getElementById('confirm-title').textContent = title;
   document.getElementById('confirm-description').textContent = message;
   document.getElementById('confirm-accept').textContent = acceptText;
-
   modal.classList.remove('hidden');
 
   return new Promise(resolve => {
@@ -761,7 +438,6 @@ function confirmAction(
 
 function resolveConfirmation(result) {
   document.getElementById('confirm-modal').classList.add('hidden');
-
   if (confirmationResolver) {
     const resolve = confirmationResolver;
     confirmationResolver = null;
@@ -802,19 +478,14 @@ async function apiPost(path, body) {
     headers: {'Content-Type': 'application/json'},
     body: JSON.stringify(body)
   });
-
   const data = await parseWorkerResponse(res);
   return {res, data};
 }
 
-/* Антиспам */
-
 function getRetrySeconds(data) {
   for (const key of ['remaining', 'retryAfter', 'retry_after']) {
     const value = Number(data?.[key]);
-    if (Number.isFinite(value) && value > 0) {
-      return Math.max(1, Math.ceil(value));
-    }
+    if (Number.isFinite(value) && value > 0) return Math.max(1, Math.ceil(value));
   }
   return 60;
 }
@@ -830,7 +501,6 @@ function showRateLimit(data) {
   updateRateLimitTimer();
 
   if (rateLimitInterval) clearInterval(rateLimitInterval);
-
   rateLimitInterval = setInterval(() => {
     updateRateLimitTimer();
     if (Date.now() >= rateLimitUntil) {
@@ -878,8 +548,6 @@ function closeRateLimitModal() {
   if (Date.now() >= rateLimitUntil) unlockForumButtons();
 }
 
-/* Защита от слишком частых перезагрузок */
-
 (function checkGlobalBlocks() {
   const now = Date.now();
   const passwordBanUntil = Number(sessionStorage.getItem('password_ban_until') || 0);
@@ -904,9 +572,7 @@ function closeRateLimitModal() {
   }
 
   let history = [];
-  try {
-    history = JSON.parse(sessionStorage.getItem('reload_history') || '[]');
-  } catch (_) {}
+  try { history = JSON.parse(sessionStorage.getItem('reload_history') || '[]'); } catch (_) {}
 
   history = history.filter(time => now - time < 60000);
   history.push(now);
@@ -964,9 +630,7 @@ async function submitAuth(authType) {
   button.disabled = true;
 
   try {
-    const {res, data} = await apiPost('/api/auth', {
-      username, password, type: authType
-    });
+    const {res, data} = await apiPost('/api/auth', {username, password, type:authType});
 
     if (!res.ok || !data.success) {
       if (res.status !== 429) showToast(data.error || 'Ошибка авторизации.', 'error');
@@ -990,17 +654,15 @@ async function submitAuth(authType) {
     document.getElementById('admin-panel-btn').classList.toggle('hidden', !isAdmin);
     document.getElementById('admin-system-btn').classList.toggle('hidden', !isAdmin);
     document.getElementById('admin-panel').classList.add('hidden');
-
     document.getElementById('welcome-msg').textContent = '⛏️ Лента — ' + currentUsername;
 
     await loadMyProfileCache();
     await loadPosts();
+    startSystemPolling();
     await loadSystemMessages(false);
 
     showToast(
-      authType === 'register'
-        ? 'Аккаунт создан. Добро пожаловать!'
-        : 'Вход выполнен!',
+      authType === 'register' ? 'Аккаунт создан. Добро пожаловать!' : 'Вход выполнен!',
       'success'
     );
   } catch (_) {
@@ -1012,21 +674,26 @@ async function submitAuth(authType) {
 
 /* Профили */
 
+function getCardBackground(profile) {
+  return String(profile?.cardBackgroundUrl || profile?.cardBgUrl || '');
+}
+
 async function fetchProfile(username) {
   const clean = normalizeUsername(username);
   if (!clean) return null;
 
   try {
-    const {res, data} = await apiPost('/api/profile/get', {username: clean});
+    const {res, data} = await apiPost('/api/profile/get', {username:clean});
     if (!res.ok || !data.success) return null;
 
     profileCache[clean] = {
-      username: data.username || clean,
-      bio: typeof data.bio === 'string' ? data.bio : '',
-      avatarUrl: data.avatarUrl || data.avatar || '',
-      nameColor: safeColor(data.nameColor || data.namecolor),
-      cardTheme: ALLOWED_CARD_THEMES.has(data.cardTheme) ? data.cardTheme : '',
-      admin: data.admin === true
+      username:data.username || clean,
+      bio:typeof data.bio === 'string' ? data.bio : '',
+      avatarUrl:data.avatarUrl || data.avatar || '',
+      cardBackgroundUrl:getCardBackground(data),
+      nameColor:safeColor(data.nameColor || data.namecolor),
+      cardTheme:String(data.cardTheme || ''),
+      admin:data.admin === true
     };
 
     return profileCache[clean];
@@ -1056,22 +723,64 @@ async function loadPostProfiles() {
 function getAvatar(username) {
   const clean = normalizeUsername(username);
   const cached = profileCache[clean];
-
-  if (cached?.avatarUrl) return safeImageUrl(cached.avatarUrl);
-
-  if (isAdminUsername(username)) {
-    const key = Object.keys(ADMIN_AVATARS).find(
-      item => normalizeUsername(item) === clean
-    );
-    if (key) return ADMIN_AVATARS[key];
-  }
-
-  return './robot.png';
+  return safeImageUrl(cached?.avatarUrl || '');
 }
 
 function getNameColor(username, suppliedColor) {
   const cached = profileCache[normalizeUsername(username)];
-  return safeColor(suppliedColor || cached?.nameColor);
+  return safeColor(cached ? cached.nameColor : suppliedColor);
+}
+
+function applyUsernameAppearance(element, username, suppliedColor) {
+  const animationClasses = [
+    'name-theme-purple','name-theme-green','name-theme-gold',
+    'name-theme-red','name-theme-blue','name-theme-cyan',
+    'name-theme-pink','name-theme-gray','name-theme-orange'
+  ];
+
+  element.classList.remove(...animationClasses, 'admin-style');
+
+  element.style.webkitTextFillColor = '';
+  element.style.backgroundImage = '';
+  element.style.backgroundSize = '';
+  element.style.backgroundClip = '';
+  element.style.webkitBackgroundClip = '';
+  element.style.animation = '';
+  element.style.color = '';
+
+  const color = getNameColor(username, suppliedColor);
+  const admin = profileIsAdmin(username);
+
+  if (!color) {
+    if (admin) element.classList.add('admin-style');
+    return;
+  }
+
+  if (!admin) {
+    element.style.color = color;
+    return;
+  }
+
+  const themes = {
+    '#a855f7':'name-theme-purple',
+    '#22c55e':'name-theme-green',
+    '#f59e0b':'name-theme-gold',
+    '#ef4444':'name-theme-red',
+    '#3b82f6':'name-theme-blue',
+    '#06b6d4':'name-theme-cyan',
+    '#ec4899':'name-theme-pink',
+    '#9ca3af':'name-theme-gray',
+    '#f97316':'name-theme-orange'
+  };
+
+  const themeClass = themes[color.toLowerCase()];
+
+  if (themeClass) {
+    element.classList.add(themeClass);
+    element.style.color = color;
+  } else {
+    element.style.color = color;
+  }
 }
 
 function authorStyle(username, suppliedColor) {
@@ -1079,27 +788,54 @@ function authorStyle(username, suppliedColor) {
   return color ? ` style="color:${color}"` : '';
 }
 
-function getProfileCardTheme(username, profile) {
-  const cachedTheme = profile?.cardTheme ||
-    profileCache[normalizeUsername(username)]?.cardTheme;
-
-  if (ALLOWED_CARD_THEMES.has(cachedTheme)) return cachedTheme;
-  return getAdminStyle(username, ADMIN_CARDS);
-}
+/* Исправленное применение фона карточки */
 
 function applyProfileCardTheme(card, username, profile) {
-  const theme = getProfileCardTheme(username, profile);
-  card.className = 'modal-content profile-card ' +
-    (theme && theme !== 'none' ? 'theme-' + theme : 'theme-none');
+  const clean = normalizeUsername(username);
+  const currentProfile = profile || profileCache[clean] || {};
+  const backgroundUrl = getCardBackground(currentProfile);
+  const theme = String(currentProfile.cardTheme || 'none');
+
+  card.classList.remove(
+    'theme-none','theme-red','theme-gold','theme-purple',
+    'theme-green','theme-blue','theme-cyan','theme-pink',
+    'image-background'
+  );
+
+  card.style.removeProperty('background-image');
+
+  if (backgroundUrl) {
+    const background = safeImageUrl(backgroundUrl);
+
+    card.classList.add('image-background');
+    card.style.setProperty(
+      'background-image',
+      `linear-gradient(#11111388,#111113cc),url("${background}")`,
+      'important'
+    );
+    return;
+  }
+
+  const allowedThemes = [
+    'none','red','gold','purple','green','blue','cyan','pink'
+  ];
+
+  const safeTheme = allowedThemes.includes(theme) ? theme : 'none';
+  card.classList.add('theme-' + safeTheme);
+
+  if (safeTheme === 'none') {
+    card.style.setProperty('background-image','none','important');
+    card.style.setProperty('background-color','#18181b','important');
+  }
 }
 
 function setProfileUsernameWithBadge(element, username, profile) {
   element.replaceChildren();
   element.appendChild(document.createTextNode(displayUsername(username) + ' '));
+  applyUsernameAppearance(element, username, profile?.nameColor);
 
-  if (isAdminUsername(username) || profile?.admin === true) {
-    element.insertAdjacentHTML('beforeend', verifiedBadge(username));
-  }
+  const badge = verifiedBadge(username, profile);
+  if (badge) element.insertAdjacentHTML('beforeend', badge);
 }
 
 /* Лента */
@@ -1127,7 +863,7 @@ async function loadPosts() {
 
 function renderPosts() {
   const container = document.getElementById('posts-container');
-  container.innerHTML = '';
+  container.replaceChildren();
 
   const filtered = currentFilterTag
     ? allPosts.filter(post =>
@@ -1137,8 +873,7 @@ function renderPosts() {
     : allPosts;
 
   if (!filtered.length) {
-    container.innerHTML =
-      '<p style="color:#71717a;text-align:center">Записей по такому тегу не найдено.</p>';
+    container.innerHTML = '<p style="color:#71717a;text-align:center">Записей по такому тегу не найдено.</p>';
     return;
   }
 
@@ -1146,10 +881,7 @@ function renderPosts() {
 
   filtered.forEach(post => {
     const username = String(post.username || '');
-    const postAdmin = isAdminUsername(username);
-    const avatar = safeImageUrl(getAvatar(username));
-    const color = getNameColor(username, post.nameColor);
-    const styleClass = !color && postAdmin ? 'admin-style' : '';
+    const avatar = getAvatar(username);
 
     const card = document.createElement('div');
     card.className = 'post';
@@ -1168,11 +900,13 @@ function renderPosts() {
     header.className = 'post-header';
 
     const author = document.createElement('span');
-    author.className = 'author ' + styleClass;
+    author.className = 'author';
     author.style.cursor = 'pointer';
-    if (color) author.style.color = color;
     author.append(document.createTextNode(displayUsername(username) + ' '));
-    author.insertAdjacentHTML('beforeend', verifiedBadge(username));
+    applyUsernameAppearance(author, username, post.nameColor);
+
+    const badge = verifiedBadge(username);
+    if (badge) author.insertAdjacentHTML('beforeend', badge);
     author.addEventListener('click', () => viewUserProfile(username));
 
     const time = document.createElement('span');
@@ -1220,15 +954,13 @@ function renderPosts() {
 
     (Array.isArray(post.comments) ? post.comments : []).forEach(comment => {
       const commentUsername = String(comment.username || '');
-      const commentAdmin = isAdminUsername(commentUsername);
-      const commentColor = getNameColor(commentUsername, comment.nameColor);
 
       const commentEl = document.createElement('div');
       commentEl.className = 'comment';
 
       const commentAvatar = document.createElement('img');
       commentAvatar.className = 'comment-avatar';
-      commentAvatar.src = safeImageUrl(getAvatar(commentUsername));
+      commentAvatar.src = getAvatar(commentUsername);
       commentAvatar.alt = 'Аватар';
       commentAvatar.loading = 'lazy';
       commentAvatar.addEventListener('click', () => viewUserProfile(commentUsername));
@@ -1240,13 +972,14 @@ function renderPosts() {
       commentHeader.className = 'comment-header';
 
       const commentAuthor = document.createElement('span');
-      commentAuthor.className = 'author ' +
-        (!commentColor && commentAdmin ? 'admin-style' : '');
+      commentAuthor.className = 'author';
       commentAuthor.style.cursor = 'pointer';
       commentAuthor.style.fontSize = '.95rem';
-      if (commentColor) commentAuthor.style.color = commentColor;
       commentAuthor.append(document.createTextNode(displayUsername(commentUsername) + ' '));
-      commentAuthor.insertAdjacentHTML('beforeend', verifiedBadge(commentUsername));
+      applyUsernameAppearance(commentAuthor, commentUsername, comment.nameColor);
+
+      const commentBadge = verifiedBadge(commentUsername);
+      if (commentBadge) commentAuthor.insertAdjacentHTML('beforeend', commentBadge);
       commentAuthor.addEventListener('click', () => viewUserProfile(commentUsername));
 
       const commentTime = document.createElement('span');
@@ -1266,7 +999,7 @@ function renderPosts() {
         deleteCommentButton.style.cssText = 'margin:5px 0 0;padding:3px 8px;font-size:.75rem';
         deleteCommentButton.textContent = '❌ Стереть ответ';
         deleteCommentButton.addEventListener('click', () => deleteComment(post.id, comment.id));
-        commentBody.appendChild(deleteCommentButton);
+        commentBody.append(deleteCommentButton);
       }
 
       commentEl.append(commentAvatar, commentBody);
@@ -1324,30 +1057,23 @@ function toggleAdminPanel() {
 /* Системные сообщения */
 
 function getAdminVisuals(username) {
-  return {avatar: getAvatar(username)};
+  return {avatar:getAvatar(username)};
 }
 
 function renderSystemMessages() {
   const container = document.getElementById('system-container');
-  container.innerHTML = '';
+  container.replaceChildren();
 
   if (!systemMessages.length) {
-    container.innerHTML =
-      '<p style="color:#71717a;text-align:center">Системных сообщений пока нет.</p>';
+    container.innerHTML = '<p style="color:#71717a;text-align:center">Системных сообщений пока нет.</p>';
     return;
   }
 
   const fragment = document.createDocumentFragment();
 
   systemMessages.forEach(message => {
-    const sender = String(
-      message.from ||
-      message.authorUsername ||
-      'redstonemine_community'
-    );
-
+    const sender = String(message.from || message.authorUsername || 'redstonemine_community');
     const visual = getAdminVisuals(sender);
-    const color = getNameColor(sender);
 
     const card = document.createElement('div');
     card.className = 'post system-message';
@@ -1355,7 +1081,7 @@ function renderSystemMessages() {
 
     const avatar = document.createElement('img');
     avatar.className = 'avatar';
-    avatar.src = safeImageUrl(visual.avatar);
+    avatar.src = visual.avatar;
     avatar.alt = 'Аватар';
     avatar.addEventListener('click', () => viewUserProfile(sender));
 
@@ -1368,9 +1094,11 @@ function renderSystemMessages() {
     const author = document.createElement('span');
     author.className = 'author';
     author.style.cursor = 'pointer';
-    if (color) author.style.color = color;
     author.append(document.createTextNode(displayUsername(sender) + ' '));
-    author.insertAdjacentHTML('beforeend', verifiedBadge(sender));
+    applyUsernameAppearance(author, sender);
+
+    const badge = verifiedBadge(sender);
+    if (badge) author.insertAdjacentHTML('beforeend', badge);
     author.addEventListener('click', () => viewUserProfile(sender));
 
     const time = document.createElement('span');
@@ -1423,9 +1151,9 @@ async function loadSystemMessages(markRead = false) {
         .filter(Boolean);
 
       if (messageIds.length) {
-        const {res: readRes, data: readData} = await apiPost('/api/system/read', {
-          username: normalizeUsername(currentUsername),
-          password: currentPassword,
+        const {res:readRes, data:readData} = await apiPost('/api/system/read', {
+          username:normalizeUsername(currentUsername),
+          password:currentPassword,
           messageIds
         });
 
@@ -1472,7 +1200,7 @@ function returnToFeed() {
   document.getElementById('posts-container').classList.remove('hidden');
 
   document.getElementById('system-btn').innerHTML =
-    '🔔 Системные сообщения<span id="system-unread-dot" class="system-unread-dot hidden"></span>';
+    '🔔 Системные сообщения <span id="system-unread-dot" class="system-unread-dot hidden"></span>';
   document.getElementById('system-btn').onclick = openSystemMessages;
 
   if (isAdmin) {
@@ -1481,7 +1209,6 @@ function returnToFeed() {
   }
 
   if (!adminPanelOpen) document.getElementById('admin-panel').classList.add('hidden');
-
   loadPosts();
   loadSystemMessages(false);
 }
@@ -1491,13 +1218,12 @@ async function sendSystemMessage() {
 
   const input = document.getElementById('system-text');
   const text = input.value.trim();
-
   if (!text) return showToast('Введи текст системного уведомления.', 'warning');
 
   try {
     const {res, data} = await apiPost('/api/admin/system', {
-      username: normalizeUsername(currentUsername),
-      password: currentPassword,
+      username:normalizeUsername(currentUsername),
+      password:currentPassword,
       text
     });
 
@@ -1527,9 +1253,9 @@ async function deleteSystemMessage(messageId) {
 
   try {
     const {res, data} = await apiPost('/api/admin/system-delete', {
-      username: normalizeUsername(currentUsername),
-      password: currentPassword,
-      messageId: String(messageId)
+      username:normalizeUsername(currentUsername),
+      password:currentPassword,
+      messageId:String(messageId)
     });
 
     if (!res.ok || !data.success) {
@@ -1545,6 +1271,11 @@ async function deleteSystemMessage(messageId) {
   }
 }
 
+function startSystemPolling() {
+  if (systemPoll) clearInterval(systemPoll);
+  systemPoll = setInterval(() => loadSystemMessages(false), 5000);
+}
+
 /* Публикация поста */
 
 async function sendPost() {
@@ -1555,7 +1286,6 @@ async function sendPost() {
 
   const text = document.getElementById('post-text').value.trim();
   const tags = document.getElementById('post-tags').value.trim();
-
   if (!text) return showToast('Введи текст поста.', 'warning');
 
   const button = document.getElementById('send-btn');
@@ -1563,8 +1293,8 @@ async function sendPost() {
 
   try {
     const {res, data} = await apiPost('/api/posts', {
-      username: normalizeUsername(currentUsername),
-      password: currentPassword,
+      username:normalizeUsername(currentUsername),
+      password:currentPassword,
       text,
       tags
     });
@@ -1604,9 +1334,9 @@ async function sendComment(postId) {
 
   try {
     const {res, data} = await apiPost('/api/comments', {
-      username: normalizeUsername(currentUsername),
-      password: currentPassword,
-      postId: String(postId),
+      username:normalizeUsername(currentUsername),
+      password:currentPassword,
+      postId:String(postId),
       text
     });
 
@@ -1625,8 +1355,6 @@ async function sendComment(postId) {
   }
 }
 
-/* Удаление поста */
-
 async function deletePost(postId) {
   if (!isAdmin) return showToast('Недостаточно прав.', 'error');
 
@@ -1639,9 +1367,9 @@ async function deletePost(postId) {
 
   try {
     const {res, data} = await apiPost('/api/admin/delete', {
-      username: normalizeUsername(currentUsername),
-      password: currentPassword,
-      postId: String(postId)
+      username:normalizeUsername(currentUsername),
+      password:currentPassword,
+      postId:String(postId)
     });
 
     if (!res.ok || !data.success) {
@@ -1657,8 +1385,6 @@ async function deletePost(postId) {
   }
 }
 
-/* Удаление комментария */
-
 async function deleteComment(postId, commentId) {
   if (!isAdmin) return showToast('Недостаточно прав.', 'error');
 
@@ -1671,10 +1397,10 @@ async function deleteComment(postId, commentId) {
 
   try {
     const {res, data} = await apiPost('/api/admin/delete-comment', {
-      username: normalizeUsername(currentUsername),
-      password: currentPassword,
-      postId: String(postId),
-      commentId: String(commentId)
+      username:normalizeUsername(currentUsername),
+      password:currentPassword,
+      postId:String(postId),
+      commentId:String(commentId)
     });
 
     if (!res.ok || !data.success) {
@@ -1684,9 +1410,7 @@ async function deleteComment(postId, commentId) {
 
     const post = allPosts.find(item => String(item.id) === String(postId));
     if (post && Array.isArray(post.comments)) {
-      post.comments = post.comments.filter(
-        comment => String(comment.id) !== String(commentId)
-      );
+      post.comments = post.comments.filter(comment => String(comment.id) !== String(commentId));
     }
 
     renderPosts();
@@ -1696,154 +1420,158 @@ async function deleteComment(postId, commentId) {
   }
 }
 
-/* Мой профиль */
+/* Галерея изображений */
 
-async function openMyProfile() {
-  const profile = await fetchProfile(currentUsername);
-  const usernameEl = document.getElementById('my-prof-username');
-  const avatarEl = document.getElementById('my-prof-avatar');
-  const bioInput = document.getElementById('my-prof-bio-input');
+function getOptionPath(option) {
+  return String(option?.path || option?.id || option?.key || '');
+}
 
-  setProfileUsernameWithBadge(usernameEl, currentUsername, profile);
-  usernameEl.style.color = safeColor(profile?.nameColor) || '';
+function getOptionUrl(option) {
+  return safeImageUrl(option?.url || option?.avatarUrl || option?.imageUrl || '');
+}
 
-  avatarEl.src = safeImageUrl(profile?.avatarUrl || getAvatar(currentUsername));
+function getOptionLabel(option) {
+  return String(option?.label || option?.name || getOptionPath(option).split('/').pop() || 'Изображение');
+}
 
-  applyProfileCardTheme(
-    document.getElementById('my-profile-card'),
-    currentUsername,
-    profile
-  );
+function fillOptionSelect(select, options, allowNone = false) {
+  select.replaceChildren();
 
-  bioInput.value = profile?.bio || '';
-
-  document.getElementById('avatar-user-controls')
-    .classList.toggle('hidden', isAdmin);
-
-  document.getElementById('admin-avatar-controls')
-    .classList.toggle('hidden', !isAdmin);
-
-  document.getElementById('admin-card-theme-controls')
-    .classList.toggle('hidden', !isAdmin);
-
-  if (isAdmin) {
-    await Promise.all([
-      loadAdminAvatarOptions(),
-      loadAdminCardTheme()
-    ]);
+  if (allowNone) {
+    const none = document.createElement('option');
+    none.value = 'none';
+    none.textContent = 'Без изображения';
+    select.appendChild(none);
   }
 
-  document.getElementById('my-profile-modal').classList.remove('hidden');
+  options.forEach(option => {
+    const element = document.createElement('option');
+    element.value = getOptionPath(option);
+    element.textContent = getOptionLabel(option);
+    select.appendChild(element);
+  });
 }
 
-/* Галерея аватарок администрации */
-
-function getAdminAvatarUrl(option) {
-  return safeImageUrl(option?.url || option?.avatarUrl || '');
-}
-
-function renderAdminAvatarGallery() {
-  const preview = document.getElementById('admin-avatar-preview');
-  const label = document.getElementById('admin-avatar-gallery-label');
-  const thumbs = document.getElementById('admin-avatar-thumbnails');
-  const select = document.getElementById('admin-avatar-select');
+function renderImageGallery(options, selectedIndex, previewId, labelId, thumbsId, selectId, onChoose) {
+  const preview = document.getElementById(previewId);
+  const label = document.getElementById(labelId);
+  const thumbs = document.getElementById(thumbsId);
+  const select = document.getElementById(selectId);
 
   thumbs.replaceChildren();
 
-  if (!adminAvatarOptions.length) {
+  if (!options.length) {
     preview.src = './robot.png';
-    label.textContent = 'Нет доступных аватарок.';
+    label.textContent = 'Нет доступных изображений.';
     return;
   }
 
-  selectedAdminAvatarIndex = Math.max(
-    0,
-    Math.min(selectedAdminAvatarIndex, adminAvatarOptions.length - 1)
-  );
+  selectedIndex = Math.max(0, Math.min(selectedIndex, options.length - 1));
+  const selected = options[selectedIndex];
 
-  const selected = adminAvatarOptions[selectedAdminAvatarIndex];
-  preview.src = getAdminAvatarUrl(selected);
+  preview.src = getOptionUrl(selected);
   preview.onerror = () => { preview.src = './robot.png'; };
-  label.textContent = `${selected.label || selected.id || 'Аватар'} (${selectedAdminAvatarIndex + 1}/${adminAvatarOptions.length})`;
-  select.value = String(selected.id);
+  label.textContent = `${getOptionLabel(selected)} (${selectedIndex + 1}/${options.length})`;
+  select.value = getOptionPath(selected);
 
-  adminAvatarOptions.forEach((option, index) => {
+  options.forEach((option, index) => {
     const button = document.createElement('button');
     button.type = 'button';
-    button.className = 'avatar-gallery-thumb' +
-      (index === selectedAdminAvatarIndex ? ' selected' : '');
-    button.setAttribute('aria-label', `Выбрать аватарку: ${option.label || option.id}`);
-    button.setAttribute('aria-pressed', String(index === selectedAdminAvatarIndex));
+    button.className = 'avatar-gallery-thumb' + (index === selectedIndex ? ' selected' : '');
+    button.setAttribute('aria-label', 'Выбрать изображение: ' + getOptionLabel(option));
+    button.setAttribute('aria-pressed', String(index === selectedIndex));
 
     const img = document.createElement('img');
-    img.src = getAdminAvatarUrl(option);
-    img.alt = option.label || option.id || 'Аватар';
+    img.src = getOptionUrl(option);
+    img.alt = getOptionLabel(option);
     img.loading = 'lazy';
     img.onerror = () => { img.src = './robot.png'; };
 
     button.appendChild(img);
-    button.addEventListener('click', () => {
-      selectedAdminAvatarIndex = index;
-      renderAdminAvatarGallery();
-    });
-
+    button.addEventListener('click', () => onChoose(index));
     thumbs.appendChild(button);
   });
 }
 
+function renderAdminAvatarGallery() {
+  renderImageGallery(
+    adminAvatarOptions,
+    selectedAdminAvatarIndex,
+    'admin-avatar-preview',
+    'admin-avatar-gallery-label',
+    'admin-avatar-thumbnails',
+    'admin-avatar-select',
+    index => {
+      selectedAdminAvatarIndex = index;
+      renderAdminAvatarGallery();
+    }
+  );
+}
+
 function stepAdminAvatar(direction) {
   if (!adminAvatarOptions.length) return;
-
   selectedAdminAvatarIndex =
     (selectedAdminAvatarIndex + direction + adminAvatarOptions.length) %
     adminAvatarOptions.length;
-
   renderAdminAvatarGallery();
 }
 
+function renderAdminCardGallery() {
+  if (selectedAdminCardIndex < 0 && adminCardOptions.length) selectedAdminCardIndex = 0;
+
+  renderImageGallery(
+    adminCardOptions,
+    selectedAdminCardIndex,
+    'admin-card-image-preview',
+    'admin-card-gallery-label',
+    'admin-card-thumbnails',
+    'admin-card-image-select',
+    index => {
+      selectedAdminCardIndex = index;
+      renderAdminCardGallery();
+    }
+  );
+}
+
+function stepAdminCardImage(direction) {
+  if (!adminCardOptions.length) return;
+  if (selectedAdminCardIndex < 0) selectedAdminCardIndex = 0;
+  selectedAdminCardIndex =
+    (selectedAdminCardIndex + direction + adminCardOptions.length) %
+    adminCardOptions.length;
+  renderAdminCardGallery();
+}
+
 async function loadAdminAvatarOptions() {
-  const select = document.getElementById('admin-avatar-select');
   const status = document.getElementById('admin-avatar-status');
+  if (!isAdmin) return;
 
-  if (!select || !isAdmin) return;
-
-  status.textContent = 'Загрузка списка...';
+  status.textContent = 'Загрузка списка изображений...';
 
   try {
     const [result, profile] = await Promise.all([
       apiPost('/api/avatar/options', {
-        username: normalizeUsername(currentUsername),
-        password: currentPassword
+        username:normalizeUsername(currentUsername),
+        password:currentPassword
       }),
       fetchProfile(currentUsername)
     ]);
 
     const {res, data} = result;
-
     if (!res.ok || !data.success) {
-      status.textContent = data.error || 'Не удалось получить список.';
+      status.textContent = data.error || 'Не удалось получить список изображений.';
       return;
     }
 
     adminAvatarOptions = Array.isArray(data.options) ? data.options : [];
-    select.innerHTML = '';
+    fillOptionSelect(document.getElementById('admin-avatar-select'), adminAvatarOptions);
 
-    adminAvatarOptions.forEach(option => {
-      const element = document.createElement('option');
-      element.value = String(option.id);
-      element.textContent = option.label || option.id;
-      select.appendChild(element);
-    });
+    const currentAvatar = safeImageUrl(profile?.avatarUrl || '');
+    const currentIndex = adminAvatarOptions.findIndex(option => getOptionUrl(option) === currentAvatar);
+    selectedAdminAvatarIndex = currentIndex >= 0 ? currentIndex : 0;
 
-    const currentAvatar = String(profile?.avatarUrl || '');
-    const selectedIndex = adminAvatarOptions.findIndex(option =>
-      String(option.url || option.avatarUrl || '') === currentAvatar
-    );
-
-    selectedAdminAvatarIndex = selectedIndex >= 0 ? selectedIndex : 0;
     renderAdminAvatarGallery();
-
-    status.textContent = adminAvatarOptions.length ? '' : 'Список аватарок пуст.';
+    status.textContent = adminAvatarOptions.length ? '' : 'В репозитории не найдено изображений.';
   } catch (_) {
     status.textContent = 'Ошибка соединения с сервером.';
   }
@@ -1852,19 +1580,23 @@ async function loadAdminAvatarOptions() {
 async function saveSelectedAdminAvatar() {
   if (!isAdmin) return showToast('Недостаточно прав.', 'error');
 
-  const select = document.getElementById('admin-avatar-select');
   const status = document.getElementById('admin-avatar-status');
+  const option = adminAvatarOptions[selectedAdminAvatarIndex];
+  const avatarPath = option ? getOptionPath(option) : '';
 
-  if (!select?.value) {
-    status.textContent = 'Нет доступных аватарок.';
+  if (!avatarPath) {
+    status.textContent = 'Нет доступных изображений.';
     return;
   }
 
+  status.textContent = 'Сохранение аватарки...';
+
   try {
     const {res, data} = await apiPost('/api/avatar/select', {
-      username: normalizeUsername(currentUsername),
-      password: currentPassword,
-      avatarId: select.value
+      username:normalizeUsername(currentUsername),
+      password:currentPassword,
+      avatarId:avatarPath,
+      path:avatarPath
     });
 
     if (!res.ok || !data.success) {
@@ -1872,7 +1604,7 @@ async function saveSelectedAdminAvatar() {
       return;
     }
 
-    const avatarUrl = safeImageUrl(data.avatarUrl || data.avatar);
+    const avatarUrl = safeImageUrl(data.avatarUrl || data.avatar || getOptionUrl(option));
     document.getElementById('my-prof-avatar').src = avatarUrl;
 
     const cached = profileCache[normalizeUsername(currentUsername)];
@@ -1891,50 +1623,147 @@ async function saveSelectedAdminAvatar() {
 async function loadAdminCardTheme() {
   if (!isAdmin) return;
 
-  const select = document.getElementById('admin-card-theme-select');
   const status = document.getElementById('admin-card-theme-status');
-  status.textContent = 'Загрузка темы...';
+  status.textContent = 'Загрузка изображений...';
 
   try {
-    const profile = await fetchProfile(currentUsername);
-    const cachedTheme = profile?.cardTheme ||
-      getAdminStyle(currentUsername, ADMIN_CARDS);
+    const [result, profile] = await Promise.all([
+      apiPost('/api/admin/card-options', {
+        username:normalizeUsername(currentUsername),
+        password:currentPassword
+      }),
+      fetchProfile(currentUsername)
+    ]);
 
-    select.value = ALLOWED_CARD_THEMES.has(cachedTheme) ? cachedTheme : 'none';
-    status.textContent = '';
-  } catch (_) {
-    status.textContent = 'Не удалось загрузить текущую тему.';
-  }
-}
-
-async function saveAdminCardTheme() {
-  if (!isAdmin) return showToast('Недостаточно прав.', 'error');
-
-  const select = document.getElementById('admin-card-theme-select');
-  const status = document.getElementById('admin-card-theme-status');
-  const theme = select.value;
-
-  if (!ALLOWED_CARD_THEMES.has(theme)) {
-    status.textContent = 'Выбрана недопустимая тема.';
-    return;
-  }
-
-  status.textContent = 'Сохранение...';
-
-  try {
-    const {res, data} = await apiPost('/api/admin/card-theme', {
-      username: normalizeUsername(currentUsername),
-      password: currentPassword,
-      theme
-    });
+    const {res, data} = result;
 
     if (!res.ok || !data.success) {
-      status.textContent = data.error || 'Не удалось сохранить фон карточки.';
+      status.textContent = data.error || 'Не удалось загрузить список фонов.';
       return;
     }
 
-    const clean = normalizeUsername(currentUsername);
-    if (profileCache[clean]) profileCache[clean].cardTheme = theme;
+    adminCardOptions = Array.isArray(data.options)
+      ? data.options
+      : (Array.isArray(data.images) ? data.images : []);
+
+    fillOptionSelect(
+      document.getElementById('admin-card-image-select'),
+      adminCardOptions,
+      true
+    );
+
+    const currentBackground = getCardBackground(profile);
+    const currentIndex = adminCardOptions.findIndex(option =>
+      getOptionUrl(option) === safeImageUrl(currentBackground) ||
+      getOptionPath(option) === currentBackground
+    );
+
+    selectedAdminCardIndex = currentIndex >= 0 ? currentIndex : 0;
+
+    if (adminCardOptions.length) {
+      renderAdminCardGallery();
+    } else {
+      document.getElementById('admin-card-image-preview').src = './robot.png';
+      document.getElementById('admin-card-gallery-label').textContent =
+        'В репозитории не найдено изображений.';
+      document.getElementById('admin-card-thumbnails').replaceChildren();
+    }
+
+    status.textContent = '';
+  } catch (_) {
+    status.textContent = 'Не удалось загрузить список фонов.';
+  }
+}
+
+/* Исправленное сохранение и удаление фона */
+
+async function saveAdminCardTheme(mode) {
+  if (!isAdmin) {
+    showToast('Недостаточно прав.', 'error');
+    return;
+  }
+
+  const status = document.getElementById('admin-card-theme-status');
+  const clean = normalizeUsername(currentUsername);
+  const removingImage = mode === 'none';
+  const option = adminCardOptions[selectedAdminCardIndex];
+
+  const imagePath = removingImage
+    ? 'none'
+    : (option ? getOptionPath(option) : '');
+
+  if (!imagePath) {
+    status.textContent = 'Выбери изображение.';
+    return;
+  }
+
+  status.textContent = removingImage
+    ? 'Удаление фона карточки...'
+    : 'Сохранение фона карточки...';
+
+  try {
+    const {res, data} = await apiPost('/api/admin/card-theme', {
+      username:clean,
+      password:currentPassword,
+      imageKey:imagePath,
+      image:imagePath,
+      path:imagePath,
+      key:imagePath,
+      theme:removingImage ? 'none' : imagePath
+    });
+
+    if (!res.ok || !data.success) {
+      status.textContent =
+        data.error || 'Не удалось сохранить фон карточки.';
+      return;
+    }
+
+    if (!profileCache[clean]) {
+      profileCache[clean] = {
+        username:clean,
+        bio:'',
+        avatarUrl:'',
+        cardBackgroundUrl:'',
+        nameColor:'',
+        cardTheme:'none',
+        admin:true
+      };
+    }
+
+    if (removingImage) {
+      /*
+       * При удалении не читаем URL из ответа Worker:
+       * сервер может вернуть адрес предыдущего изображения.
+       */
+      profileCache[clean].cardBackgroundUrl = '';
+      profileCache[clean].cardTheme = 'none';
+
+      const card = document.getElementById('my-profile-card');
+
+      card.classList.remove(
+        'image-background','theme-red','theme-gold','theme-purple',
+        'theme-green','theme-blue','theme-cyan','theme-pink'
+      );
+      card.classList.add('theme-none');
+
+      card.style.setProperty('background-image','none','important');
+      card.style.setProperty('background-color','#18181b','important');
+      card.style.setProperty('background-size','auto','important');
+      card.style.setProperty('background-position','initial','important');
+      card.style.setProperty('background-repeat','initial','important');
+
+      status.textContent = 'Изображение фона удалено.';
+      showToast('Фон карточки удалён.', 'success');
+      return;
+    }
+
+    profileCache[clean].cardBackgroundUrl =
+      data.cardBackgroundUrl ||
+      data.backgroundUrl ||
+      data.imageUrl ||
+      getOptionUrl(option);
+
+    profileCache[clean].cardTheme = '';
 
     applyProfileCardTheme(
       document.getElementById('my-profile-card'),
@@ -1949,6 +1778,30 @@ async function saveAdminCardTheme() {
   }
 }
 
+/* Открытие моего профиля */
+
+async function openMyProfile() {
+  const profile = await fetchProfile(currentUsername);
+  const usernameEl = document.getElementById('my-prof-username');
+  const avatarEl = document.getElementById('my-prof-avatar');
+  const bioInput = document.getElementById('my-prof-bio-input');
+
+  setProfileUsernameWithBadge(usernameEl, currentUsername, profile);
+  avatarEl.src = safeImageUrl(profile?.avatarUrl || getAvatar(currentUsername));
+
+  applyProfileCardTheme(document.getElementById('my-profile-card'), currentUsername, profile);
+  bioInput.value = profile?.bio || '';
+
+  document.getElementById('admin-avatar-controls').classList.toggle('hidden', !isAdmin);
+  document.getElementById('admin-card-theme-controls').classList.toggle('hidden', !isAdmin);
+
+  if (isAdmin) {
+    await Promise.all([loadAdminAvatarOptions(), loadAdminCardTheme()]);
+  }
+
+  document.getElementById('my-profile-modal').classList.remove('hidden');
+}
+
 /* Цвет ника */
 
 async function setUserNameColor() {
@@ -1956,13 +1809,12 @@ async function setUserNameColor() {
 
   const target = document.getElementById('namecolor-username').value.trim();
   const color = document.getElementById('namecolor-value').value;
-
   if (!target) return showToast('Укажи ник пользователя.', 'warning');
 
   try {
     const {res, data} = await apiPost('/api/admin/name-color', {
-      username: normalizeUsername(currentUsername),
-      password: currentPassword,
+      username:normalizeUsername(currentUsername),
+      password:currentPassword,
       target,
       color
     });
@@ -1975,21 +1827,30 @@ async function setUserNameColor() {
     delete profileCache[normalizeUsername(target)];
     await fetchProfile(target);
     await loadPosts();
+
+    if (normalizeUsername(target) === normalizeUsername(currentUsername)) {
+      setProfileUsernameWithBadge(
+        document.getElementById('my-prof-username'),
+        currentUsername,
+        profileCache[normalizeUsername(currentUsername)]
+      );
+    }
+
     showToast('Цвет ника обновлён.', 'success');
   } catch (_) {
     showToast('Ошибка соединения с сервером.', 'error');
   }
 }
 
-/* Сохранение профиля */
+/* Сохранение описания профиля */
 
 async function saveMyProfile() {
   const bio = document.getElementById('my-prof-bio-input').value.trim();
 
   try {
     const {res, data} = await apiPost('/api/profile/save', {
-      username: normalizeUsername(currentUsername),
-      password: currentPassword,
+      username:normalizeUsername(currentUsername),
+      password:currentPassword,
       bio
     });
 
@@ -2017,16 +1878,19 @@ async function viewUserProfile(targetNick) {
   const avatarEl = document.getElementById('view-prof-avatar');
   const bioEl = document.getElementById('view-prof-bio');
 
-  nameEl.textContent = username;
-  nameEl.style.color = '';
-  avatarEl.src = safeImageUrl(getAvatar(username));
+  setProfileUsernameWithBadge(
+    nameEl,
+    username,
+    profileCache[normalizeUsername(username)]
+  );
+
+  avatarEl.src = getAvatar(username);
   bioEl.textContent = 'Загрузка информации...';
 
-  const cachedProfile = profileCache[normalizeUsername(username)];
   applyProfileCardTheme(
     document.getElementById('view-profile-card'),
     username,
-    cachedProfile
+    profileCache[normalizeUsername(username)]
   );
 
   document.getElementById('view-profile-modal').classList.remove('hidden');
@@ -2042,14 +1906,9 @@ async function viewUserProfile(targetNick) {
   if (profile.avatarUrl) avatarEl.src = safeImageUrl(profile.avatarUrl);
 
   setProfileUsernameWithBadge(nameEl, username, profile);
-  nameEl.style.color = safeColor(profile.nameColor) || '';
   bioEl.textContent = profile.bio || 'Нет описания.';
 
-  applyProfileCardTheme(
-    document.getElementById('view-profile-card'),
-    username,
-    profile
-  );
+  applyProfileCardTheme(document.getElementById('view-profile-card'), username, profile);
 }
 
 /* Бан */
@@ -2069,9 +1928,9 @@ async function banUser() {
 
   try {
     const {res, data} = await apiPost('/api/admin/ban', {
-      username: normalizeUsername(currentUsername),
-      password: currentPassword,
-      userToBan: target
+      username:normalizeUsername(currentUsername),
+      password:currentPassword,
+      userToBan:target
     });
 
     if (!res.ok || !data.success) {
@@ -2080,10 +1939,7 @@ async function banUser() {
     }
 
     document.getElementById('ban-username').value = '';
-    showToast(
-      `Пользователь ${displayUsername(data.username || target)} заблокирован.`,
-      'success'
-    );
+    showToast(`Пользователь ${displayUsername(data.username || target)} заблокирован.`, 'success');
   } catch (_) {
     showToast('Ошибка сервера.', 'error');
   }
@@ -2106,9 +1962,9 @@ async function unbanUser() {
 
   try {
     const {res, data} = await apiPost('/api/admin/unban', {
-      username: normalizeUsername(currentUsername),
-      password: currentPassword,
-      userToUnban: target
+      username:normalizeUsername(currentUsername),
+      password:currentPassword,
+      userToUnban:target
     });
 
     if (!res.ok || !data.success) {
@@ -2117,10 +1973,7 @@ async function unbanUser() {
     }
 
     document.getElementById('unban-username').value = '';
-    showToast(
-      `Пользователь ${displayUsername(data.username || target)} разблокирован.`,
-      'success'
-    );
+    showToast(`Пользователь ${displayUsername(data.username || target)} разблокирован.`, 'success');
   } catch (_) {
     showToast('Ошибка сервера.', 'error');
   }
@@ -2154,9 +2007,7 @@ document.getElementById('post-text').addEventListener('keydown', event => {
 });
 
 document.getElementById('password-input').addEventListener('keydown', event => {
-  if (event.key === 'Enter') {
-    document.getElementById('auth-action-btn').click();
-  }
+  if (event.key === 'Enter') document.getElementById('auth-action-btn').click();
 });
 </script>
 </body>
