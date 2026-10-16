@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -40,6 +39,32 @@ button:disabled{opacity:.55;cursor:not-allowed}
 .profile-card.theme-cyan{background:linear-gradient(145deg,#10383c,#18181b 75%)!important}
 .profile-card.theme-pink{background:linear-gradient(145deg,#3b1930,#18181b 75%)!important}
 .profile-card.image-background{background-size:cover!important;background-position:center!important;background-repeat:no-repeat!important}
+
+/* Анимированные ники администрации */
+@keyframes nameGradient{
+  0%{background-position:0% 50%}
+  50%{background-position:100% 50%}
+  100%{background-position:0% 50%}
+}
+.name-theme-purple,.name-theme-green,.name-theme-gold,
+.name-theme-red,.name-theme-blue,.name-theme-cyan,
+.name-theme-pink,.name-theme-gray,.name-theme-orange{
+  background-size:300% 100%;
+  background-clip:text;
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  animation:nameGradient 5s ease-in-out infinite;
+}
+.name-theme-purple{background-image:linear-gradient(90deg,#8a2be2,#c43cff,#ff5cff,#7226d9)}
+.name-theme-green{background-image:linear-gradient(90deg,#16a34a,#4ade80,#86efac,#15803d)}
+.name-theme-gold{background-image:linear-gradient(90deg,#ca8a04,#fde047,#fef08a,#854d0e)}
+.name-theme-red{background-image:linear-gradient(90deg,#dc2626,#f87171,#fca5a5,#991b1b)}
+.name-theme-blue{background-image:linear-gradient(90deg,#1d4ed8,#60a5fa,#93c5fd,#1e40af)}
+.name-theme-cyan{background-image:linear-gradient(90deg,#0e7490,#22d3ee,#67e8f9,#155e75)}
+.name-theme-pink{background-image:linear-gradient(90deg,#be185d,#f472b6,#f9a8d4,#9d174d)}
+.name-theme-gray{background-image:linear-gradient(90deg,#737373,#d4d4d4,#f5f5f5,#525252)}
+.name-theme-orange{background-image:linear-gradient(90deg,#c2410c,#fb923c,#fed7aa,#9a3412)}
+
 #admin-avatar-gallery,#admin-card-gallery{display:flex;flex-direction:column;gap:12px;margin:14px 0}
 .avatar-gallery-preview{position:relative;display:flex;align-items:center;justify-content:center;gap:12px}
 .avatar-gallery-preview img{width:128px;height:128px;object-fit:cover;border-radius:16px;border:2px solid #ef4444;background:#09090b;box-shadow:0 0 22px #ef444422}
@@ -700,9 +725,69 @@ function getAvatar(username) {
   return safeImageUrl(cached?.avatarUrl || '');
 }
 
+/* Цвет из свежего профиля имеет приоритет над цветом из поста */
 function getNameColor(username, suppliedColor) {
   const cached = profileCache[normalizeUsername(username)];
-  return safeColor(suppliedColor || cached?.nameColor);
+  return safeColor(cached ? cached.nameColor : suppliedColor);
+}
+
+/* Анимация применяется исключительно администраторам */
+function applyUsernameAppearance(element, username, suppliedColor) {
+  const animationClasses = [
+    'name-theme-purple',
+    'name-theme-green',
+    'name-theme-gold',
+    'name-theme-red',
+    'name-theme-blue',
+    'name-theme-cyan',
+    'name-theme-pink',
+    'name-theme-gray',
+    'name-theme-orange'
+  ];
+
+  element.classList.remove(...animationClasses, 'admin-style');
+
+  element.style.webkitTextFillColor = '';
+  element.style.backgroundImage = '';
+  element.style.backgroundSize = '';
+  element.style.backgroundClip = '';
+  element.style.webkitBackgroundClip = '';
+  element.style.animation = '';
+  element.style.color = '';
+
+  const color = getNameColor(username, suppliedColor);
+  const admin = profileIsAdmin(username);
+
+  if (!color) {
+    if (admin) element.classList.add('admin-style');
+    return;
+  }
+
+  if (!admin) {
+    element.style.color = color;
+    return;
+  }
+
+  const themes = {
+    '#a855f7':'name-theme-purple',
+    '#22c55e':'name-theme-green',
+    '#f59e0b':'name-theme-gold',
+    '#ef4444':'name-theme-red',
+    '#3b82f6':'name-theme-blue',
+    '#06b6d4':'name-theme-cyan',
+    '#ec4899':'name-theme-pink',
+    '#9ca3af':'name-theme-gray',
+    '#f97316':'name-theme-orange'
+  };
+
+  const themeClass = themes[color.toLowerCase()];
+
+  if (themeClass) {
+    element.classList.add(themeClass);
+    element.style.color = color;
+  } else {
+    element.style.color = color;
+  }
 }
 
 function authorStyle(username, suppliedColor) {
@@ -734,6 +819,8 @@ function applyProfileCardTheme(card, username, profile) {
 function setProfileUsernameWithBadge(element, username, profile) {
   element.replaceChildren();
   element.appendChild(document.createTextNode(displayUsername(username) + ' '));
+  applyUsernameAppearance(element, username, profile?.nameColor);
+
   const badge = verifiedBadge(username, profile);
   if (badge) element.insertAdjacentHTML('beforeend', badge);
 }
@@ -781,7 +868,6 @@ function renderPosts() {
 
   filtered.forEach(post => {
     const username = String(post.username || '');
-    const postAdmin = profileIsAdmin(username);
     const avatar = getAvatar(username);
 
     const card = document.createElement('div');
@@ -801,11 +887,11 @@ function renderPosts() {
     header.className = 'post-header';
 
     const author = document.createElement('span');
-    author.className = 'author' + (!getNameColor(username, post.nameColor) && postAdmin ? ' admin-style' : '');
+    author.className = 'author';
     author.style.cursor = 'pointer';
-    const color = getNameColor(username, post.nameColor);
-    if (color) author.style.color = color;
     author.append(document.createTextNode(displayUsername(username) + ' '));
+    applyUsernameAppearance(author, username, post.nameColor);
+
     const badge = verifiedBadge(username);
     if (badge) author.insertAdjacentHTML('beforeend', badge);
     author.addEventListener('click', () => viewUserProfile(username));
@@ -855,8 +941,6 @@ function renderPosts() {
 
     (Array.isArray(post.comments) ? post.comments : []).forEach(comment => {
       const commentUsername = String(comment.username || '');
-      const commentAdmin = profileIsAdmin(commentUsername);
-      const commentColor = getNameColor(commentUsername, comment.nameColor);
 
       const commentEl = document.createElement('div');
       commentEl.className = 'comment';
@@ -875,11 +959,12 @@ function renderPosts() {
       commentHeader.className = 'comment-header';
 
       const commentAuthor = document.createElement('span');
-      commentAuthor.className = 'author' + (!commentColor && commentAdmin ? ' admin-style' : '');
+      commentAuthor.className = 'author';
       commentAuthor.style.cursor = 'pointer';
       commentAuthor.style.fontSize = '.95rem';
-      if (commentColor) commentAuthor.style.color = commentColor;
       commentAuthor.append(document.createTextNode(displayUsername(commentUsername) + ' '));
+      applyUsernameAppearance(commentAuthor, commentUsername, comment.nameColor);
+
       const commentBadge = verifiedBadge(commentUsername);
       if (commentBadge) commentAuthor.insertAdjacentHTML('beforeend', commentBadge);
       commentAuthor.addEventListener('click', () => viewUserProfile(commentUsername));
@@ -901,7 +986,7 @@ function renderPosts() {
         deleteCommentButton.style.cssText = 'margin:5px 0 0;padding:3px 8px;font-size:.75rem';
         deleteCommentButton.textContent = '❌ Стереть ответ';
         deleteCommentButton.addEventListener('click', () => deleteComment(post.id, comment.id));
-        commentBody.appendChild(deleteCommentButton);
+        commentBody.append(deleteCommentButton);
       }
 
       commentEl.append(commentAvatar, commentBody);
@@ -976,7 +1061,6 @@ function renderSystemMessages() {
   systemMessages.forEach(message => {
     const sender = String(message.from || message.authorUsername || 'redstonemine_community');
     const visual = getAdminVisuals(sender);
-    const color = getNameColor(sender);
 
     const card = document.createElement('div');
     card.className = 'post system-message';
@@ -997,8 +1081,9 @@ function renderSystemMessages() {
     const author = document.createElement('span');
     author.className = 'author';
     author.style.cursor = 'pointer';
-    if (color) author.style.color = color;
     author.append(document.createTextNode(displayUsername(sender) + ' '));
+    applyUsernameAppearance(author, sender);
+
     const badge = verifiedBadge(sender);
     if (badge) author.insertAdjacentHTML('beforeend', badge);
     author.addEventListener('click', () => viewUserProfile(sender));
@@ -1641,7 +1726,6 @@ async function openMyProfile() {
   const bioInput = document.getElementById('my-prof-bio-input');
 
   setProfileUsernameWithBadge(usernameEl, currentUsername, profile);
-  usernameEl.style.color = safeColor(profile?.nameColor) || '';
   avatarEl.src = safeImageUrl(profile?.avatarUrl || getAvatar(currentUsername));
 
   applyProfileCardTheme(document.getElementById('my-profile-card'), currentUsername, profile);
@@ -1682,6 +1766,16 @@ async function setUserNameColor() {
     delete profileCache[normalizeUsername(target)];
     await fetchProfile(target);
     await loadPosts();
+
+    /* Если изменили цвет своего ника, сразу обновляем его в профиле */
+    if (normalizeUsername(target) === normalizeUsername(currentUsername)) {
+      setProfileUsernameWithBadge(
+        document.getElementById('my-prof-username'),
+        currentUsername,
+        profileCache[normalizeUsername(currentUsername)]
+      );
+    }
+
     showToast('Цвет ника обновлён.', 'success');
   } catch (_) {
     showToast('Ошибка соединения с сервером.', 'error');
@@ -1724,8 +1818,12 @@ async function viewUserProfile(targetNick) {
   const avatarEl = document.getElementById('view-prof-avatar');
   const bioEl = document.getElementById('view-prof-bio');
 
-  nameEl.textContent = username;
-  nameEl.style.color = '';
+  setProfileUsernameWithBadge(
+    nameEl,
+    username,
+    profileCache[normalizeUsername(username)]
+  );
+
   avatarEl.src = getAvatar(username);
   bioEl.textContent = 'Загрузка информации...';
 
@@ -1748,7 +1846,6 @@ async function viewUserProfile(targetNick) {
   if (profile.avatarUrl) avatarEl.src = safeImageUrl(profile.avatarUrl);
 
   setProfileUsernameWithBadge(nameEl, username, profile);
-  nameEl.style.color = safeColor(profile.nameColor) || '';
   bioEl.textContent = profile.bio || 'Нет описания.';
 
   applyProfileCardTheme(document.getElementById('view-profile-card'), username, profile);
